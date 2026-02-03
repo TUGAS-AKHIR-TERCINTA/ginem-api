@@ -11,7 +11,7 @@ import swaggerSpec from '../configs/swagger'
 const routers = Router()
 
 routers.use('/api/v1/', RoutesRegistry.HealthRoute)
-routers.use('/api/v1/articles', RoutesRegistry.ArticleRoute)
+routers.use('/api/v1/devices', RoutesRegistry.DeviceRoute)
 routers.use('/api/v1/auth', RoutesRegistry.AuthRoute)
 routers.use('/api/v1/my-profiles', RoutesRegistry.MyProfileRoute)
 routers.use('/api/v1/otp', RoutesRegistry.OtpRoute)

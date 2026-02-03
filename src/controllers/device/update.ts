@@ -7,44 +7,39 @@ import {
   validateRequest
 } from '../../utilities/requestHandler'
 import logger from '../../logs'
-import { ValidationError } from 'joi'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { removeArticleSchema } from '../../schemas/articleSchema'
-import { IArticleRemoveRequest } from '../../interfaces/article.request'
-import { ArticleModel } from '../../models/articleModel'
+import { updateDeviceSchema } from '../../schemas/deviceSchema'
+import { DeviceModel } from '../../models/DeviceModel'
 
-export const removeArticle = async (
+export const updateDevice = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    removeArticleSchema,
-    req.params
-  ) as {
-    error: ValidationError
-    value: IArticleRemoveRequest
-  }
+    updateDeviceSchema,
+    req.body
+  )
 
   if (validationError) return handleValidationError(res, validationError)
-
   try {
-    const result = await ArticleModel.findOne({
+    const existingDevice = await DeviceModel.findOne({
       where: {
         deleted: 0,
-        articleId: validatedData.articleId
+        deviceId: validatedData.deviceId
       }
     })
 
-    if (result == null) {
-      const message = `Article not found with ID: ${validatedData.articleId}`
+    if (existingDevice === null) {
+      const message = `Device not found with ID: ${validatedData.deviceId}`
       logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
 
-    result.deleted = true
-    await result.save()
+    await DeviceModel.update(validatedData, {
+      where: { deleted: 0, deviceId: validatedData.deviceId }
+    })
 
-    const response = ResponseData.success({ message: 'Article deleted successfully' })
+    const response = ResponseData.success({ message: 'Device updated successfully' })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

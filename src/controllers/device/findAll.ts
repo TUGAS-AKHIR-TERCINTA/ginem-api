@@ -7,24 +7,18 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { ValidationError } from 'joi'
-import logger from '../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { findAllArticleSchema } from '../../schemas/articleSchema'
-import { IArticleFindAllRequest } from '../../interfaces/article.request'
-import { ArticleModel } from '../../models/articleModel'
+import { findAllDeviceSchema } from '../../schemas/deviceSchema'
+import { DeviceModel } from '../../models/DeviceModel'
 
-export const findAllArticle = async (
+export const findAllDevice = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    findAllArticleSchema,
+    findAllDeviceSchema,
     req.query
-  ) as {
-    error: ValidationError
-    value: IArticleFindAllRequest
-  }
+  )
 
   if (validationError) return handleValidationError(res, validationError)
 
@@ -33,11 +27,11 @@ export const findAllArticle = async (
 
     const page = new Pagination(Number(queryPage) || 0, Number(querySize) || 10)
 
-    const result = await ArticleModel.findAndCountAll({
+    const result = await DeviceModel.findAndCountAll({
       where: {
         deleted: 0
       },
-      order: [['articleId', 'desc']],
+      order: [['deviceId', 'desc']],
       ...(pagination === true && {
         limit: page.limit,
         offset: page.offset
@@ -47,7 +41,6 @@ export const findAllArticle = async (
     const response = ResponseData.success({ data: result })
     response.data = page.formatData(result)
 
-    logger.info('Article retrieved successfully')
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

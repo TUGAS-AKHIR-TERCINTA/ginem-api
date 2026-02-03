@@ -1,7 +1,7 @@
 import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
-import { UserModel } from '../../models/userModel'
+import { UserModel } from '../../models/UserModel'
 import {
   handleServerError,
   handleValidationError,

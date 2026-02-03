@@ -7,7 +7,7 @@ import {
   handleValidationError,
   validateRequest
 } from '../../../utilities/requestHandler'
-import { UserModel } from '../../../models/userModel'
+import { UserModel } from '../../../models/UserModel'
 import logger from '../../../logs'
 import { hashPassword } from '../../../utilities/scurePassword'
 

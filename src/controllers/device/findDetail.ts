@@ -1,46 +1,36 @@
 import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
-import { updateOnboardingSchema } from '../../schemas/myProfileSchema'
 import {
   handleServerError,
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { ValidationError } from 'joi'
-import { UserModel } from '../../models/UserModel'
-import logger from '../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
+import { findDetailDeviceSchema } from '../../schemas/deviceSchema'
+import { DeviceModel } from '../../models/DeviceModel'
 
-export const updateOnboardingStatus = async (
+export const findDetailDevice = async (
   req: IAuthenticatedRequest,
   res: Response
-): Promise<any> => {
+): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    updateOnboardingSchema,
-    req.body
+    findDetailDeviceSchema,
+    req.params
   )
 
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    const newData = {
-      ...(validatedData?.userOnboardingStatus!.length > 0 && {
-        userOnboardingStatus: validatedData?.userOnboardingStatus
-      })
-    }
-
-    await UserModel.update(newData, {
+    const result = await DeviceModel.findOne({
       where: {
         deleted: 0,
-        userId: req?.jwtPayload?.userId
+        deviceId: validatedData.deviceId
       }
     })
 
-    const response = ResponseData.success({
-      message: 'Onboarding status updated successfully'
-    })
-    logger.info('onboarding status updated successfully')
+    const response = ResponseData.success({ data: result })
+
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

@@ -6,27 +6,25 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../logs'
 import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { createArticleSchema } from '../../schemas/articleSchema'
-import { ArticleModel } from '../../models/articleModel'
+import { createDeviceSchema } from '../../schemas/deviceSchema'
+import { DeviceModel } from '../../models/DeviceModel'
 
-export const createArticle = async (
+export const createDevice = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    createArticleSchema,
+    createDeviceSchema,
     req.body
   )
 
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    await ArticleModel.create(validatedData)
+    await DeviceModel.create(validatedData)
     const response = ResponseData.success({})
 
-    logger.info('Article created successfully')
     return res.status(StatusCodes.CREATED).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

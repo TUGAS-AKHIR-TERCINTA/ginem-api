@@ -7,7 +7,7 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { UserModel } from '../../models/userModel'
+import { UserModel } from '../../models/UserModel'
 import { ResponseData } from '../../utilities/response'
 import logger from '../../logs'
 import redisClient from '../../configs/redis'

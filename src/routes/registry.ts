@@ -1,15 +1,15 @@
-import ArticleRoute from './ArticleRouter'
 import AuthRoute from './AuthRouter'
+import DeviceRoute from './DeviceRouter'
 import HealthRoute from './HelthRouter'
 import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
 
 const RoutesRegistry = {
-  ArticleRoute,
   AuthRoute,
   HealthRoute,
   MyProfileRoute,
-  OtpRoute
+  OtpRoute,
+  DeviceRoute
 }
 
 export default RoutesRegistry

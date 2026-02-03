@@ -8,7 +8,7 @@ import {
   validateRequest
 } from '../../utilities/requestHandler'
 import { ValidationError } from 'joi'
-import { IUserAttributes, UserModel } from '../../models/userModel'
+import { IUserAttributes, UserModel } from '../../models/UserModel'
 import logger from '../../logs'
 import { appConfigs } from '../../configs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
