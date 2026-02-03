@@ -1,0 +1,7 @@
+.env
+.env.production
+.env.staging
+node_modules
+build
+tmp
+public/*

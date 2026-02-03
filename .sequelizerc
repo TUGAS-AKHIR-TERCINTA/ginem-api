@@ -1,0 +1,6 @@
+const path = require('path')
+module.exports = {
+  config: path.resolve('resources', 'config.js'),
+  'seeders-path': path.resolve('resources', 'seeders'),
+  'migrations-path': path.resolve('resources', 'migrations')
+}
