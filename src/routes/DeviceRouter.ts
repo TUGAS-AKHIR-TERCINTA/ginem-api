@@ -6,7 +6,7 @@ const DeviceRoute = Router()
 DeviceRoute.get('/', DeviceController.findAll)
 DeviceRoute.get('/detail/:deviceId', DeviceController.findDetail)
 DeviceRoute.post('/', DeviceController.create)
-DeviceRoute.patch('/', DeviceController.update)
-DeviceRoute.delete('/', DeviceController.remove)
+DeviceRoute.patch('/:deviceId', DeviceController.update)
+DeviceRoute.delete('/:deviceId', DeviceController.remove)
 
 export default DeviceRoute

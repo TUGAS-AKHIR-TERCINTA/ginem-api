@@ -7,30 +7,26 @@ import {
   validateRequest
 } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { findAllDeviceSchema } from '../../schemas/deviceSchema'
-import { DeviceService } from '../../services/DeviceServices'
+import { mcpQuerySchema } from '../../schemas/mcpSchema'
+import { DeviceAgentService } from '../../services/mcp'
 
-export const findAllDevice = async (
+export const queryMcp = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    findAllDeviceSchema,
-    req.query
+    mcpQuerySchema,
+    req.body
   )
 
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    const { page, size, pagination, search } = validatedData
-    const result = await DeviceService.findAll({
-      page,
-      size,
-      pagination,
-      search
+    const answer = await DeviceAgentService.query(validatedData.message)
+    const response = ResponseData.success({
+      data: { answer },
+      message: 'MCP query completed successfully'
     })
-
-    const response = ResponseData.success({ data: result })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

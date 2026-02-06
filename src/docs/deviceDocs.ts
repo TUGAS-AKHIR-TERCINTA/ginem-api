@@ -135,7 +135,7 @@
 /**
  * @swagger
  * /api/v1/devices/{deviceId}:
- *   put:
+ *   patch:
  *     summary: Update device
  *     description: Update device data by ID
  *     tags: [DEVICES]

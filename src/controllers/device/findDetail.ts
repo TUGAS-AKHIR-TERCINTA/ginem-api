@@ -8,7 +8,7 @@ import {
 } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { findDetailDeviceSchema } from '../../schemas/deviceSchema'
-import { DeviceModel } from '../../models/DeviceModel'
+import { DeviceService } from '../../services/DeviceServices'
 
 export const findDetailDevice = async (
   req: IAuthenticatedRequest,
@@ -22,13 +22,7 @@ export const findDetailDevice = async (
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    const result = await DeviceModel.findOne({
-      where: {
-        deleted: 0,
-        deviceId: validatedData.deviceId
-      }
-    })
-
+    const result = await DeviceService.findById(validatedData.deviceId)
     const response = ResponseData.success({ data: result })
 
     return res.status(StatusCodes.OK).json(response)

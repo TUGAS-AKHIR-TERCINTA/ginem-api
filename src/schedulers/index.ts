@@ -1,7 +1,7 @@
-import DailySummaryScheduler from './dailySummaryScheduler'
-import NewsScheduler from './newsScheduler'
+// import DailySummaryScheduler from './dailySummaryScheduler'
+// import NewsScheduler from './newsScheduler'
 
-export const Scheduler = {
-  NewsScheduler,
-  DailySummaryScheduler
-}
+// export const Scheduler = {
+//   NewsScheduler,
+//   DailySummaryScheduler
+// }

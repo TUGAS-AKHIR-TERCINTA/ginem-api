@@ -8,7 +8,7 @@ import {
 } from '../../utilities/requestHandler'
 import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { createDeviceSchema } from '../../schemas/deviceSchema'
-import { DeviceModel } from '../../models/DeviceModel'
+import { DeviceService } from '../../services/DeviceServices'
 
 export const createDevice = async (
   req: IAuthenticatedRequest,
@@ -22,7 +22,8 @@ export const createDevice = async (
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    await DeviceModel.create(validatedData)
+    const { jwtPayload: _, ...payload } = validatedData
+    await DeviceService.create(payload)
     const response = ResponseData.success({})
 
     return res.status(StatusCodes.CREATED).json(response)

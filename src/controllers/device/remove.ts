@@ -9,7 +9,7 @@ import {
 import logger from '../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { removeDeviceSchema } from '../../schemas/deviceSchema'
-import { DeviceModel } from '../../models/DeviceModel'
+import { DeviceService } from '../../services/DeviceServices'
 
 export const removeDevice = async (
   req: IAuthenticatedRequest,
@@ -23,21 +23,13 @@ export const removeDevice = async (
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    const result = await DeviceModel.findOne({
-      where: {
-        deleted: 0,
-        deviceId: validatedData.deviceId
-      }
-    })
+    const result = await DeviceService.remove(validatedData.deviceId)
 
     if (result == null) {
       const message = `Device not found with ID: ${validatedData.deviceId}`
       logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
-
-    result.deleted = true
-    await result.save()
 
     const response = ResponseData.success({ message: 'Device deleted successfully' })
     return res.status(StatusCodes.OK).json(response)

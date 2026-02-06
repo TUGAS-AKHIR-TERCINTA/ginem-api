@@ -9,7 +9,7 @@ import {
 import logger from '../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { updateDeviceSchema } from '../../schemas/deviceSchema'
-import { DeviceModel } from '../../models/DeviceModel'
+import { DeviceService } from '../../services/DeviceServices'
 
 export const updateDevice = async (
   req: IAuthenticatedRequest,
@@ -17,28 +17,20 @@ export const updateDevice = async (
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
     updateDeviceSchema,
-    req.body
+    { ...req.body, deviceId: req.params?.deviceId }
   )
 
   if (validationError) return handleValidationError(res, validationError)
-  try {
-    const existingDevice = await DeviceModel.findOne({
-      where: {
-        deleted: 0,
-        deviceId: validatedData.deviceId
-      }
-    })
 
-    if (existingDevice === null) {
+  try {
+    const exists = await DeviceService.exists(validatedData.deviceId)
+    if (!exists) {
       const message = `Device not found with ID: ${validatedData.deviceId}`
       logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
 
-    await DeviceModel.update(validatedData, {
-      where: { deleted: 0, deviceId: validatedData.deviceId }
-    })
-
+    await DeviceService.update(validatedData)
     const response = ResponseData.success({ message: 'Device updated successfully' })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {

@@ -1,5 +1,5 @@
 import { ChatOpenAI } from '@langchain/openai'
-import { appConfigs } from '../../configs'
+import { appConfigs } from '../configs'
 
 export class LLMService {
   static create() {
