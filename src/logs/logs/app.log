@@ -2576,3 +2576,19 @@
 {"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-08 11:47:30"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [08/Feb/2026:04:47:52 +0000] \"POST /api/v1/mcp HTTP/1.1\" 200 203 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-08 11:47:52"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [08/Feb/2026:04:48:00 +0000] \"GET /api/v1/devices/detail/1 HTTP/1.1\" 200 745 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-08 11:48:00"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-08 11:48:50"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-08 11:53:11"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-08 11:53:11"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-08 11:53:38"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-08 11:53:52"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-08 11:53:52"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-08 11:54:08"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-08 11:54:09"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-08 11:54:09"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-08 11:54:32"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [08/Feb/2026:04:56:21 +0000] \"POST /api/v1/mcp HTTP/1.1\" 200 319 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-08 11:56:21"}
+{"level":"info","message":"[DeviceScheduleService] Actuator job schedule-1770526580276-1 executed: Smart Lamp -> on","service":"backend-service","timestamp":"2026-02-08 11:57:20"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [08/Feb/2026:04:57:38 +0000] \"GET /api/v1/devices/detail/1 HTTP/1.1\" 200 820 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-08 11:57:38"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [08/Feb/2026:04:59:32 +0000] \"POST /api/v1/mcp HTTP/1.1\" 200 338 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-08 11:59:32"}
+{"level":"info","message":"[DeviceScheduleService] Actuator job schedule-1770526771594-2 executed: Smart Lamp -> off","service":"backend-service","timestamp":"2026-02-08 12:00:31"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [08/Feb/2026:05:00:45 +0000] \"GET /api/v1/devices/detail/1 HTTP/1.1\" 200 895 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-08 12:00:45"}

@@ -11,8 +11,12 @@ You have tools to:
 - get_last_10_values_by_device_name: Get the last 10 values (most recent first) for a device by its name (deviceName).
 - create_device_item: Create a new device item (value) for a device; use deviceName and deviceItemValue. Do NOT use for turn on/off — use set_actuator_state_by_device_name.
 - set_actuator_state_by_device_name: Turn ON or OFF an actuator by device name. Use when the user says "hidupkan (nama device)", "matikan (nama device)", turn on, turn off, nyalakan, padamkan. Only works for devices with deviceType "actuator". On → value 1, off → value 0.
+- schedule_actuator_state_after_minutes: Schedule turning ON or OFF an actuator after a delay in minutes. Use when the user says "hidupkan Smart Lamp 1 menit lagi", "matikan AC 5 menit lagi", "tolong hidupin device X di Y menit lagi", "turn on (device) in N minutes". Returns a jobId.
+- schedule_sensor_data_after_minutes: Schedule fetching sensor/device data after a delay in minutes. Use when the user says "kasih data sensor A 5 menit lagi", "tolong kasih data sensor X Y menit lagi", "give me sensor data in 5 minutes". Returns a jobId; after the delay the user can get the result with get_scheduled_job_result(jobId).
+- get_scheduled_job_result: Get the status and result of a scheduled job by jobId. Use when the user asks for the result of a scheduled task, or after a scheduled sensor data job has run (user can call this with the jobId to get the data).
+- list_scheduled_jobs: List recent scheduled jobs (pending, completed, failed).
 
-For instructions to turn on/off a device (hidupkan, matikan, nyalakan, padamkan), always use set_actuator_state_by_device_name so the tool can check that the device is an actuator and set value 1 (on) or 0 (off).
+For "X menit lagi" / "in N minutes" instructions: use schedule_actuator_state_after_minutes for turn on/off, or schedule_sensor_data_after_minutes for "kasih data". Tell the user the jobId so they can get the result later with get_scheduled_job_result if needed.
 Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so.`
 
 /**
