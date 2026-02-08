@@ -1,7 +1,10 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
 import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
-import type { IDeviceItemAttributes, IDeviceItemCreationAttributes } from '../interfaces/deviceItem.interface'
+import type {
+  IDeviceItemAttributes,
+  IDeviceItemCreationAttributes
+} from '../interfaces/deviceItem.interface'
 import { DeviceModel } from './DeviceModel'
 
 export interface IDeviceItemModelAttributes extends IBaseModelFields {
@@ -51,7 +54,10 @@ export const DeviceItemModel = sequelizeInit.define<DeviceItemInstance>(
   }
 )
 
-DeviceModel.hasMany(DeviceItemModel, { foreignKey: 'deviceItemDeviceId', as: 'DeviceItems' })
-DeviceItemModel.belongsTo(DeviceModel, { foreignKey: 'deviceItemDeviceId', as: 'Device' })
+DeviceModel.hasMany(DeviceItemModel, {
+  foreignKey: 'deviceItemDeviceId',
+  as: 'deviceItems'
+})
+DeviceItemModel.belongsTo(DeviceModel, { foreignKey: 'deviceItemDeviceId', as: 'device' })
 
 export type { IDeviceItemCreationAttributes }

@@ -1,3 +1,4 @@
+import { DeviceItemModel } from '../models/DeviceItemModel'
 import { DeviceModel } from '../models/DeviceModel'
 import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
@@ -62,6 +63,13 @@ export class DeviceService {
 
     const result = await DeviceModel.findAndCountAll({
       where: { deleted: 0 },
+      include: [
+        {
+          model: DeviceItemModel,
+          as: 'deviceItems',
+          attributes: ['deviceItemId', 'deviceItemValue', 'createdAt']
+        }
+      ],
       order: [['deviceId', 'desc']],
       ...(pagination === true && {
         limit: pager.limit,
@@ -77,7 +85,14 @@ export class DeviceService {
    */
   static async findById(deviceId: number): Promise<DeviceInstance | null> {
     const device = await DeviceModel.findOne({
-      where: { deleted: 0, deviceId }
+      where: { deleted: 0, deviceId },
+      include: [
+        {
+          model: DeviceItemModel,
+          as: 'deviceItems',
+          attributes: ['deviceItemId', 'deviceItemValue', 'createdAt']
+        }
+      ]
     })
     return device
   }
@@ -111,5 +126,15 @@ export class DeviceService {
   static async exists(deviceId: number): Promise<boolean> {
     const device = await this.findById(deviceId)
     return device != null
+  }
+
+  /**
+   * Find a single device by name (non-deleted). First match if multiple.
+   */
+  static async findByName(deviceName: string): Promise<DeviceInstance | null> {
+    const device = await DeviceModel.findOne({
+      where: { deleted: 0, deviceName }
+    })
+    return device
   }
 }

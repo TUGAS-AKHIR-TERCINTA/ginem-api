@@ -94,4 +94,24 @@ export class DeviceItemService {
     })
     return device != null
   }
+
+  /**
+   * Get last N device item values for a device (by deviceId), ordered by deviceItemId desc.
+   */
+  static async getLastValuesByDeviceId(
+    deviceId: number,
+    limit: number
+  ): Promise<Array<{ deviceItemId: number; deviceItemValue: string; createdAt: Date }>> {
+    const items = await DeviceItemModel.findAll({
+      where: { deleted: 0, deviceItemDeviceId: deviceId },
+      order: [['deviceItemId', 'desc']],
+      limit,
+      attributes: ['deviceItemId', 'deviceItemValue', 'createdAt']
+    })
+    return items.map((row) => ({
+      deviceItemId: row.deviceItemId,
+      deviceItemValue: row.deviceItemValue,
+      createdAt: row.createdAt as Date
+    }))
+  }
 }
