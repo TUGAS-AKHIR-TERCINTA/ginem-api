@@ -25,12 +25,6 @@ module.exports = {
         type: DataTypes.STRING(100),
         allowNull: false
       },
-
-      device_value: {
-        type: DataTypes.STRING(100),
-        allowNull: true
-      },
-
       device_type: {
         type: DataTypes.ENUM('sensor', 'actuator', 'hybrid'),
         allowNull: false

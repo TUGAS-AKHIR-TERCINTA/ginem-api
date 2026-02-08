@@ -6,7 +6,6 @@ export interface IDeviceAttributes extends IBaseModelFields {
   deviceId: number
   deviceToken: string
   deviceName: string
-  deviceValue: string
   deviceType: 'sensor' | 'actuator' | 'hybrid'
   deviceStatus: 'online' | 'offline'
   deviceFirmwareVersion?: string
@@ -39,10 +38,6 @@ export const DeviceModel = sequelizeInit.define<DeviceInstance>(
     deviceName: {
       type: DataTypes.STRING(100),
       allowNull: false
-    },
-    deviceValue: {
-      type: DataTypes.STRING(100),
-      allowNull: true
     },
     deviceType: {
       type: DataTypes.ENUM('sensor', 'actuator', 'hybrid'),

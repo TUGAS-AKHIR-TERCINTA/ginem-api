@@ -1,8 +1,5 @@
 import { DeviceModel } from '../models/DeviceModel'
-import type {
-  DeviceInstance,
-  IDeviceCreationAttributes
-} from '../models/DeviceModel'
+import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
 
 /** Options for listing devices with optional pagination */
@@ -31,7 +28,6 @@ export interface UpdateDevicePayload {
   deviceId: number
   deviceToken?: string
   deviceName?: string
-  deviceValue?: string
   deviceType?: IDeviceCreationAttributes['deviceType']
   deviceStatus?: IDeviceCreationAttributes['deviceStatus']
   deviceFirmwareVersion?: string

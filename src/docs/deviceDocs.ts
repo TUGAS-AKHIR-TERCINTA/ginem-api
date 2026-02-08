@@ -21,9 +21,6 @@
  *         deviceName:
  *           type: string
  *           example: Temperature Sensor Living Room
- *         deviceValue:
- *           type: string
- *           example: "26.5"
  *         deviceType:
  *           type: string
  *           enum: [sensor, actuator, hybrid]
@@ -72,9 +69,6 @@
  *               deviceName:
  *                 type: string
  *                 example: Smart Lamp
- *               deviceValue:
- *                 type: string
- *                 example: "OFF"
  *               deviceType:
  *                 type: string
  *                 enum: [sensor, actuator, hybrid]
@@ -156,9 +150,6 @@
  *               deviceName:
  *                 type: string
  *                 example: Updated Device Name
- *               deviceValue:
- *                 type: string
- *                 example: "ON"
  *               deviceStatus:
  *                 type: string
  *                 enum: [online, offline]

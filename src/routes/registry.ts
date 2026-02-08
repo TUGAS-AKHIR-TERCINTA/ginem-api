@@ -1,5 +1,6 @@
 import AuthRoute from './AuthRouter'
 import DeviceRoute from './DeviceRouter'
+import DeviceItemRoute from './DeviceItemRouter'
 import HealthRoute from './HelthRouter'
 import McpRoute from './McpRouter'
 import MyProfileRoute from './MyProfileRouter'
@@ -11,7 +12,8 @@ const RoutesRegistry = {
   McpRoute,
   MyProfileRoute,
   OtpRoute,
-  DeviceRoute
+  DeviceRoute,
+  DeviceItemRoute
 }
 
 export default RoutesRegistry
