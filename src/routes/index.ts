@@ -12,6 +12,7 @@ const routers = Router()
 
 routers.use('/api/v1/', RoutesRegistry.HealthRoute)
 routers.use('/api/v1/logs', RoutesRegistry.AppLogRoute)
+routers.use('/api/v1/scheduler-logs', RoutesRegistry.SchedulerLogRoute)
 routers.use('/api/v1/devices', RoutesRegistry.DeviceRoute)
 routers.use('/api/v1/device-values', RoutesRegistry.DeviceValueRoute)
 routers.use('/api/v1/mcp', RoutesRegistry.McpRoute)

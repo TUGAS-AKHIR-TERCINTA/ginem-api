@@ -6,6 +6,7 @@ import HealthRoute from './HelthRouter'
 import McpRoute from './McpRouter'
 import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
+import SchedulerLogRoute from './SchedulerLogRouter'
 
 const RoutesRegistry = {
   AppLogRoute,
@@ -15,7 +16,8 @@ const RoutesRegistry = {
   MyProfileRoute,
   OtpRoute,
   DeviceRoute,
-  DeviceValueRoute
+  DeviceValueRoute,
+  SchedulerLogRoute
 }
 
 export default RoutesRegistry
