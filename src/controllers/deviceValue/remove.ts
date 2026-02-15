@@ -6,7 +6,7 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../logs'
+import logger from '../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { removeDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
@@ -31,7 +31,9 @@ export const removeDeviceValue = async (
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
 
-    const response = ResponseData.success({ message: 'Device value deleted successfully' })
+    const response = ResponseData.success({
+      message: 'Device value deleted successfully'
+    })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

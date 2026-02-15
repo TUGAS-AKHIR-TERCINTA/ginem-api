@@ -1,3 +1,4 @@
+import AppLogRoute from './AppLogRouter'
 import AuthRoute from './AuthRouter'
 import DeviceRoute from './DeviceRouter'
 import DeviceValueRoute from './DeviceValueRouter'
@@ -7,6 +8,7 @@ import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
 
 const RoutesRegistry = {
+  AppLogRoute,
   AuthRoute,
   HealthRoute,
   McpRoute,

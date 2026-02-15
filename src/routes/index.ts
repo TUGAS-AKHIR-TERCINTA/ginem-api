@@ -4,13 +4,14 @@ import { StatusCodes } from 'http-status-codes'
 import swaggerUi from 'swagger-ui-express'
 
 import RoutesRegistry from './registry'
-import logger from '../logs'
+import logger from '../../logs'
 import { ResponseData } from '../utilities/response'
 import swaggerSpec from '../configs/swagger'
 
 const routers = Router()
 
 routers.use('/api/v1/', RoutesRegistry.HealthRoute)
+routers.use('/api/v1/logs', RoutesRegistry.AppLogRoute)
 routers.use('/api/v1/devices', RoutesRegistry.DeviceRoute)
 routers.use('/api/v1/device-values', RoutesRegistry.DeviceValueRoute)
 routers.use('/api/v1/mcp', RoutesRegistry.McpRoute)

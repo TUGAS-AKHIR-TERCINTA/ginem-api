@@ -9,7 +9,7 @@ import {
 } from '../../utilities/requestHandler'
 import { IUserUpdateRequest } from '../../interfaces/user.request'
 import { UserModel } from '../../models/UserModel'
-import logger from '../../logs'
+import logger from '../../../logs'
 import { hashPassword } from '../../utilities/scurePassword'
 import { userUpdatePasswordSchema } from '../../schemas/auth/userAuthSchema'
 

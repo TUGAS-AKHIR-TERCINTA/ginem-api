@@ -6,7 +6,7 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../logs'
+import logger from '../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { updateDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
@@ -30,7 +30,9 @@ export const updateDeviceValue = async (
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
     if (validatedData.deviceValueDeviceId != null) {
-      const deviceExists = await DeviceValueService.deviceExists(validatedData.deviceValueDeviceId)
+      const deviceExists = await DeviceValueService.deviceExists(
+        validatedData.deviceValueDeviceId
+      )
       if (!deviceExists) {
         const message = `Device not found with ID: ${validatedData.deviceValueDeviceId}`
         logger.warn(message)
@@ -38,7 +40,9 @@ export const updateDeviceValue = async (
       }
     }
     await DeviceValueService.update(validatedData)
-    const response = ResponseData.success({ message: 'Device value updated successfully' })
+    const response = ResponseData.success({
+      message: 'Device value updated successfully'
+    })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

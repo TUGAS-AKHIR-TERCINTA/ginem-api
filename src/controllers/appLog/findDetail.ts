@@ -6,32 +6,25 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { removeDeviceSchema } from '../../schemas/deviceSchema'
-import { DeviceService } from '../../services/DeviceServices'
+import { findDetailAppLogSchema } from '../../schemas/appLogSchema'
+import { AppLogService } from '../../services/AppLogServices'
 
-export const removeDevice = async (
+export const findDetailAppLog = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    removeDeviceSchema,
+    findDetailAppLogSchema,
     req.params
   )
 
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    const result = await DeviceService.remove(validatedData.deviceId)
+    const result = await AppLogService.findById(validatedData.logId)
+    const response = ResponseData.success({ data: result })
 
-    if (result == null) {
-      const message = `Device not found with ID: ${validatedData.deviceId}`
-      logger.warn(message)
-      return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
-    }
-
-    const response = ResponseData.success({ message: 'Device deleted successfully' })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

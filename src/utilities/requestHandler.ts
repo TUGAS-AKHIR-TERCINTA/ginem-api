@@ -2,7 +2,7 @@ import { ObjectSchema, ValidationResult } from 'joi'
 import { StatusCodes } from 'http-status-codes'
 import { Response } from 'express'
 import { ResponseData } from './response'
-import logger from '../logs'
+import logger from '../../logs'
 import { ValidationError } from 'joi'
 
 export const validateRequest = (

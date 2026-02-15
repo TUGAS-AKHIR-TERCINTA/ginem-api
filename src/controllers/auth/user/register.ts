@@ -8,7 +8,7 @@ import {
   validateRequest
 } from '../../../utilities/requestHandler'
 import { UserModel } from '../../../models/UserModel'
-import logger from '../../../logs'
+import logger from '../../../../logs'
 import { hashPassword } from '../../../utilities/scurePassword'
 
 import { employeeRegistrationSchema } from '../../../schemas/auth/userAuthSchema'

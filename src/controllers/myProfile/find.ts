@@ -9,7 +9,7 @@ import {
 } from '../../utilities/requestHandler'
 import { ValidationError } from 'joi'
 import { findMyProfileSchema } from '../../schemas/myProfileSchema'
-import logger from '../../logs'
+import logger from '../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 
 export const findMyProfile = async (

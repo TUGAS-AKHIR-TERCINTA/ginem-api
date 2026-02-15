@@ -9,7 +9,7 @@ import {
 import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { createDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
-import logger from '../../logs'
+import logger from '../../../logs'
 
 export const createDeviceValue = async (
   req: IAuthenticatedRequest,
@@ -24,7 +24,9 @@ export const createDeviceValue = async (
 
   try {
     const { jwtPayload: _, ...payload } = validatedData
-    const deviceExists = await DeviceValueService.deviceExists(payload.deviceValueDeviceId)
+    const deviceExists = await DeviceValueService.deviceExists(
+      payload.deviceValueDeviceId
+    )
     if (!deviceExists) {
       const message = `Device not found with ID: ${payload.deviceValueDeviceId}`
       logger.warn(message)

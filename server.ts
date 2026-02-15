@@ -1,6 +1,9 @@
 import app from './src/app'
 import { appConfigs } from './src/configs'
-import logger from './src/logs'
+import logger, { registerDatabaseTransport } from './logs'
+import { AppLogModel } from './src/models/AppLogModel'
+
+registerDatabaseTransport(AppLogModel)
 
 const PORT = appConfigs.app.port || 8000
 
