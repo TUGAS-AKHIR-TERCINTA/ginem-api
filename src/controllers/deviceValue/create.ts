@@ -9,7 +9,7 @@ import {
 import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { createDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
-import logger from '../../../logs'
+import logger from '../../../../logs'
 
 export const createDeviceValue = async (
   req: IAuthenticatedRequest,

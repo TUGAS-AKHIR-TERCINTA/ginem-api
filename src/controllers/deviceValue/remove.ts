@@ -6,7 +6,7 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../../logs'
+import logger from '../../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { removeDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
