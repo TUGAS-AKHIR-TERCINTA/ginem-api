@@ -1,7 +1,7 @@
 import { tool } from '@langchain/core/tools'
 import { z } from 'zod'
 import { DeviceService } from '../../DeviceServices'
-import { DeviceItemService } from '../../DeviceItemServices'
+import { DeviceValueService } from '../../DeviceValueServices'
 import {
   scheduleActuatorState,
   scheduleSensorData,
@@ -79,21 +79,21 @@ export const getLastValueByDeviceNameTool = tool(
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
-    const items = await DeviceItemService.getLastValuesByDeviceId(device.deviceId, 1)
+    const items = await DeviceValueService.getLastValuesByDeviceId(device.deviceId, 1)
     const last = items[0]
     if (last == null) {
       return JSON.stringify({
         deviceName,
         deviceId: device.deviceId,
-        message: 'No device item values recorded yet',
+        message: 'No device values recorded yet',
         lastValue: null
       })
     }
     return JSON.stringify({
       deviceName,
       deviceId: device.deviceId,
-      lastValue: last.deviceItemValue,
-      deviceItemId: last.deviceItemId,
+      lastValue: last.deviceValueValue,
+      deviceValueId: last.deviceValueId,
       createdAt: last.createdAt
     }, null, 2)
   },
@@ -113,14 +113,14 @@ export const getLast10ValuesByDeviceNameTool = tool(
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
-    const items = await DeviceItemService.getLastValuesByDeviceId(device.deviceId, 10)
+    const items = await DeviceValueService.getLastValuesByDeviceId(device.deviceId, 10)
     return JSON.stringify({
       deviceName,
       deviceId: device.deviceId,
       count: items.length,
       values: items.map((v) => ({
-        deviceItemId: v.deviceItemId,
-        deviceItemValue: v.deviceItemValue,
+        deviceValueId: v.deviceValueId,
+        deviceValueValue: v.deviceValueValue,
         createdAt: v.createdAt
       }))
     }, null, 2)
@@ -135,33 +135,33 @@ export const getLast10ValuesByDeviceNameTool = tool(
   }
 )
 
-export const createDeviceItemByDeviceNameTool = tool(
-  async ({ deviceName, deviceItemValue }) => {
+export const createDeviceValueByDeviceNameTool = tool(
+  async ({ deviceName, deviceValueValue }) => {
     const device = await DeviceService.findByName(deviceName)
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
-    const deviceItem = await DeviceItemService.create({
-      deviceItemDeviceId: device.deviceId,
-      deviceItemValue
+    const deviceValue = await DeviceValueService.create({
+      deviceValueDeviceId: device.deviceId,
+      deviceValueValue
     })
     return JSON.stringify({
       success: true,
-      message: 'Device item created',
+      message: 'Device value created',
       deviceName,
       deviceId: device.deviceId,
-      deviceItemId: deviceItem.deviceItemId,
-      deviceItemValue: deviceItem.deviceItemValue,
-      createdAt: deviceItem.createdAt
+      deviceValueId: deviceValue.deviceValueId,
+      deviceValueValue: deviceValue.deviceValueValue,
+      createdAt: deviceValue.createdAt
     }, null, 2)
   },
   {
-    name: 'create_device_item',
+    name: 'create_device_value',
     description:
-      'Create a new device item (value) for a device. Use the device name (deviceName) to identify the device, not deviceId. Use when the user wants to add a value, record a reading, or create a device item for a device by name. Do NOT use for turn on/off (hidupkan/matikan) — use set_actuator_state_by_device_name instead.',
+      'Create a new device value for a device. Use the device name (deviceName) to identify the device, not deviceId. Use when the user wants to add a value, record a reading, or create a device value for a device by name. Do NOT use for turn on/off (hidupkan/matikan) — use set_actuator_state_by_device_name instead.',
     schema: z.object({
       deviceName: z.string().min(1).describe('The exact device name (identifies which device to add the value to)'),
-      deviceItemValue: z.string().min(1).describe('The value to store for this device item')
+      deviceValueValue: z.string().min(1).describe('The value to store for this device value')
     })
   }
 )
@@ -181,13 +181,13 @@ export const setActuatorStateByDeviceNameTool = tool(
         error: 'Device is not an actuator',
         deviceName,
         deviceType: device.deviceType,
-        message: 'Only devices with deviceType "actuator" can be turned on or off. Use create_device_item for other devices.'
+        message: 'Only devices with deviceType "actuator" can be turned on or off. Use create_device_value for other devices.'
       })
     }
-    const deviceItemValue = state === 'on' ? '1' : '0'
-    const deviceItem = await DeviceItemService.create({
-      deviceItemDeviceId: device.deviceId,
-      deviceItemValue
+    const deviceValueValue = state === 'on' ? '1' : '0'
+    const deviceValue = await DeviceValueService.create({
+      deviceValueDeviceId: device.deviceId,
+      deviceValueValue
     })
     return JSON.stringify({
       success: true,
@@ -195,15 +195,15 @@ export const setActuatorStateByDeviceNameTool = tool(
       deviceName,
       deviceId: device.deviceId,
       deviceType: device.deviceType,
-      deviceItemId: deviceItem.deviceItemId,
-      deviceItemValue: deviceItem.deviceItemValue,
-      createdAt: deviceItem.createdAt
+      deviceValueId: deviceValue.deviceValueId,
+      deviceValueValue: deviceValue.deviceValueValue,
+      createdAt: deviceValue.createdAt
     }, null, 2)
   },
   {
     name: 'set_actuator_state_by_device_name',
     description:
-      'Turn ON or OFF an actuator device by its name. First checks that the device exists and has deviceType "actuator". "Hidupkan" / turn on / nyalakan → creates device item with value "1". "Matikan" / turn off / padamkan → creates device item with value "0". Use this when the user says hidupkan (device name), matikan (device name), turn on, turn off, nyalakan, padamkan, or similar instructions to control an actuator.',
+      'Turn ON or OFF an actuator device by its name. First checks that the device exists and has deviceType "actuator". "Hidupkan" / turn on / nyalakan → creates device value with value "1". "Matikan" / turn off / padamkan → creates device value with value "0". Use this when the user says hidupkan (device name), matikan (device name), turn on, turn off, nyalakan, padamkan, or similar instructions to control an actuator.',
     schema: z.object({
       deviceName: z.string().min(1).describe('The exact device name (must be an actuator)'),
       state: z.enum(['on', 'off']).describe('on = hidupkan / value 1, off = matikan / value 0')
@@ -353,7 +353,7 @@ export const deviceTools = [
   getDeviceByIdTool,
   getLastValueByDeviceNameTool,
   getLast10ValuesByDeviceNameTool,
-  createDeviceItemByDeviceNameTool,
+  createDeviceValueByDeviceNameTool,
   setActuatorStateByDeviceNameTool,
   scheduleActuatorStateAfterMinutesTool,
   scheduleSensorDataAfterMinutesTool,

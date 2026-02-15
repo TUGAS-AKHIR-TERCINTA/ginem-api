@@ -3,7 +3,7 @@ export {
   getDeviceByIdTool,
   getLastValueByDeviceNameTool,
   getLast10ValuesByDeviceNameTool,
-  createDeviceItemByDeviceNameTool,
+  createDeviceValueByDeviceNameTool,
   setActuatorStateByDeviceNameTool,
   scheduleActuatorStateAfterMinutesTool,
   scheduleSensorDataAfterMinutesTool,

@@ -7,16 +7,16 @@ const { BaseModelFields } = require('../baseModel')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, DataTypes) {
-    await queryInterface.createTable('device_items', {
+    await queryInterface.createTable('device_values', {
       ...BaseModelFields,
 
-      device_item_id: {
+      device_value_id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true
       },
 
-      device_item_device_id: {
+      device_value_device_id: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
@@ -27,7 +27,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
 
-      device_item_value: {
+      device_value_value: {
         type: DataTypes.STRING(255),
         allowNull: false
       }
@@ -35,6 +35,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable('device_items')
+    await queryInterface.dropTable('device_values')
   }
 }

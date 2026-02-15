@@ -3,7 +3,6 @@ import { jwtPayloadSchema } from './jwtPayloadSchema'
 
 export const createDeviceSchema = Joi.object({
   jwtPayload: jwtPayloadSchema,
-  deviceToken: Joi.string().max(100).required(),
   deviceName: Joi.string().max(100).required().allow(''),
   deviceType: Joi.string().valid('sensor', 'actuator', 'hybrid').required(),
   deviceStatus: Joi.string().valid('online', 'offline').optional(),

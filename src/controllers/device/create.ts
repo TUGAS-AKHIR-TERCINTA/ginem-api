@@ -9,6 +9,7 @@ import {
 import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { createDeviceSchema } from '../../schemas/deviceSchema'
 import { DeviceService } from '../../services/DeviceServices'
+import { v4 as uuidv4 } from 'uuid'
 
 export const createDevice = async (
   req: IAuthenticatedRequest,
@@ -23,7 +24,10 @@ export const createDevice = async (
 
   try {
     const { jwtPayload: _, ...payload } = validatedData
+    const deviceToken = `fck_${uuidv4()}`
+    payload.deviceToken = deviceToken
     await DeviceService.create(payload)
+
     const response = ResponseData.success({})
 
     return res.status(StatusCodes.CREATED).json(response)

@@ -7,16 +7,16 @@ import {
   validateRequest
 } from '../../utilities/requestHandler'
 import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { createDeviceItemSchema } from '../../schemas/deviceItemSchema'
-import { DeviceItemService } from '../../services/DeviceItemServices'
+import { createDeviceValueSchema } from '../../schemas/deviceValueSchema'
+import { DeviceValueService } from '../../services/DeviceValueServices'
 import logger from '../../logs'
 
-export const createDeviceItem = async (
+export const createDeviceValue = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    createDeviceItemSchema,
+    createDeviceValueSchema,
     req.body
   )
 
@@ -24,13 +24,13 @@ export const createDeviceItem = async (
 
   try {
     const { jwtPayload: _, ...payload } = validatedData
-    const deviceExists = await DeviceItemService.deviceExists(payload.deviceItemDeviceId)
+    const deviceExists = await DeviceValueService.deviceExists(payload.deviceValueDeviceId)
     if (!deviceExists) {
-      const message = `Device not found with ID: ${payload.deviceItemDeviceId}`
+      const message = `Device not found with ID: ${payload.deviceValueDeviceId}`
       logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
-    await DeviceItemService.create(payload)
+    await DeviceValueService.create(payload)
     const response = ResponseData.success({})
 
     return res.status(StatusCodes.CREATED).json(response)

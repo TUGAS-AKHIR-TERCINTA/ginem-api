@@ -1,24 +1,24 @@
 /**
  * @swagger
  * tags:
- *   name: DEVICE ITEMS
- *   description: Device item management (child of Device)
+ *   name: DEVICE VALUES
+ *   description: Device value management (child of Device)
  */
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     DeviceItem:
+ *     DeviceValue:
  *       type: object
  *       properties:
- *         deviceItemId:
+ *         deviceValueId:
  *           type: number
  *           example: 1
- *         deviceItemDeviceId:
+ *         deviceValueDeviceId:
  *           type: number
  *           example: 1
- *         deviceItemValue:
+ *         deviceValueValue:
  *           type: string
  *           example: "25.5"
  *         created_at:
@@ -27,9 +27,9 @@
  *         updated_at:
  *           type: string
  *           format: date-time
- *     DeviceItemWithDevice:
+ *     DeviceValueWithDevice:
  *       allOf:
- *         - $ref: '#/components/schemas/DeviceItem'
+ *         - $ref: '#/components/schemas/DeviceValue'
  *         - type: object
  *           properties:
  *             Device:
@@ -38,11 +38,11 @@
 
 /**
  * @swagger
- * /api/v1/device-items:
+ * /api/v1/device-values:
  *   post:
- *     summary: Create new device item
- *     description: Create a device item linked to a device (parent)
- *     tags: [DEVICE ITEMS]
+ *     summary: Create new device value
+ *     description: Create a device value linked to a device (parent)
+ *     tags: [DEVICE VALUES]
  *     requestBody:
  *       required: true
  *       content:
@@ -50,18 +50,18 @@
  *           schema:
  *             type: object
  *             required:
- *               - deviceItemDeviceId
- *               - deviceItemValue
+ *               - deviceValueDeviceId
+ *               - deviceValueValue
  *             properties:
- *               deviceItemDeviceId:
+ *               deviceValueDeviceId:
  *                 type: number
  *                 example: 1
- *               deviceItemValue:
+ *               deviceValueValue:
  *                 type: string
  *                 example: "25.5"
  *     responses:
  *       201:
- *         description: Device item created successfully
+ *         description: Device value created successfully
  *       404:
  *         description: Device not found
  *       400:
@@ -72,14 +72,14 @@
 
 /**
  * @swagger
- * /api/v1/device-items:
+ * /api/v1/device-values:
  *   get:
- *     summary: Get all device items
- *     description: Fetch list of device items, optionally filtered by device
- *     tags: [DEVICE ITEMS]
+ *     summary: Get all device values
+ *     description: Fetch list of device values, optionally filtered by device
+ *     tags: [DEVICE VALUES]
  *     parameters:
  *       - in: query
- *         name: deviceItemDeviceId
+ *         name: deviceValueDeviceId
  *         schema:
  *           type: number
  *         description: Filter by parent device ID
@@ -97,7 +97,7 @@
  *           type: boolean
  *     responses:
  *       200:
- *         description: Device items fetched successfully
+ *         description: Device values fetched successfully
  *         content:
  *           application/json:
  *             schema:
@@ -109,7 +109,7 @@
  *                     items:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/DeviceItemWithDevice'
+ *                         $ref: '#/components/schemas/DeviceValueWithDevice'
  *                     totalItems:
  *                       type: number
  *                     totalPages:
@@ -122,39 +122,39 @@
 
 /**
  * @swagger
- * /api/v1/device-items/detail/{deviceItemId}:
+ * /api/v1/device-values/detail/{deviceValueId}:
  *   get:
- *     summary: Get device item detail
- *     description: Fetch detailed information of a device item by ID
- *     tags: [DEVICE ITEMS]
+ *     summary: Get device value detail
+ *     description: Fetch detailed information of a device value by ID
+ *     tags: [DEVICE VALUES]
  *     parameters:
  *       - in: path
- *         name: deviceItemId
+ *         name: deviceValueId
  *         required: true
  *         schema:
  *           type: number
  *         example: 1
  *     responses:
  *       200:
- *         description: Device item detail fetched successfully
+ *         description: Device value detail fetched successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/DeviceItemWithDevice'
+ *               $ref: '#/components/schemas/DeviceValueWithDevice'
  *       500:
  *         description: Internal server error
  */
 
 /**
  * @swagger
- * /api/v1/device-items/{deviceItemId}:
+ * /api/v1/device-values/{deviceValueId}:
  *   patch:
- *     summary: Update device item
- *     description: Update device item data by ID
- *     tags: [DEVICE ITEMS]
+ *     summary: Update device value
+ *     description: Update device value data by ID
+ *     tags: [DEVICE VALUES]
  *     parameters:
  *       - in: path
- *         name: deviceItemId
+ *         name: deviceValueId
  *         required: true
  *         schema:
  *           type: number
@@ -166,40 +166,40 @@
  *           schema:
  *             type: object
  *             properties:
- *               deviceItemDeviceId:
+ *               deviceValueDeviceId:
  *                 type: number
  *                 example: 1
- *               deviceItemValue:
+ *               deviceValueValue:
  *                 type: string
  *                 example: "26.0"
  *     responses:
  *       200:
- *         description: Device item updated successfully
+ *         description: Device value updated successfully
  *       404:
- *         description: Device item or device not found
+ *         description: Device value or device not found
  *       500:
  *         description: Internal server error
  */
 
 /**
  * @swagger
- * /api/v1/device-items/{deviceItemId}:
+ * /api/v1/device-values/{deviceValueId}:
  *   delete:
- *     summary: Delete device item
- *     description: Soft delete device item by ID
- *     tags: [DEVICE ITEMS]
+ *     summary: Delete device value
+ *     description: Soft delete device value by ID
+ *     tags: [DEVICE VALUES]
  *     parameters:
  *       - in: path
- *         name: deviceItemId
+ *         name: deviceValueId
  *         required: true
  *         schema:
  *           type: number
  *         example: 1
  *     responses:
  *       200:
- *         description: Device item deleted successfully
+ *         description: Device value deleted successfully
  *       404:
- *         description: Device item not found
+ *         description: Device value not found
  *       500:
  *         description: Internal server error
  */

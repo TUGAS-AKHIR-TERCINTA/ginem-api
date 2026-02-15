@@ -8,37 +8,37 @@ import {
 } from '../../utilities/requestHandler'
 import logger from '../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { updateDeviceItemSchema } from '../../schemas/deviceItemSchema'
-import { DeviceItemService } from '../../services/DeviceItemServices'
+import { updateDeviceValueSchema } from '../../schemas/deviceValueSchema'
+import { DeviceValueService } from '../../services/DeviceValueServices'
 
-export const updateDeviceItem = async (
+export const updateDeviceValue = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    updateDeviceItemSchema,
-    { ...req.body, deviceItemId: req.params?.deviceItemId }
+    updateDeviceValueSchema,
+    { ...req.body, deviceValueId: req.params?.deviceValueId }
   )
 
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    const exists = await DeviceItemService.exists(validatedData.deviceItemId)
+    const exists = await DeviceValueService.exists(validatedData.deviceValueId)
     if (!exists) {
-      const message = `Device item not found with ID: ${validatedData.deviceItemId}`
+      const message = `Device value not found with ID: ${validatedData.deviceValueId}`
       logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
-    if (validatedData.deviceItemDeviceId != null) {
-      const deviceExists = await DeviceItemService.deviceExists(validatedData.deviceItemDeviceId)
+    if (validatedData.deviceValueDeviceId != null) {
+      const deviceExists = await DeviceValueService.deviceExists(validatedData.deviceValueDeviceId)
       if (!deviceExists) {
-        const message = `Device not found with ID: ${validatedData.deviceItemDeviceId}`
+        const message = `Device not found with ID: ${validatedData.deviceValueDeviceId}`
         logger.warn(message)
         return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
       }
     }
-    await DeviceItemService.update(validatedData)
-    const response = ResponseData.success({ message: 'Device item updated successfully' })
+    await DeviceValueService.update(validatedData)
+    const response = ResponseData.success({ message: 'Device value updated successfully' })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

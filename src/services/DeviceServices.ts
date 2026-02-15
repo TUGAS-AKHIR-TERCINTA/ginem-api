@@ -1,4 +1,4 @@
-import { DeviceItemModel } from '../models/DeviceItemModel'
+import { DeviceValueModel } from '../models/DeviceValueModel'
 import { DeviceModel } from '../models/DeviceModel'
 import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
@@ -48,6 +48,15 @@ export class DeviceService {
       ...payload,
       deviceStatus: payload.deviceStatus ?? 'offline'
     }
+
+    const existingDevice = await DeviceModel.findOne({
+      where: { deviceName: createData.deviceName.toLocaleUpperCase() }
+    })
+
+    if (existingDevice) {
+      throw new Error('Device already exists')
+    }
+
     const device = await DeviceModel.create(createData)
     return device
   }
@@ -63,13 +72,13 @@ export class DeviceService {
 
     const result = await DeviceModel.findAndCountAll({
       where: { deleted: 0 },
-      include: [
-        {
-          model: DeviceItemModel,
-          as: 'deviceItems',
-          attributes: ['deviceItemId', 'deviceItemValue', 'createdAt']
-        }
-      ],
+      // include: [
+      //   {
+      //     model: DeviceValueModel,
+      //     as: 'deviceValues',
+      //     attributes: ['deviceValueId', 'deviceValueValue', 'createdAt']
+      //   }
+      // ],
       order: [['deviceId', 'desc']],
       ...(pagination === true && {
         limit: pager.limit,
@@ -88,9 +97,9 @@ export class DeviceService {
       where: { deleted: 0, deviceId },
       include: [
         {
-          model: DeviceItemModel,
-          as: 'deviceItems',
-          attributes: ['deviceItemId', 'deviceItemValue', 'createdAt']
+          model: DeviceValueModel,
+          as: 'deviceValues',
+          attributes: ['deviceValueId', 'deviceValueValue', 'createdAt']
         }
       ]
     })

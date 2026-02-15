@@ -1,5 +1,5 @@
 import { DeviceService } from '../DeviceServices'
-import { DeviceItemService } from '../DeviceItemServices'
+import { DeviceValueService } from '../DeviceValueServices'
 import logger from '../../logs'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'
@@ -41,9 +41,9 @@ function runActuatorJob (job: ScheduledJob): void {
         return
       }
       const value = job.state === 'on' ? '1' : '0'
-      const deviceItem = await DeviceItemService.create({
-        deviceItemDeviceId: device.deviceId,
-        deviceItemValue: value
+      const deviceValue = await DeviceValueService.create({
+        deviceValueDeviceId: device.deviceId,
+        deviceValueValue: value
       })
       job.status = 'completed'
       job.result = {
@@ -51,8 +51,8 @@ function runActuatorJob (job: ScheduledJob): void {
         message: job.state === 'on' ? 'Device turned on (value 1)' : 'Device turned off (value 0)',
         deviceName: job.deviceName,
         deviceId: device.deviceId,
-        deviceItemId: deviceItem.deviceItemId,
-        deviceItemValue: deviceItem.deviceItemValue,
+        deviceValueId: deviceValue.deviceValueId,
+        deviceValueValue: deviceValue.deviceValueValue,
         executedAt: new Date().toISOString()
       }
       logger.info(`[DeviceScheduleService] Actuator job ${job.id} executed: ${job.deviceName} -> ${job.state}`)
@@ -73,15 +73,15 @@ function runSensorDataJob (job: ScheduledJob): void {
         job.error = `Device not found: ${job.deviceName}`
         return
       }
-      const items = await DeviceItemService.getLastValuesByDeviceId(device.deviceId, 10)
+      const items = await DeviceValueService.getLastValuesByDeviceId(device.deviceId, 10)
       job.status = 'completed'
       job.result = {
         deviceName: job.deviceName,
         deviceId: device.deviceId,
         count: items.length,
         values: items.map((v) => ({
-          deviceItemId: v.deviceItemId,
-          deviceItemValue: v.deviceItemValue,
+          deviceValueId: v.deviceValueId,
+          deviceValueValue: v.deviceValueValue,
           createdAt: v.createdAt
         })),
         executedAt: new Date().toISOString()

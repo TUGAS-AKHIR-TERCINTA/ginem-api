@@ -15,9 +15,6 @@
  *         deviceId:
  *           type: number
  *           example: 1
- *         deviceToken:
- *           type: string
- *           example: dev_9as8d7as9d
  *         deviceName:
  *           type: string
  *           example: Temperature Sensor Living Room
@@ -59,13 +56,9 @@
  *           schema:
  *             type: object
  *             required:
- *               - deviceToken
  *               - deviceName
  *               - deviceType
  *             properties:
- *               deviceToken:
- *                 type: string
- *                 example: dev_xxx123
  *               deviceName:
  *                 type: string
  *                 example: Smart Lamp

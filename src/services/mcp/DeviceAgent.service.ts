@@ -9,7 +9,7 @@ You have tools to:
 - get_device_by_id: Get a single device by its numeric deviceId.
 - get_last_value_by_device_name: Get the latest single value for a device by its name (deviceName).
 - get_last_10_values_by_device_name: Get the last 10 values (most recent first) for a device by its name (deviceName).
-- create_device_item: Create a new device item (value) for a device; use deviceName and deviceItemValue. Do NOT use for turn on/off — use set_actuator_state_by_device_name.
+- create_device_value: Create a new device value for a device; use deviceName and deviceValueValue. Do NOT use for turn on/off — use set_actuator_state_by_device_name.
 - set_actuator_state_by_device_name: Turn ON or OFF an actuator by device name. Use when the user says "hidupkan (nama device)", "matikan (nama device)", turn on, turn off, nyalakan, padamkan. Only works for devices with deviceType "actuator". On → value 1, off → value 0.
 - schedule_actuator_state_after_minutes: Schedule turning ON or OFF an actuator after a delay in minutes. Use when the user says "hidupkan Smart Lamp 1 menit lagi", "matikan AC 5 menit lagi", "tolong hidupin device X di Y menit lagi", "turn on (device) in N minutes". Returns a jobId.
 - schedule_sensor_data_after_minutes: Schedule fetching sensor/device data after a delay in minutes. Use when the user says "kasih data sensor A 5 menit lagi", "tolong kasih data sensor X Y menit lagi", "give me sensor data in 5 minutes". Returns a jobId; after the delay the user can get the result with get_scheduled_job_result(jobId).
