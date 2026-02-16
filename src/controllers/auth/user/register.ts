@@ -8,11 +8,11 @@ import {
   validateRequest
 } from '../../../utilities/requestHandler'
 import { UserModel } from '../../../models/UserModel'
-import logger from '../../../../logs'
 import { hashPassword } from '../../../utilities/scurePassword'
 
 import { employeeRegistrationSchema } from '../../../schemas/auth/userAuthSchema'
 import { sequelizeInit } from '../../../configs/database'
+import logger from '../../../../logs'
 
 export const userRegister = async (req: Request, res: Response): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(

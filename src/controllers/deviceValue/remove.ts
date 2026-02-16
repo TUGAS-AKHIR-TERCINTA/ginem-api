@@ -6,7 +6,6 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { removeDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
@@ -27,7 +26,6 @@ export const removeDeviceValue = async (
 
     if (result == null) {
       const message = `Device value not found with ID: ${validatedData.deviceValueId}`
-      logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
 

@@ -9,10 +9,10 @@ import {
   validateRequest
 } from '../../../utilities/requestHandler'
 import { UserModel } from '../../../models/UserModel'
-import logger from '../../../../logs'
 import { hashPassword } from '../../../utilities/scurePassword'
 import { IUserLoginRequest } from '../../../interfaces/userAuth.request'
 import { userLoginSchema } from '../../../schemas/auth/userAuthSchema'
+import logger from '../../../../logs'
 
 export const userLogin = async (req: Request, res: Response): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(

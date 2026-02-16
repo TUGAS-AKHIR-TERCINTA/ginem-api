@@ -4,8 +4,4 @@
  */
 
 export { DeviceAgentService } from './DeviceAgent.service'
-export {
-  listDevicesTool,
-  getDeviceByIdTool,
-  deviceTools
-} from './tools'
+export { listDevicesTool, getDeviceByIdTool, deviceTools } from './tools'

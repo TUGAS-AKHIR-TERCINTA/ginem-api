@@ -9,10 +9,10 @@ import {
   validateRequest
 } from '../../../utilities/requestHandler'
 import { UserModel } from '../../../models/UserModel'
-import logger from '../../../../logs'
 import { hashPassword } from '../../../utilities/scurePassword'
 import { IAdminLoginRequest } from '../../../interfaces/adminAuth.request'
 import { adminLoginSchema } from '../../../schemas/auth/adminAuthSchema'
+import logger from '../../../../logs'
 
 export const administratorLogin = async (
   req: Request,

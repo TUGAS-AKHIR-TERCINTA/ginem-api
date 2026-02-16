@@ -1,6 +1,7 @@
 import { DeviceService } from '../DeviceServices'
 import { DeviceValueService } from '../DeviceValueServices'
 import { SchedulerLogModel } from '../../models/SchedulerLogModel'
+import type { ISchedulerLogCreationAttributes } from '../../interfaces/schedulerLog.interface'
 import logger from '../../../logs'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'
@@ -159,31 +160,26 @@ export function scheduleActuatorState(
   }
   jobs.set(id, job)
 
-  void SchedulerLogModel.create({
+  const createPayload: ISchedulerLogCreationAttributes = {
     jobId: id,
     type: 'actuator',
     deviceName,
-    state: state ?? null,
+    state,
     delayMinutes,
     scheduledAt,
     runAt,
     status: 'pending'
-  }).catch((e) =>
-    logger.error('[DeviceScheduleService] Failed to record scheduled job:', e)
-  )
-
-  const delayMs = delayMinutes * 60 * 1000
-  setTimeout(() => {
-    runActuatorJob(job)
-  }, delayMs)
+  }
+  void SchedulerLogModel.create(createPayload).then(() => {
+    setTimeout(() => runActuatorJob(job), delayMinutes * 60 * 1000)
+  })
 
   return job
 }
 
 /**
  * Schedule fetching sensor/device data after a delay (minutes).
- * Returns job id. When time comes, last 10 values are fetched and stored in job.result.
- * User can get result via getScheduledJob(id).
+ * Returns job id. After the delay, the job runs and stores the result; use getScheduledJob(id) to get it.
  */
 export function scheduleSensorData(
   deviceName: string,
@@ -204,52 +200,33 @@ export function scheduleSensorData(
   }
   jobs.set(id, job)
 
-  void SchedulerLogModel.create({
+  const createPayload: ISchedulerLogCreationAttributes = {
     jobId: id,
     type: 'sensor_data',
     deviceName,
-    state: null,
     delayMinutes,
     scheduledAt,
     runAt,
     status: 'pending'
-  }).catch((e) =>
-    logger.error('[DeviceScheduleService] Failed to record scheduled job:', e)
-  )
-
-  const delayMs = delayMinutes * 60 * 1000
-  setTimeout(() => {
-    runSensorDataJob(job)
-  }, delayMs)
+  }
+  void SchedulerLogModel.create(createPayload).then(() => {
+    setTimeout(() => runSensorDataJob(job), delayMinutes * 60 * 1000)
+  })
 
   return job
 }
 
 /**
- * Get a scheduled job by id (status and result when completed/failed).
- * Returns a plain object without internal refs for serialization.
+ * Get a scheduled job by id (from memory).
  */
-export function getScheduledJob(jobId: string): ScheduledJob | undefined {
-  const job = jobs.get(jobId)
-  if (job == null) return undefined
-  return {
-    id: job.id,
-    type: job.type,
-    deviceName: job.deviceName,
-    state: job.state,
-    delayMinutes: job.delayMinutes,
-    scheduledAt: job.scheduledAt,
-    runAt: job.runAt,
-    status: job.status,
-    result: job.result,
-    error: job.error
-  }
+export function getScheduledJob(jobId: string): ScheduledJob | null {
+  return jobs.get(jobId) ?? null
 }
 
 /**
- * List recent scheduled jobs (e.g. last 50).
+ * List recent scheduled jobs (pending, completed, or failed).
  */
-export function listScheduledJobs(limit = 50): ScheduledJob[] {
+export function listScheduledJobs(limit: number = 20): ScheduledJob[] {
   const list = Array.from(jobs.values())
   list.sort((a, b) => b.scheduledAt.getTime() - a.scheduledAt.getTime())
   return list.slice(0, limit)

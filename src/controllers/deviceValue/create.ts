@@ -9,7 +9,6 @@ import {
 import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { createDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
-import logger from '../../../../logs'
 
 export const createDeviceValue = async (
   req: IAuthenticatedRequest,
@@ -29,7 +28,6 @@ export const createDeviceValue = async (
     )
     if (!deviceExists) {
       const message = `Device not found with ID: ${payload.deviceValueDeviceId}`
-      logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
     await DeviceValueService.create(payload)

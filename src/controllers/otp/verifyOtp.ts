@@ -7,7 +7,6 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { ValidationError } from 'joi'
 import redisClient from '../../configs/redis'
 
 export const verifyOtp = async (req: Request, res: Response): Promise<Response> => {

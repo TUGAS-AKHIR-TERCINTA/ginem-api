@@ -1,43 +1,31 @@
 import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
-import { updateOnboardingSchema } from '../../schemas/myProfileSchema'
 import {
   handleServerError,
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { UserModel } from '../../models/UserModel'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
+import { indexToWeaviateSchema } from '../../schemas/weaviateSchema'
+import { WeaviateService } from '../../services/WeaviateService'
 
-export const updateOnboardingStatus = async (
+export const indexToWeaviate = async (
   req: IAuthenticatedRequest,
   res: Response
-): Promise<any> => {
+): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(
-    updateOnboardingSchema,
+    indexToWeaviateSchema,
     req.body
   )
 
   if (validationError) return handleValidationError(res, validationError)
 
   try {
-    const newData = {
-      ...(validatedData?.userOnboardingStatus!.length > 0 && {
-        userOnboardingStatus: validatedData?.userOnboardingStatus
-      })
-    }
+    const { jwtPayload: _, ...payload } = validatedData
+    const result = await WeaviateService.indexData(payload)
 
-    await UserModel.update(newData, {
-      where: {
-        deleted: 0,
-        userId: req?.jwtPayload?.userId
-      }
-    })
-
-    const response = ResponseData.success({
-      message: 'Onboarding status updated successfully'
-    })
+    const response = ResponseData.success({ data: result })
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

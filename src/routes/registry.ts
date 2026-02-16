@@ -7,6 +7,7 @@ import McpRoute from './McpRouter'
 import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
 import SchedulerLogRoute from './SchedulerLogRouter'
+import WeaviateRoute from './WeaviateRouter'
 
 const RoutesRegistry = {
   AppLogRoute,
@@ -17,7 +18,8 @@ const RoutesRegistry = {
   OtpRoute,
   DeviceRoute,
   DeviceValueRoute,
-  SchedulerLogRoute
+  SchedulerLogRoute,
+  WeaviateRoute
 }
 
 export default RoutesRegistry

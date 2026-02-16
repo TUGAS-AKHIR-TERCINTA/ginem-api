@@ -6,7 +6,6 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { updateDeviceValueSchema } from '../../schemas/deviceValueSchema'
 import { DeviceValueService } from '../../services/DeviceValueServices'
@@ -26,7 +25,6 @@ export const updateDeviceValue = async (
     const exists = await DeviceValueService.exists(validatedData.deviceValueId)
     if (!exists) {
       const message = `Device value not found with ID: ${validatedData.deviceValueId}`
-      logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
     if (validatedData.deviceValueDeviceId != null) {
@@ -35,7 +33,6 @@ export const updateDeviceValue = async (
       )
       if (!deviceExists) {
         const message = `Device not found with ID: ${validatedData.deviceValueDeviceId}`
-        logger.warn(message)
         return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
       }
     }

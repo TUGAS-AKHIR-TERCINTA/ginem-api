@@ -7,9 +7,7 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { ValidationError } from 'joi'
 import { IUserAttributes, UserModel } from '../../models/UserModel'
-import logger from '../../../../logs'
 import { appConfigs } from '../../configs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 
@@ -35,7 +33,6 @@ export const updateMyProfile = async (
 
       if (userNameChek !== null) {
         const message = 'email sudah digunakan!'
-        logger.info(`Login attempt failed: ${message}`)
         return res.status(StatusCodes.UNAUTHORIZED).json(ResponseData.error({ message }))
       }
     }
@@ -68,7 +65,6 @@ export const updateMyProfile = async (
     })
 
     const response = ResponseData.success({ message: 'Profile updated successfully' })
-    logger.info('Profile updated successfully')
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

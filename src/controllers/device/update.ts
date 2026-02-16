@@ -6,7 +6,6 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import logger from '../../../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { updateDeviceSchema } from '../../schemas/deviceSchema'
 import { DeviceService } from '../../services/DeviceServices'
@@ -26,7 +25,6 @@ export const updateDevice = async (
     const exists = await DeviceService.exists(validatedData.deviceId)
     if (!exists) {
       const message = `Device not found with ID: ${validatedData.deviceId}`
-      logger.warn(message)
       return res.status(StatusCodes.NOT_FOUND).json(ResponseData.error({ message }))
     }
 

@@ -9,8 +9,8 @@ import {
 } from '../../utilities/requestHandler'
 import { UserModel } from '../../models/UserModel'
 import { ResponseData } from '../../utilities/response'
-import logger from '../../../../logs'
 import redisClient from '../../configs/redis'
+import logger from '../../../logs'
 
 export const requestOtp = async (req: Request, res: Response): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(

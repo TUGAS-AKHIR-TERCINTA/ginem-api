@@ -46,7 +46,9 @@ export class DeviceAgentService {
     const content = lastMessage?.content
     if (typeof content === 'string') return content
     if (Array.isArray(content)) {
-      const textPart = content.find((c: { type?: string; text?: string }) => c.type === 'text')
+      const textPart = content.find(
+        (c: { type?: string; text?: string }) => c.type === 'text'
+      )
       return (textPart as { text?: string })?.text ?? JSON.stringify(content)
     }
     return content != null ? String(content) : JSON.stringify(result)
