@@ -3,17 +3,15 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { AuthService } from '../../services/AuthService'
-import { type UserUpdatePasswordInput } from '../../schemas/AuthSchema'
+import { type UserLoginInput } from '../../schemas/AuthSchema'
 
-export const updatePassword = async (
-  req: Request<{}, {}, UserUpdatePasswordInput>,
+export const userLogin = async (
+  req: Request<{}, {}, UserLoginInput>,
   res: Response
 ): Promise<Response> => {
   try {
-    await AuthService.updateUserPassword(req.body)
-
-    const response = ResponseData.success({ message: 'Password updated successfully' })
-    return res.status(StatusCodes.OK).json(response)
+    const payload = await AuthService.loginUser(req.body)
+    return res.status(StatusCodes.OK).json(ResponseData.success({ data: payload }))
   } catch (error) {
     return handleError(res, error)
   }

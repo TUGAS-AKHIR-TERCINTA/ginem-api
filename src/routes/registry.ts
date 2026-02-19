@@ -1,4 +1,3 @@
-import AppLogRoute from './AppLogRouter'
 import AuthRoute from './AuthRouter'
 import DeviceRoute from './DeviceRouter'
 import DeviceValueRoute from './DeviceValueRouter'
@@ -8,6 +7,7 @@ import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
 import SchedulerLogRoute from './SchedulerLogRouter'
 import WeaviateRoute from './WeaviateRouter'
+import AppLogRoute from './AppLogRouter'
 
 const RoutesRegistry = {
   AppLogRoute,

@@ -1,40 +1,46 @@
-import Joi from 'joi'
 import { jwtPayloadSchema } from './jwtPayloadSchema'
+import { z } from 'zod'
 
-export const createDeviceSchema = Joi.object({
-  jwtPayload: jwtPayloadSchema,
-  deviceName: Joi.string().max(100).required().allow(''),
-  deviceType: Joi.string().valid('sensor', 'actuator', 'hybrid').required(),
-  deviceStatus: Joi.string().valid('online', 'offline').optional(),
-  deviceFirmwareVersion: Joi.string().max(50).optional().allow(''),
-  deviceMetadata: Joi.object().optional()
+export const createDeviceSchema = z.object({
+  deviceName: z.string().max(100).min(1),
+  deviceType: z.enum(['sensor', 'actuator', 'hybrid']),
+  deviceStatus: z.enum(['online', 'offline']).optional(),
+  deviceFirmwareVersion: z.string().max(50).optional(),
+  deviceMetadata: z.object().optional()
 })
 
-export const updateDeviceSchema = Joi.object({
-  jwtPayload: jwtPayloadSchema,
-  deviceId: Joi.number().integer().positive().required(),
-  deviceToken: Joi.string().max(100).optional(),
-  deviceName: Joi.string().max(100).optional().allow(''),
-  deviceType: Joi.string().valid('sensor', 'actuator', 'hybrid').optional(),
-  deviceStatus: Joi.string().valid('online', 'offline').optional(),
-  deviceFirmwareVersion: Joi.string().max(50).optional().allow(''),
-  deviceMetadata: Joi.object().optional()
+export const updateDeviceSchema = z.object({
+  deviceId: z.number().int().positive(),
+  deviceToken: z.string().max(100).optional(),
+  deviceName: z.string().max(100).optional(),
+  deviceType: z.enum(['sensor', 'actuator', 'hybrid']).optional(),
+  deviceStatus: z.enum(['online', 'offline']).optional(),
+  deviceFirmwareVersion: z.string().max(50).optional(),
+  deviceMetadata: z.object().optional()
 })
 
-export const findDetailDeviceSchema = Joi.object({
-  jwtPayload: jwtPayloadSchema,
-  deviceId: Joi.number().integer().positive().required()
+export const findDetailDeviceSchema = z.object({
+  deviceId: z.number().int().positive()
 })
 
-export const removeDeviceSchema = Joi.object({
-  jwtPayload: jwtPayloadSchema,
-  deviceId: Joi.number().integer().positive().required()
+export const removeDeviceSchema = z.object({
+  deviceId: z.number().int().positive()
 })
 
-export const findAllDeviceSchema = Joi.object({
+export const findAllDeviceSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  page: Joi.number().integer().optional(),
-  size: Joi.number().integer().optional(),
-  search: Joi.string().allow('').optional(),
-  pagination: Joi.boolean().optional()
+  page: z.number().int().optional(),
+  size: z.number().int().optional(),
+  search: z.string().optional(),
+  pagination: z.boolean().optional()
 })
+
+export type UpdateDeviceSchema = z.infer<typeof updateDeviceSchema>
+
+export type CreateDeviceSchema = z.infer<typeof createDeviceSchema>
+
+export type FindAllDeviceSchema = z.infer<typeof findAllDeviceSchema>
+
+export type FindDetailDeviceSchema = z.infer<typeof findDetailDeviceSchema>
+
+export type RemoveDeviceSchema = z.infer<typeof removeDeviceSchema>

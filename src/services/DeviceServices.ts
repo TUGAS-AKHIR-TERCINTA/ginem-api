@@ -1,7 +1,8 @@
-import { DeviceValueModel } from '../models/DeviceValueModel'
+import { DeviceLogModel } from '../models/DeviceLogModel'
 import { DeviceModel } from '../models/DeviceModel'
 import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
+import { AppError } from '../errors/AppError'
 
 /** Options for listing devices with optional pagination */
 export interface FindAllDeviceOptions {
@@ -54,7 +55,7 @@ export class DeviceService {
     })
 
     if (existingDevice) {
-      throw new Error('Device already exists')
+      throw AppError.conflict('Device already exists')
     }
 
     const device = await DeviceModel.create(createData)
@@ -72,13 +73,6 @@ export class DeviceService {
 
     const result = await DeviceModel.findAndCountAll({
       where: { deleted: 0 },
-      // include: [
-      //   {
-      //     model: DeviceValueModel,
-      //     as: 'deviceValues',
-      //     attributes: ['deviceValueId', 'deviceValueValue', 'createdAt']
-      //   }
-      // ],
       order: [['deviceId', 'desc']],
       ...(pagination === true && {
         limit: pager.limit,
@@ -91,50 +85,65 @@ export class DeviceService {
 
   /**
    * Find a single device by id (non-deleted).
+   * @throws {AppError} AppError.notFound when device does not exist
    */
-  static async findById(deviceId: number): Promise<DeviceInstance | null> {
+  static async findById(deviceId: number): Promise<DeviceInstance> {
     const device = await DeviceModel.findOne({
       where: { deleted: 0, deviceId },
       include: [
         {
-          model: DeviceValueModel,
-          as: 'deviceValues',
-          attributes: ['deviceValueId', 'deviceValueValue', 'createdAt']
+          model: DeviceLogModel,
+          as: 'deviceLogs',
+          attributes: ['deviceLogId', 'deviceLogData', 'createdAt']
         }
       ]
     })
+    if (device == null) {
+      throw AppError.notFound('Device not found')
+    }
     return device
   }
 
   /**
-   * Update an existing device. Returns the updated row count (0 if not found).
+   * Update an existing device.
+   * @throws {AppError} AppError.notFound when device does not exist
    */
   static async update(payload: UpdateDevicePayload): Promise<number> {
     const [affectedRows] = await DeviceModel.update(payload, {
       where: { deleted: 0, deviceId: payload.deviceId }
     })
+    if (affectedRows === 0) {
+      throw AppError.notFound('Device not found')
+    }
     return affectedRows
   }
 
   /**
-   * Soft-delete a device. Returns the device if found and deleted, null otherwise.
+   * Soft-delete a device.
+   * @throws {AppError} AppError.notFound when device does not exist
    */
-  static async remove(deviceId: number): Promise<DeviceInstance | null> {
+  static async remove(deviceId: number): Promise<DeviceInstance> {
     const device = await DeviceModel.findOne({
       where: { deleted: 0, deviceId }
     })
-    if (device == null) return null
+    if (device == null) {
+      throw AppError.notFound('Device not found')
+    }
     device.deleted = true
     await device.save()
     return device
   }
 
   /**
-   * Check if a device exists (non-deleted).
+   * Check if a device exists (non-deleted). Returns false when device not found (does not throw).
    */
   static async exists(deviceId: number): Promise<boolean> {
-    const device = await this.findById(deviceId)
-    return device != null
+    try {
+      await this.findById(deviceId)
+      return true
+    } catch {
+      return false
+    }
   }
 
   /**

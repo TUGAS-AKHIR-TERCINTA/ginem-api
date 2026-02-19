@@ -1,12 +1,15 @@
-import Joi from 'joi'
+import { z } from 'zod'
 import { jwtPayloadSchema } from './jwtPayloadSchema'
 
-const indexItemSchema = Joi.object({
-  text: Joi.string().required().allow(''),
-  source: Joi.string().valid('pdf', 'text').required()
+const indexItemSchema = z.object({
+  text: z.string(),
+  source: z.enum(['pdf', 'text'])
 })
 
-export const indexToWeaviateSchema = Joi.object({
+export const indexToWeaviateSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  objects: Joi.array().items(indexItemSchema).min(1).max(100).required()
+  objects: z.array(indexItemSchema).min(1).max(100)
 })
+
+export type IndexToWeaviateSchema = z.infer<typeof indexToWeaviateSchema>
+export type IndexItemSchema = z.infer<typeof indexItemSchema>

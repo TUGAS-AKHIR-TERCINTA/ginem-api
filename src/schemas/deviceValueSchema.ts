@@ -1,33 +1,39 @@
-import Joi from 'joi'
+import { z } from 'zod'
 import { jwtPayloadSchema } from './jwtPayloadSchema'
 
-export const createDeviceValueSchema = Joi.object({
+export const createDeviceValueSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  deviceValueDeviceId: Joi.number().integer().positive().required(),
-  deviceValueValue: Joi.string().max(255).required()
+  deviceValueDeviceId: z.number().int().positive(),
+  deviceValueValue: z.string().max(255)
 })
 
-export const updateDeviceValueSchema = Joi.object({
+export const updateDeviceValueSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  deviceValueId: Joi.number().integer().positive().required(),
-  deviceValueDeviceId: Joi.number().integer().positive().optional(),
-  deviceValueValue: Joi.string().max(255).optional()
+  deviceValueId: z.number().int().positive(),
+  deviceValueDeviceId: z.number().int().positive().optional(),
+  deviceValueValue: z.string().max(255).optional()
 })
 
-export const findDetailDeviceValueSchema = Joi.object({
+export const findDetailDeviceValueSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  deviceValueId: Joi.number().integer().positive().required()
+  deviceValueId: z.number().int().positive()
 })
 
-export const removeDeviceValueSchema = Joi.object({
+export const removeDeviceValueSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  deviceValueId: Joi.number().integer().positive().required()
+  deviceValueId: z.number().int().positive()
 })
 
-export const findAllDeviceValueSchema = Joi.object({
+export const findAllDeviceValueSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  deviceValueDeviceId: Joi.number().integer().positive().optional(),
-  page: Joi.number().integer().optional(),
-  size: Joi.number().integer().optional(),
-  pagination: Joi.boolean().optional()
+  deviceValueDeviceId: z.number().int().positive().optional(),
+  page: z.number().int().optional(),
+  size: z.number().int().optional(),
+  pagination: z.boolean().optional()
 })
+
+export type CreateDeviceValueSchema = z.infer<typeof createDeviceValueSchema>
+export type UpdateDeviceValueSchema = z.infer<typeof updateDeviceValueSchema>
+export type FindDetailDeviceValueSchema = z.infer<typeof findDetailDeviceValueSchema>
+export type RemoveDeviceValueSchema = z.infer<typeof removeDeviceValueSchema>
+export type FindAllDeviceValueSchema = z.infer<typeof findAllDeviceValueSchema>

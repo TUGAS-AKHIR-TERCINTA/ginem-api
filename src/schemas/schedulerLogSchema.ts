@@ -1,19 +1,23 @@
-import Joi from 'joi'
+import { z } from 'zod'
 import { jwtPayloadSchema } from './jwtPayloadSchema'
 
-export const findAllSchedulerLogSchema = Joi.object({
+export const findAllSchedulerLogSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  type: Joi.string().valid('actuator', 'sensor_data').optional(),
-  status: Joi.string().valid('pending', 'completed', 'failed').optional(),
-  deviceName: Joi.string().allow('').optional(),
-  page: Joi.number().integer().optional(),
-  size: Joi.number().integer().optional(),
-  pagination: Joi.boolean().optional(),
-  dateFrom: Joi.date().iso().optional(),
-  dateTo: Joi.date().iso().optional()
+  type: z.enum(['actuator', 'sensor_data']).optional(),
+  status: z.enum(['pending', 'completed', 'failed']).optional(),
+  deviceName: z.string().optional(),
+  page: z.number().int().optional(),
+  size: z.number().int().optional(),
+  pagination: z.boolean().optional(),
+  dateFrom: z.date().optional(),
+  search: z.string().optional(),
+  dateTo: z.date().optional()
 })
 
-export const findDetailSchedulerLogSchema = Joi.object({
+export const findDetailSchedulerLogSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  schedulerLogId: Joi.number().integer().positive().required()
+  schedulerLogId: z.number().int().positive()
 })
+
+export type FindAllSchedulerLogSchema = z.infer<typeof findAllSchedulerLogSchema>
+export type FindDetailSchedulerLogSchema = z.infer<typeof findDetailSchedulerLogSchema>

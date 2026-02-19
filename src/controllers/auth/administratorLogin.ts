@@ -2,18 +2,17 @@ import { type Request, type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
+import { type AdminLoginInput } from '../../schemas/AuthSchema'
 import { AuthService } from '../../services/AuthService'
-import { type UserUpdatePasswordInput } from '../../schemas/AuthSchema'
 
-export const updatePassword = async (
-  req: Request<{}, {}, UserUpdatePasswordInput>,
+export const administratorLogin = async (
+  req: Request<{}, {}, AdminLoginInput>,
   res: Response
 ): Promise<Response> => {
   try {
-    await AuthService.updateUserPassword(req.body)
+    const payload = await AuthService.loginAdmin(req.body)
 
-    const response = ResponseData.success({ message: 'Password updated successfully' })
-    return res.status(StatusCodes.OK).json(response)
+    return res.status(StatusCodes.OK).json(ResponseData.success({ data: payload }))
   } catch (error) {
     return handleError(res, error)
   }

@@ -121,18 +121,11 @@
 
 /**
  * @swagger
- * /api/v1/devices/{deviceId}:
+ * /api/v1/devices:
  *   patch:
  *     summary: Update device
  *     description: Update device data by ID
  *     tags: [DEVICES]
- *     parameters:
- *       - in: path
- *         name: deviceId
- *         required: true
- *         schema:
- *           type: number
- *         example: 1
  *     requestBody:
  *       required: true
  *       content:
@@ -140,6 +133,9 @@
  *           schema:
  *             type: object
  *             properties:
+ *               deviceId:
+ *                 type: number
+ *                 example: 1
  *               deviceName:
  *                 type: string
  *                 example: Updated Device Name

@@ -1,5 +1,5 @@
 import { DeviceService } from '../DeviceServices'
-import { DeviceValueService } from '../DeviceValueServices'
+import { DeviceValueService } from '../DeviceLogServices'
 import { SchedulerLogModel } from '../../models/SchedulerLogModel'
 import type { ISchedulerLogCreationAttributes } from '../../interfaces/schedulerLog.interface'
 import logger from '../../../logs'

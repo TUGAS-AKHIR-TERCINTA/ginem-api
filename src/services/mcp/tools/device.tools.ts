@@ -1,7 +1,8 @@
 import { tool } from '@langchain/core/tools'
 import { z } from 'zod'
+import { AppError } from '../../../errors/AppError'
 import { DeviceService } from '../../DeviceServices'
-import { DeviceValueService } from '../../DeviceValueServices'
+import { DeviceValueService } from '../../DeviceLogServices'
 import {
   scheduleActuatorState,
   scheduleSensorData,
@@ -38,30 +39,25 @@ export const listDevicesTool = tool(
     description:
       'List devices from the database with pagination. Use this when the user asks for device list, all devices, or paginated devices.',
     schema: z.object({
-      page: z
-        .number()
-        .int()
-        .min(0)
-        .optional()
-        .describe('Zero-based page index'),
-      size: z
-        .number()
-        .int()
-        .min(1)
-        .max(100)
-        .optional()
-        .describe('Page size (default 10)')
+      page: z.number().int().min(0).optional().describe('Zero-based page index'),
+      size: z.number().int().min(1).max(100).optional().describe('Page size (default 10)')
     })
   }
 )
 
 export const getDeviceByIdTool = tool(
   async ({ deviceId }) => {
-    const device = await DeviceService.findById(deviceId)
-    if (device == null) {
-      return JSON.stringify({ error: 'Device not found', deviceId })
+    try {
+      const device = await DeviceService.findById(deviceId)
+      return serializeDevice(
+        device.get({ plain: true }) as unknown as Record<string, unknown>
+      )
+    } catch (err) {
+      if (err instanceof AppError) {
+        return JSON.stringify({ error: err.message, deviceId })
+      }
+      throw err
     }
-    return serializeDevice(device.get({ plain: true }) as unknown as Record<string, unknown>)
   },
   {
     name: 'get_device_by_id',
@@ -89,13 +85,17 @@ export const getLastValueByDeviceNameTool = tool(
         lastValue: null
       })
     }
-    return JSON.stringify({
-      deviceName,
-      deviceId: device.deviceId,
-      lastValue: last.deviceValueValue,
-      deviceValueId: last.deviceValueId,
-      createdAt: last.createdAt
-    }, null, 2)
+    return JSON.stringify(
+      {
+        deviceName,
+        deviceId: device.deviceId,
+        lastValue: last.deviceValueValue,
+        deviceValueId: last.deviceValueId,
+        createdAt: last.createdAt
+      },
+      null,
+      2
+    )
   },
   {
     name: 'get_last_value_by_device_name',
@@ -114,16 +114,20 @@ export const getLast10ValuesByDeviceNameTool = tool(
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
     const items = await DeviceValueService.getLastValuesByDeviceId(device.deviceId, 10)
-    return JSON.stringify({
-      deviceName,
-      deviceId: device.deviceId,
-      count: items.length,
-      values: items.map((v) => ({
-        deviceValueId: v.deviceValueId,
-        deviceValueValue: v.deviceValueValue,
-        createdAt: v.createdAt
-      }))
-    }, null, 2)
+    return JSON.stringify(
+      {
+        deviceName,
+        deviceId: device.deviceId,
+        count: items.length,
+        values: items.map((v) => ({
+          deviceValueId: v.deviceValueId,
+          deviceValueValue: v.deviceValueValue,
+          createdAt: v.createdAt
+        }))
+      },
+      null,
+      2
+    )
   },
   {
     name: 'get_last_10_values_by_device_name',
@@ -145,23 +149,33 @@ export const createDeviceValueByDeviceNameTool = tool(
       deviceValueDeviceId: device.deviceId,
       deviceValueValue
     })
-    return JSON.stringify({
-      success: true,
-      message: 'Device value created',
-      deviceName,
-      deviceId: device.deviceId,
-      deviceValueId: deviceValue.deviceValueId,
-      deviceValueValue: deviceValue.deviceValueValue,
-      createdAt: deviceValue.createdAt
-    }, null, 2)
+    return JSON.stringify(
+      {
+        success: true,
+        message: 'Device value created',
+        deviceName,
+        deviceId: device.deviceId,
+        deviceValueId: deviceValue.deviceValueId,
+        deviceValueValue: deviceValue.deviceValueValue,
+        createdAt: deviceValue.createdAt
+      },
+      null,
+      2
+    )
   },
   {
     name: 'create_device_value',
     description:
       'Create a new device value for a device. Use the device name (deviceName) to identify the device, not deviceId. Use when the user wants to add a value, record a reading, or create a device value for a device by name. Do NOT use for turn on/off (hidupkan/matikan) — use set_actuator_state_by_device_name instead.',
     schema: z.object({
-      deviceName: z.string().min(1).describe('The exact device name (identifies which device to add the value to)'),
-      deviceValueValue: z.string().min(1).describe('The value to store for this device value')
+      deviceName: z
+        .string()
+        .min(1)
+        .describe('The exact device name (identifies which device to add the value to)'),
+      deviceValueValue: z
+        .string()
+        .min(1)
+        .describe('The value to store for this device value')
     })
   }
 )
@@ -181,7 +195,8 @@ export const setActuatorStateByDeviceNameTool = tool(
         error: 'Device is not an actuator',
         deviceName,
         deviceType: device.deviceType,
-        message: 'Only devices with deviceType "actuator" can be turned on or off. Use create_device_value for other devices.'
+        message:
+          'Only devices with deviceType "actuator" can be turned on or off. Use create_device_value for other devices.'
       })
     }
     const deviceValueValue = state === 'on' ? '1' : '0'
@@ -189,24 +204,34 @@ export const setActuatorStateByDeviceNameTool = tool(
       deviceValueDeviceId: device.deviceId,
       deviceValueValue
     })
-    return JSON.stringify({
-      success: true,
-      message: state === 'on' ? 'Device turned on (value 1)' : 'Device turned off (value 0)',
-      deviceName,
-      deviceId: device.deviceId,
-      deviceType: device.deviceType,
-      deviceValueId: deviceValue.deviceValueId,
-      deviceValueValue: deviceValue.deviceValueValue,
-      createdAt: deviceValue.createdAt
-    }, null, 2)
+    return JSON.stringify(
+      {
+        success: true,
+        message:
+          state === 'on' ? 'Device turned on (value 1)' : 'Device turned off (value 0)',
+        deviceName,
+        deviceId: device.deviceId,
+        deviceType: device.deviceType,
+        deviceValueId: deviceValue.deviceValueId,
+        deviceValueValue: deviceValue.deviceValueValue,
+        createdAt: deviceValue.createdAt
+      },
+      null,
+      2
+    )
   },
   {
     name: 'set_actuator_state_by_device_name',
     description:
       'Turn ON or OFF an actuator device by its name. First checks that the device exists and has deviceType "actuator". "Hidupkan" / turn on / nyalakan → creates device value with value "1". "Matikan" / turn off / padamkan → creates device value with value "0". Use this when the user says hidupkan (device name), matikan (device name), turn on, turn off, nyalakan, padamkan, or similar instructions to control an actuator.',
     schema: z.object({
-      deviceName: z.string().min(1).describe('The exact device name (must be an actuator)'),
-      state: z.enum(['on', 'off']).describe('on = hidupkan / value 1, off = matikan / value 0')
+      deviceName: z
+        .string()
+        .min(1)
+        .describe('The exact device name (must be an actuator)'),
+      state: z
+        .enum(['on', 'off'])
+        .describe('on = hidupkan / value 1, off = matikan / value 0')
     })
   }
 )
@@ -230,24 +255,36 @@ export const scheduleActuatorStateAfterMinutesTool = tool(
       })
     }
     const job = scheduleActuatorState(deviceName, state, delayMinutes)
-    return JSON.stringify({
-      success: true,
-      message: `Scheduled: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" in ${delayMinutes} minute(s)`,
-      jobId: job.id,
-      deviceName: job.deviceName,
-      state: job.state,
-      delayMinutes: job.delayMinutes,
-      runAt: job.runAt.toISOString()
-    }, null, 2)
+    return JSON.stringify(
+      {
+        success: true,
+        message: `Scheduled: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" in ${delayMinutes} minute(s)`,
+        jobId: job.id,
+        deviceName: job.deviceName,
+        state: job.state,
+        delayMinutes: job.delayMinutes,
+        runAt: job.runAt.toISOString()
+      },
+      null,
+      2
+    )
   },
   {
     name: 'schedule_actuator_state_after_minutes',
     description:
       'Schedule turning ON or OFF an actuator device after a delay in minutes. Use when the user says "hidupkan (device name) 1 menit lagi", "matikan (device name) 5 menit lagi", "turn on Smart Lamp in 1 minute", "tolong hidupin device X di Y menit lagi", etc. Only works for devices with deviceType "actuator".',
     schema: z.object({
-      deviceName: z.string().min(1).describe('The exact device name (must be an actuator)'),
+      deviceName: z
+        .string()
+        .min(1)
+        .describe('The exact device name (must be an actuator)'),
       state: z.enum(['on', 'off']).describe('on = hidupkan, off = matikan'),
-      delayMinutes: z.number().int().min(1).max(1440).describe('Delay in minutes (1–1440) before executing')
+      delayMinutes: z
+        .number()
+        .int()
+        .min(1)
+        .max(1440)
+        .describe('Delay in minutes (1–1440) before executing')
     })
   }
 )
@@ -263,14 +300,18 @@ export const scheduleSensorDataAfterMinutesTool = tool(
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
     const job = scheduleSensorData(deviceName, delayMinutes)
-    return JSON.stringify({
-      success: true,
-      message: `Scheduled: fetch data for "${deviceName}" in ${delayMinutes} minute(s). Use get_scheduled_job_result with jobId to get the result after it runs.`,
-      jobId: job.id,
-      deviceName: job.deviceName,
-      delayMinutes: job.delayMinutes,
-      runAt: job.runAt.toISOString()
-    }, null, 2)
+    return JSON.stringify(
+      {
+        success: true,
+        message: `Scheduled: fetch data for "${deviceName}" in ${delayMinutes} minute(s). Use get_scheduled_job_result with jobId to get the result after it runs.`,
+        jobId: job.id,
+        deviceName: job.deviceName,
+        delayMinutes: job.delayMinutes,
+        runAt: job.runAt.toISOString()
+      },
+      null,
+      2
+    )
   },
   {
     name: 'schedule_sensor_data_after_minutes',
@@ -278,7 +319,12 @@ export const scheduleSensorDataAfterMinutesTool = tool(
       'Schedule fetching sensor/device data (last 10 values) after a delay in minutes. Use when the user says "kasih data sensor A 5 menit lagi", "tolong kasih data sensor X Y menit lagi", "give me sensor data in 5 minutes", etc. After the delay, the job runs and stores the result; user can get it with get_scheduled_job_result(jobId).',
     schema: z.object({
       deviceName: z.string().min(1).describe('The exact device name to fetch data from'),
-      delayMinutes: z.number().int().min(1).max(1440).describe('Delay in minutes (1–1440) before fetching data')
+      delayMinutes: z
+        .number()
+        .int()
+        .min(1)
+        .max(1440)
+        .describe('Delay in minutes (1–1440) before fetching data')
     })
   }
 )
@@ -292,18 +338,22 @@ export const getScheduledJobResultTool = tool(
     if (job == null) {
       return JSON.stringify({ error: 'Scheduled job not found', jobId })
     }
-    return JSON.stringify({
-      jobId: job.id,
-      type: job.type,
-      deviceName: job.deviceName,
-      state: job.state,
-      delayMinutes: job.delayMinutes,
-      scheduledAt: job.scheduledAt.toISOString(),
-      runAt: job.runAt.toISOString(),
-      status: job.status,
-      result: job.result,
-      error: job.error
-    }, null, 2)
+    return JSON.stringify(
+      {
+        jobId: job.id,
+        type: job.type,
+        deviceName: job.deviceName,
+        state: job.state,
+        delayMinutes: job.delayMinutes,
+        scheduledAt: job.scheduledAt.toISOString(),
+        runAt: job.runAt.toISOString(),
+        status: job.status,
+        result: job.result,
+        error: job.error
+      },
+      null,
+      2
+    )
   },
   {
     name: 'get_scheduled_job_result',
@@ -321,28 +371,38 @@ export const getScheduledJobResultTool = tool(
 export const listScheduledJobsTool = tool(
   async ({ limit }) => {
     const list = listScheduledJobs(limit ?? 20)
-    return JSON.stringify({
-      count: list.length,
-      jobs: list.map((j) => ({
-        jobId: j.id,
-        type: j.type,
-        deviceName: j.deviceName,
-        state: j.state,
-        delayMinutes: j.delayMinutes,
-        scheduledAt: j.scheduledAt.toISOString(),
-        runAt: j.runAt.toISOString(),
-        status: j.status,
-        result: j.result,
-        error: j.error
-      }))
-    }, null, 2)
+    return JSON.stringify(
+      {
+        count: list.length,
+        jobs: list.map((j) => ({
+          jobId: j.id,
+          type: j.type,
+          deviceName: j.deviceName,
+          state: j.state,
+          delayMinutes: j.delayMinutes,
+          scheduledAt: j.scheduledAt.toISOString(),
+          runAt: j.runAt.toISOString(),
+          status: j.status,
+          result: j.result,
+          error: j.error
+        }))
+      },
+      null,
+      2
+    )
   },
   {
     name: 'list_scheduled_jobs',
     description:
       'List recent scheduled jobs (actuator on/off or sensor data). Use when the user asks "apa saja jadwal yang ada", "list scheduled tasks", or to see status of scheduled jobs.',
     schema: z.object({
-      limit: z.number().int().min(1).max(100).optional().describe('Max number of jobs to return (default 20)')
+      limit: z
+        .number()
+        .int()
+        .min(1)
+        .max(100)
+        .optional()
+        .describe('Max number of jobs to return (default 20)')
     })
   }
 )

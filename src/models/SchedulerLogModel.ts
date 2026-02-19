@@ -1,10 +1,6 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
 import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
-import type {
-  ISchedulerLogAttributes,
-  ISchedulerLogCreationAttributes
-} from '../interfaces/schedulerLog.interface'
 
 export interface ISchedulerLogModelAttributes extends IBaseModelFields {
   schedulerLogId: number
@@ -21,9 +17,14 @@ export interface ISchedulerLogModelAttributes extends IBaseModelFields {
   executedAt?: Date | null
 }
 
+export type ISchedulerLogCreationModelAttributes = Omit<
+  ISchedulerLogModelAttributes,
+  'schedulerLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+>
+
 export interface SchedulerLogInstance
-  extends Model<ISchedulerLogAttributes, ISchedulerLogCreationAttributes>,
-    ISchedulerLogAttributes {}
+  extends Model<ISchedulerLogModelAttributes, ISchedulerLogCreationModelAttributes>,
+    ISchedulerLogModelAttributes {}
 
 export const SchedulerLogModel = sequelizeInit.define<SchedulerLogInstance>(
   'SchedulerLogs',

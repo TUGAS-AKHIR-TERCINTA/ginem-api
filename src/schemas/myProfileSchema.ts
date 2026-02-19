@@ -1,22 +1,27 @@
-import Joi from 'joi'
+import { z } from 'zod'
 import { jwtPayloadSchema } from './jwtPayloadSchema'
 
-export const findMyProfileSchema = Joi.object({
+export const findMyProfileSchema = z.object({
   jwtPayload: jwtPayloadSchema
 })
 
-export const findDetailMyProfileSchema = Joi.object({
+export const findDetailMyProfileSchema = z.object({
   jwtPayload: jwtPayloadSchema
 })
 
-export const updateMyProfileSchema = Joi.object({
+export const updateMyProfileSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  userName: Joi.string().allow('').min(3).max(30).optional(),
-  userPassword: Joi.string().allow('').min(6).max(128).optional(),
-  userEmail: Joi.string().optional().allow('')
+  userName: z.string().max(30).optional(),
+  userPassword: z.string().max(128).optional(),
+  userEmail: z.string().optional()
 })
 
-export const updateOnboardingSchema = Joi.object({
+export const updateOnboardingSchema = z.object({
   jwtPayload: jwtPayloadSchema,
-  userOnboardingStatus: Joi.string().valid('waiting', 'completed').required()
+  userOnboardingStatus: z.enum(['waiting', 'completed'])
 })
+
+export type FindMyProfileSchema = z.infer<typeof findMyProfileSchema>
+export type FindDetailMyProfileSchema = z.infer<typeof findDetailMyProfileSchema>
+export type UpdateMyProfileSchema = z.infer<typeof updateMyProfileSchema>
+export type UpdateOnboardingSchema = z.infer<typeof updateOnboardingSchema>

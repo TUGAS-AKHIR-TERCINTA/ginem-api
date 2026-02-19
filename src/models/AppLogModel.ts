@@ -1,18 +1,21 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
 import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
-import type {
-  IAppLogAttributes,
-  IAppLogCreationAttributes
-} from '../interfaces/appLog.interface'
 
-export interface IAppLogModelAttributes extends IBaseModelFields {
-  logId: number
-  level: string
-  message: string
-  meta?: object | null
-  stack?: string | null
+export type AppLogLevel = 'error' | 'warn' | 'info'
+
+export interface IAppLogAttributes extends IBaseModelFields {
+  appLogId: number
+  appLogLevel: AppLogLevel
+  appLogMessage: string
+  appLogSource: string | null
+  appLogMeta: string | null
 }
+
+export type IAppLogCreationAttributes = Omit<
+  IAppLogAttributes,
+  'appLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+>
 
 export interface AppLogInstance
   extends Model<IAppLogAttributes, IAppLogCreationAttributes>,
@@ -22,24 +25,24 @@ export const AppLogModel = sequelizeInit.define<AppLogInstance>(
   'AppLogs',
   {
     ...BaseModelFields,
-    logId: {
+    appLogId: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true
     },
-    level: {
-      type: DataTypes.STRING(20),
+    appLogLevel: {
+      type: DataTypes.ENUM('error', 'warn', 'info'),
       allowNull: false
     },
-    message: {
+    appLogMessage: {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    meta: {
-      type: DataTypes.JSON,
+    appLogSource: {
+      type: DataTypes.STRING(255),
       allowNull: true
     },
-    stack: {
+    appLogMeta: {
       type: DataTypes.TEXT,
       allowNull: true
     }
@@ -47,7 +50,9 @@ export const AppLogModel = sequelizeInit.define<AppLogInstance>(
   {
     tableName: 'app_logs',
     timestamps: true,
-    paranoid: true,
-    underscored: true
+    paranoid: false,
+    underscored: true,
+    freezeTableName: true,
+    engine: 'InnoDB'
   }
 )

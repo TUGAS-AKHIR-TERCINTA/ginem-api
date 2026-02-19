@@ -7,8 +7,8 @@ import {
   validateRequest
 } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { findDetailDeviceValueSchema } from '../../schemas/deviceValueSchema'
-import { DeviceValueService } from '../../services/DeviceValueServices'
+import { findDetailDeviceValueSchema } from '../../schemas/DeviceValueSchema'
+import { DeviceValueService } from '../../services/DeviceLogServices'
 
 export const findDetailDeviceValue = async (
   req: IAuthenticatedRequest,

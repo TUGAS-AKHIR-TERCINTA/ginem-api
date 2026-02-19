@@ -9,29 +9,24 @@ module.exports = {
   async up(queryInterface, DataTypes) {
     await queryInterface.createTable('app_logs', {
       ...BaseModelFields,
-
-      log_id: {
+      app_log_id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true
       },
-
-      level: {
-        type: DataTypes.STRING(20),
+      app_log_level: {
+        type: DataTypes.ENUM('error', 'warn', 'info'),
         allowNull: false
       },
-
-      message: {
+      app_log_message: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-
-      meta: {
-        type: DataTypes.JSON,
+      app_log_source: {
+        type: DataTypes.STRING(255),
         allowNull: true
       },
-
-      stack: {
+      app_log_meta: {
         type: DataTypes.TEXT,
         allowNull: true
       }

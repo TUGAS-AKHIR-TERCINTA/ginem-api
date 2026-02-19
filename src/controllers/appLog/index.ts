@@ -1,7 +1,7 @@
-import { findAllAppLog } from './findAll'
-import { findDetailAppLog } from './findDetail'
+import { createAppLog } from './createAppLog'
+import { findAllAppLogs } from './findAllAppLogs'
 
 export const AppLogController = {
-  findAll: findAllAppLog,
-  findDetail: findDetailAppLog
+  create: createAppLog,
+  findAll: findAllAppLogs
 }
