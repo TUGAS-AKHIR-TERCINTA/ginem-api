@@ -1,15 +1,25 @@
-import ArticleRoute from './ArticleRouter'
 import AuthRoute from './AuthRouter'
+import DeviceRoute from './DeviceRouter'
 import HealthRoute from './HelthRouter'
+import McpRoute from './McpRouter'
 import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
+import SchedulerLogRoute from './SchedulerLogRouter'
+import WeaviateRoute from './WeaviateRouter'
+import AppLogRoute from './AppLogRouter'
+import DeviceLogRoute from './DeviceLogRouter'
 
 const RoutesRegistry = {
-  ArticleRoute,
+  AppLogRoute,
   AuthRoute,
   HealthRoute,
+  McpRoute,
   MyProfileRoute,
-  OtpRoute
+  OtpRoute,
+  DeviceRoute,
+  DeviceLogRoute,
+  SchedulerLogRoute,
+  WeaviateRoute
 }
 
 export default RoutesRegistry

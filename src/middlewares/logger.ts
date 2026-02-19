@@ -1,5 +1,5 @@
 import morgan from 'morgan'
-import logger from '../logs'
+import logger from '../../logs'
 
 export const loggerMidleWare = () =>
   morgan('combined', {

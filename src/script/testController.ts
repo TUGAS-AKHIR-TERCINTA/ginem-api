@@ -7,7 +7,7 @@
 
 // testTopSignal()
 
-import { AiSignalService } from '../services/llm/AiSignalService'
+import { AiSignalService } from '../services/AiSignalService'
 import { CoinAnalysisService } from '../services/llm/CoinAnalysisService'
 import { LivePricePredictionService } from '../services/llm/LivePricePredictionService'
 

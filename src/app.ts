@@ -5,7 +5,7 @@ import helmet from 'helmet'
 import compression from 'compression'
 import routers from './routes'
 import { MiddleWares } from './middlewares'
-import { Scheduler } from './schedulers'
+// import { Scheduler } from './schedulers'
 
 const app: Express = express()
 

@@ -7,9 +7,7 @@ import {
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { ValidationError } from 'joi'
-import { UserModel } from '../../models/userModel'
-import logger from '../../logs'
+import { UserModel } from '../../models/UserModel'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 
 export const updateOnboardingStatus = async (
@@ -40,7 +38,6 @@ export const updateOnboardingStatus = async (
     const response = ResponseData.success({
       message: 'Onboarding status updated successfully'
     })
-    logger.info('onboarding status updated successfully')
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)

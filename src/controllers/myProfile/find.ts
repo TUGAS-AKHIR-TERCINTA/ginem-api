@@ -1,15 +1,13 @@
 import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
-import { UserModel } from '../../models/userModel'
+import { UserModel } from '../../models/UserModel'
 import {
   handleServerError,
   handleValidationError,
   validateRequest
 } from '../../utilities/requestHandler'
-import { ValidationError } from 'joi'
 import { findMyProfileSchema } from '../../schemas/myProfileSchema'
-import logger from '../../logs'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 
 export const findMyProfile = async (
@@ -47,7 +45,6 @@ export const findMyProfile = async (
     }
 
     const response = ResponseData.success({ data: result })
-    logger.info('User found successfully')
     return res.status(StatusCodes.OK).json(response)
   } catch (serverError) {
     return handleServerError(res, serverError)
