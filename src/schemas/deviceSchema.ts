@@ -20,7 +20,8 @@ export const updateDeviceSchema = z.object({
 })
 
 export const findDetailDeviceSchema = z.object({
-  deviceId: z.number().int().positive()
+  jwtPayload: jwtPayloadSchema.optional(),
+  deviceId: z.coerce.number().int().positive()
 })
 
 export const removeDeviceSchema = z.object({
