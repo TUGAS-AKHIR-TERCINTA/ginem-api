@@ -1,7 +1,7 @@
 /**
  * @swagger
  * tags:
- *   name: DEVICE VALUES
+ *   name: DEVICE LOGS
  *   description: Device value management (child of Device)
  */
 
@@ -9,16 +9,16 @@
  * @swagger
  * components:
  *   schemas:
- *     DeviceValue:
+ *     DeviceLog:
  *       type: object
  *       properties:
- *         deviceValueId:
+ *         deviceLogId:
  *           type: number
  *           example: 1
- *         deviceValueDeviceId:
+ *         deviceLogDeviceId:
  *           type: number
  *           example: 1
- *         deviceValueValue:
+ *         deviceLogData:
  *           type: string
  *           example: "25.5"
  *         created_at:
@@ -27,9 +27,9 @@
  *         updated_at:
  *           type: string
  *           format: date-time
- *     DeviceValueWithDevice:
+ *     DeviceLogWithDevice:
  *       allOf:
- *         - $ref: '#/components/schemas/DeviceValue'
+ *         - $ref: '#/components/schemas/DeviceLog'
  *         - type: object
  *           properties:
  *             Device:
@@ -38,11 +38,11 @@
 
 /**
  * @swagger
- * /api/v1/device-values:
+ * /api/v1/devices/logs:
  *   post:
- *     summary: Create new device value
- *     description: Create a device value linked to a device (parent)
- *     tags: [DEVICE VALUES]
+ *     summary: Create new device log
+ *     description: Create a device log linked to a device (parent)
+ *     tags: [DEVICE LOGS]
  *     requestBody:
  *       required: true
  *       content:
@@ -50,18 +50,18 @@
  *           schema:
  *             type: object
  *             required:
- *               - deviceValueDeviceId
- *               - deviceValueValue
+ *               - deviceLogDeviceId
+ *               - deviceLogData
  *             properties:
- *               deviceValueDeviceId:
+ *               deviceLogDeviceId:
  *                 type: number
  *                 example: 1
- *               deviceValueValue:
+ *               deviceLogData:
  *                 type: string
  *                 example: "25.5"
  *     responses:
  *       201:
- *         description: Device value created successfully
+ *         description: Device log created successfully
  *       404:
  *         description: Device not found
  *       400:
@@ -72,14 +72,14 @@
 
 /**
  * @swagger
- * /api/v1/device-values:
+ * /api/v1/devices/logs:
  *   get:
- *     summary: Get all device values
- *     description: Fetch list of device values, optionally filtered by device
- *     tags: [DEVICE VALUES]
+ *     summary: Get all device logs
+ *     description: Fetch list of device logs, optionally filtered by device
+ *     tags: [DEVICE LOGS]
  *     parameters:
  *       - in: query
- *         name: deviceValueDeviceId
+ *         name: deviceLogDeviceId
  *         schema:
  *           type: number
  *         description: Filter by parent device ID
@@ -97,7 +97,7 @@
  *           type: boolean
  *     responses:
  *       200:
- *         description: Device values fetched successfully
+ *         description: Device logs fetched successfully
  *         content:
  *           application/json:
  *             schema:
@@ -109,7 +109,7 @@
  *                     items:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/DeviceValueWithDevice'
+ *                         $ref: '#/components/schemas/DeviceLogWithDevice'
  *                     totalItems:
  *                       type: number
  *                     totalPages:
@@ -122,39 +122,39 @@
 
 /**
  * @swagger
- * /api/v1/device-values/detail/{deviceValueId}:
+ * /api/v1/devices/logs/detail/{deviceLogId}:
  *   get:
- *     summary: Get device value detail
- *     description: Fetch detailed information of a device value by ID
- *     tags: [DEVICE VALUES]
+ *     summary: Get device log detail
+ *     description: Fetch detailed information of a device log by ID
+ *     tags: [DEVICE LOGS]
  *     parameters:
  *       - in: path
- *         name: deviceValueId
+ *         name: deviceLogId
  *         required: true
  *         schema:
  *           type: number
  *         example: 1
  *     responses:
  *       200:
- *         description: Device value detail fetched successfully
+ *         description: Device log detail fetched successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/DeviceValueWithDevice'
+ *               $ref: '#/components/schemas/DeviceLogWithDevice'
  *       500:
  *         description: Internal server error
  */
 
 /**
  * @swagger
- * /api/v1/device-values/{deviceValueId}:
+ * /api/v1/devices/logs/{deviceLogId}:
  *   patch:
- *     summary: Update device value
- *     description: Update device value data by ID
- *     tags: [DEVICE VALUES]
+ *     summary: Update device log
+ *     description: Update device log data by ID
+ *     tags: [DEVICE LOGS]
  *     parameters:
  *       - in: path
- *         name: deviceValueId
+ *         name: deviceLogId
  *         required: true
  *         schema:
  *           type: number
@@ -166,40 +166,40 @@
  *           schema:
  *             type: object
  *             properties:
- *               deviceValueDeviceId:
+ *               deviceLogDeviceId:
  *                 type: number
  *                 example: 1
- *               deviceValueValue:
+ *               deviceLogData:
  *                 type: string
  *                 example: "26.0"
  *     responses:
  *       200:
- *         description: Device value updated successfully
+ *         description: Device log updated successfully
  *       404:
- *         description: Device value or device not found
+ *         description: Device log or device not found
  *       500:
  *         description: Internal server error
  */
 
 /**
  * @swagger
- * /api/v1/device-values/{deviceValueId}:
+ * /api/v1/devices/logs/{deviceLogId}:
  *   delete:
- *     summary: Delete device value
- *     description: Soft delete device value by ID
- *     tags: [DEVICE VALUES]
+ *     summary: Delete device log
+ *     description: Soft delete device log by ID
+ *     tags: [DEVICE LOGS]
  *     parameters:
  *       - in: path
- *         name: deviceValueId
+ *         name: deviceLogId
  *         required: true
  *         schema:
  *           type: number
  *         example: 1
  *     responses:
  *       200:
- *         description: Device value deleted successfully
+ *         description: Device log deleted successfully
  *       404:
- *         description: Device value not found
+ *         description: Device log not found
  *       500:
  *         description: Internal server error
  */

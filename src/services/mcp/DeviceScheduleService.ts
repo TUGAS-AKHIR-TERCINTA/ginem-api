@@ -1,8 +1,10 @@
 import { DeviceService } from '../DeviceServices'
-import { DeviceValueService } from '../DeviceLogServices'
-import { SchedulerLogModel } from '../../models/SchedulerLogModel'
-import type { ISchedulerLogCreationAttributes } from '../../interfaces/schedulerLog.interface'
+import {
+  SchedulerLogModel,
+  ISchedulerLogCreationModelAttributes
+} from '../../models/SchedulerLogModel'
 import logger from '../../../logs'
+import { DeviceLogService } from '../DeviceLogServices'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'
 export type ScheduledJobStatus = 'pending' | 'completed' | 'failed'
@@ -69,9 +71,9 @@ function runActuatorJob(job: ScheduledJob): void {
         return
       }
       const value = job.state === 'on' ? '1' : '0'
-      const deviceValue = await DeviceValueService.create({
-        deviceValueDeviceId: device.deviceId,
-        deviceValueValue: value
+      const deviceValue = await DeviceLogService.create({
+        deviceLogDeviceId: device.deviceId,
+        deviceLogData: value
       })
       job.status = 'completed'
       job.result = {
@@ -82,8 +84,8 @@ function runActuatorJob(job: ScheduledJob): void {
             : 'Device turned off (value 0)',
         deviceName: job.deviceName,
         deviceId: device.deviceId,
-        deviceValueId: deviceValue.deviceValueId,
-        deviceValueValue: deviceValue.deviceValueValue,
+        deviceLogId: deviceValue.deviceLogId,
+        deviceLogData: deviceValue.deviceLogData,
         executedAt: new Date().toISOString()
       }
       await recordSchedulerResult(job.id, 'completed', job.result)
@@ -109,15 +111,15 @@ function runSensorDataJob(job: ScheduledJob): void {
         await recordSchedulerResult(job.id, 'failed', undefined, job.error)
         return
       }
-      const items = await DeviceValueService.getLastValuesByDeviceId(device.deviceId, 10)
+      const items = await DeviceLogService.getLastLogsByDeviceId(device.deviceId, 10)
       job.status = 'completed'
       job.result = {
         deviceName: job.deviceName,
         deviceId: device.deviceId,
         count: items.length,
         values: items.map((v) => ({
-          deviceValueId: v.deviceValueId,
-          deviceValueValue: v.deviceValueValue,
+          deviceLogId: v.deviceLogId,
+          deviceLogData: v.deviceLogData,
           createdAt: v.createdAt
         })),
         executedAt: new Date().toISOString()
@@ -160,7 +162,7 @@ export function scheduleActuatorState(
   }
   jobs.set(id, job)
 
-  const createPayload: ISchedulerLogCreationAttributes = {
+  const createPayload: ISchedulerLogCreationModelAttributes = {
     jobId: id,
     type: 'actuator',
     deviceName,
@@ -200,7 +202,7 @@ export function scheduleSensorData(
   }
   jobs.set(id, job)
 
-  const createPayload: ISchedulerLogCreationAttributes = {
+  const createPayload: ISchedulerLogCreationModelAttributes = {
     jobId: id,
     type: 'sensor_data',
     deviceName,

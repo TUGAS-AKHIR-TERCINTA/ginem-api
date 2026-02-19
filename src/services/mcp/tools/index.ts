@@ -1,9 +1,9 @@
 export {
   listDevicesTool,
   getDeviceByIdTool,
-  getLastValueByDeviceNameTool,
-  getLast10ValuesByDeviceNameTool,
-  createDeviceValueByDeviceNameTool,
+  getLastLogByDeviceNameTool,
+  getLast10LogsByDeviceNameTool,
+  createDeviceLogByDeviceNameTool,
   setActuatorStateByDeviceNameTool,
   scheduleActuatorStateAfterMinutesTool,
   scheduleSensorDataAfterMinutesTool,

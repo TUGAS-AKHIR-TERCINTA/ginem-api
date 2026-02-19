@@ -2,7 +2,7 @@ import { tool } from '@langchain/core/tools'
 import { z } from 'zod'
 import { AppError } from '../../../errors/AppError'
 import { DeviceService } from '../../DeviceServices'
-import { DeviceValueService } from '../../DeviceLogServices'
+import { DeviceLogService } from '../../DeviceLogServices'
 import {
   scheduleActuatorState,
   scheduleSensorData,
@@ -69,28 +69,32 @@ export const getDeviceByIdTool = tool(
   }
 )
 
-export const getLastValueByDeviceNameTool = tool(
+export const getLastLogByDeviceNameTool = tool(
   async ({ deviceName }) => {
     const device = await DeviceService.findByName(deviceName)
+
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
-    const items = await DeviceValueService.getLastValuesByDeviceId(device.deviceId, 1)
+
+    const items = await DeviceLogService.getLastLogsByDeviceId(device.deviceId, 1)
+
     const last = items[0]
     if (last == null) {
       return JSON.stringify({
         deviceName,
         deviceId: device.deviceId,
         message: 'No device values recorded yet',
-        lastValue: null
+        lastValue: last as { deviceLogData: string } | null
       })
     }
+
     return JSON.stringify(
       {
         deviceName,
         deviceId: device.deviceId,
-        lastValue: last.deviceValueValue,
-        deviceValueId: last.deviceValueId,
+        lastValue: last.deviceLogData,
+        deviceLogId: last.deviceLogId,
         createdAt: last.createdAt
       },
       null,
@@ -98,30 +102,33 @@ export const getLastValueByDeviceNameTool = tool(
     )
   },
   {
-    name: 'get_last_value_by_device_name',
+    name: 'get_last_log_by_device_name',
     description:
-      'Get the latest (most recent) single value for a device by its name. Use when the user asks for the last value, current value, or latest reading of a device by name.',
+      'Get the latest (most recent) single log for a device by its name. Use when the user asks for the last log, current log, or latest reading of a device by name.',
     schema: z.object({
       deviceName: z.string().min(1).describe('The exact device name (from Device table)')
     })
   }
 )
 
-export const getLast10ValuesByDeviceNameTool = tool(
+export const getLast10LogsByDeviceNameTool = tool(
   async ({ deviceName }) => {
     const device = await DeviceService.findByName(deviceName)
+
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
-    const items = await DeviceValueService.getLastValuesByDeviceId(device.deviceId, 10)
+
+    const items = await DeviceLogService.getLastLogsByDeviceId(device.deviceId, 10)
+
     return JSON.stringify(
       {
         deviceName,
         deviceId: device.deviceId,
         count: items.length,
         values: items.map((v) => ({
-          deviceValueId: v.deviceValueId,
-          deviceValueValue: v.deviceValueValue,
+          deviceLogId: v.deviceLogId,
+          deviceLogData: v.deviceLogData,
           createdAt: v.createdAt
         }))
       },
@@ -130,52 +137,52 @@ export const getLast10ValuesByDeviceNameTool = tool(
     )
   },
   {
-    name: 'get_last_10_values_by_device_name',
+    name: 'get_last_10_logs_by_device_name',
     description:
-      'Get the last 10 values (most recent first) for a device by its name. Use when the user asks for last 10 values, recent readings, or history of values for a device by name.',
+      'Get the last 10 logs (most recent first) for a device by its name. Use when the user asks for last 10 logs, recent readings, or history of logs for a device by name.',
     schema: z.object({
       deviceName: z.string().min(1).describe('The exact device name (from Device table)')
     })
   }
 )
 
-export const createDeviceValueByDeviceNameTool = tool(
-  async ({ deviceName, deviceValueValue }) => {
+export const createDeviceLogByDeviceNameTool = tool(
+  async ({ deviceName, deviceLogData }) => {
     const device = await DeviceService.findByName(deviceName)
+
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
-    const deviceValue = await DeviceValueService.create({
-      deviceValueDeviceId: device.deviceId,
-      deviceValueValue
+
+    const deviceLog = await DeviceLogService.create({
+      deviceLogDeviceId: device.deviceId,
+      deviceLogData
     })
+
     return JSON.stringify(
       {
         success: true,
-        message: 'Device value created',
+        message: 'Device log created',
         deviceName,
         deviceId: device.deviceId,
-        deviceValueId: deviceValue.deviceValueId,
-        deviceValueValue: deviceValue.deviceValueValue,
-        createdAt: deviceValue.createdAt
+        deviceLogId: deviceLog.deviceLogId,
+        deviceLogData: deviceLog.deviceLogData,
+        createdAt: deviceLog.createdAt
       },
       null,
       2
     )
   },
   {
-    name: 'create_device_value',
+    name: 'create_device_log',
     description:
-      'Create a new device value for a device. Use the device name (deviceName) to identify the device, not deviceId. Use when the user wants to add a value, record a reading, or create a device value for a device by name. Do NOT use for turn on/off (hidupkan/matikan) — use set_actuator_state_by_device_name instead.',
+      'Create a new device log for a device. Use the device name (deviceName) to identify the device, not deviceId. Use when the user wants to add a value, record a reading, or create a device log for a device by name. Do NOT use for turn on/off (hidupkan/matikan) — use set_actuator_state_by_device_name instead.',
     schema: z.object({
       deviceName: z
         .string()
         .min(1)
         .describe('The exact device name (identifies which device to add the value to)'),
-      deviceValueValue: z
-        .string()
-        .min(1)
-        .describe('The value to store for this device value')
+      deviceLogData: z.string().min(1).describe('The data to store for this device log')
     })
   }
 )
@@ -187,9 +194,11 @@ export const createDeviceValueByDeviceNameTool = tool(
 export const setActuatorStateByDeviceNameTool = tool(
   async ({ deviceName, state }) => {
     const device = await DeviceService.findByName(deviceName)
+
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
+
     if (device.deviceType !== 'actuator') {
       return JSON.stringify({
         error: 'Device is not an actuator',
@@ -199,11 +208,14 @@ export const setActuatorStateByDeviceNameTool = tool(
           'Only devices with deviceType "actuator" can be turned on or off. Use create_device_value for other devices.'
       })
     }
-    const deviceValueValue = state === 'on' ? '1' : '0'
-    const deviceValue = await DeviceValueService.create({
-      deviceValueDeviceId: device.deviceId,
-      deviceValueValue
+
+    const deviceLogData = state === 'on' ? '1' : '0'
+
+    const deviceLog = await DeviceLogService.create({
+      deviceLogDeviceId: device.deviceId,
+      deviceLogData
     })
+
     return JSON.stringify(
       {
         success: true,
@@ -212,9 +224,9 @@ export const setActuatorStateByDeviceNameTool = tool(
         deviceName,
         deviceId: device.deviceId,
         deviceType: device.deviceType,
-        deviceValueId: deviceValue.deviceValueId,
-        deviceValueValue: deviceValue.deviceValueValue,
-        createdAt: deviceValue.createdAt
+        deviceLogId: deviceLog.deviceLogId,
+        deviceLogData: deviceLog.deviceLogData,
+        createdAt: deviceLog.createdAt
       },
       null,
       2
@@ -243,9 +255,11 @@ export const setActuatorStateByDeviceNameTool = tool(
 export const scheduleActuatorStateAfterMinutesTool = tool(
   async ({ deviceName, state, delayMinutes }) => {
     const device = await DeviceService.findByName(deviceName)
+
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
+
     if (device.deviceType !== 'actuator') {
       return JSON.stringify({
         error: 'Device is not an actuator',
@@ -254,6 +268,7 @@ export const scheduleActuatorStateAfterMinutesTool = tool(
         message: 'Only actuators can be scheduled to turn on/off.'
       })
     }
+
     const job = scheduleActuatorState(deviceName, state, delayMinutes)
     return JSON.stringify(
       {
@@ -296,9 +311,11 @@ export const scheduleActuatorStateAfterMinutesTool = tool(
 export const scheduleSensorDataAfterMinutesTool = tool(
   async ({ deviceName, delayMinutes }) => {
     const device = await DeviceService.findByName(deviceName)
+
     if (device == null) {
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
+
     const job = scheduleSensorData(deviceName, delayMinutes)
     return JSON.stringify(
       {
@@ -335,9 +352,11 @@ export const scheduleSensorDataAfterMinutesTool = tool(
 export const getScheduledJobResultTool = tool(
   async ({ jobId }) => {
     const job = getScheduledJob(jobId)
+
     if (job == null) {
       return JSON.stringify({ error: 'Scheduled job not found', jobId })
     }
+
     return JSON.stringify(
       {
         jobId: job.id,
@@ -411,9 +430,9 @@ export const listScheduledJobsTool = tool(
 export const deviceTools = [
   listDevicesTool,
   getDeviceByIdTool,
-  getLastValueByDeviceNameTool,
-  getLast10ValuesByDeviceNameTool,
-  createDeviceValueByDeviceNameTool,
+  getLastLogByDeviceNameTool,
+  getLast10LogsByDeviceNameTool,
+  createDeviceLogByDeviceNameTool,
   setActuatorStateByDeviceNameTool,
   scheduleActuatorStateAfterMinutesTool,
   scheduleSensorDataAfterMinutesTool,

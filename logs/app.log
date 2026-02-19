@@ -617,3 +617,55 @@
 {"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:40:47"}
 {"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:40:47"}
 {"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:41:14"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:42:00"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:47:19"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:47:19"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:48:40"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:49:00"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:49:00"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:49:17"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:49:28"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:49:28"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:49:45"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:49:46"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:49:46"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:50:08"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:50:14"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:50:14"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:50:38"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:50:54"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:50:54"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:51:10"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:51:10"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:51:10"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:51:25"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:52:59"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:52:59"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 12:53:14"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 12:54:21"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 12:54:21"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 13:22:31"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 13:22:50"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 13:22:50"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 13:23:07"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 13:24:01"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 13:24:01"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 13:24:14"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 13:24:20"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 13:24:20"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 13:24:33"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:24:42 +0000] \"GET /api/v1/docs/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:24:42"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:24:42 +0000] \"GET /api/v1/docs/swagger-ui.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:24:42"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:24:42 +0000] \"GET /api/v1/docs/swagger-ui-bundle.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:24:42"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:24:42 +0000] \"GET /api/v1/docs/swagger-ui-standalone-preset.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:24:42"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:24:42 +0000] \"GET /api/v1/docs/swagger-ui-init.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:24:42"}
+{"level":"error","message":"Unable to process request!: Table 'ta_project.device_logs' doesn't exist","service":"backend-service","stack":"Error\n    at Query.run (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/dialects/mysql/query.js:46:25)\n    at <anonymous> (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/sequelize.js:650:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async MySQLQueryInterface.insert (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/dialects/abstract/query-interface.js:795:21)\n    at async model.save (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/model.js:4154:35)\n    at async DeviceLogs.create (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/model.js:2305:12)\n    at async DeviceLogService.create (/Users/dear/Documents/DEVELOPER/TA/CORE/src/services/DeviceLogServices.ts:50:23)\n    at async createDeviceLog (/Users/dear/Documents/DEVELOPER/TA/CORE/src/controllers/deviceLog/create.ts:18:5)","timestamp":"2026-02-19 13:24:55"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:24:55 +0000] \"POST /api/v1/devices/logs HTTP/1.1\" 500 150 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:24:55"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 13:25:09"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 13:25:09"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 13:25:24"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-19 13:25:34"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-19 13:25:34"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-19 13:25:48"}
+{"level":"error","message":"Unable to process request!: Table 'ta_project.device_logs' doesn't exist","service":"backend-service","stack":"Error\n    at Query.run (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/dialects/mysql/query.js:46:25)\n    at <anonymous> (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/sequelize.js:650:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async MySQLQueryInterface.insert (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/dialects/abstract/query-interface.js:795:21)\n    at async model.save (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/model.js:4154:35)\n    at async DeviceLogs.create (/Users/dear/Documents/DEVELOPER/TA/CORE/node_modules/sequelize/src/model.js:2305:12)\n    at async DeviceLogService.create (/Users/dear/Documents/DEVELOPER/TA/CORE/src/services/DeviceLogServices.ts:50:23)\n    at async createDeviceLog (/Users/dear/Documents/DEVELOPER/TA/CORE/src/controllers/deviceLog/create.ts:18:5)","timestamp":"2026-02-19 13:26:05"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:26:05 +0000] \"POST /api/v1/devices/logs HTTP/1.1\" 500 150 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:26:05"}
