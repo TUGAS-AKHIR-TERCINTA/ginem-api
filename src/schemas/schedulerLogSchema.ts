@@ -3,14 +3,16 @@ import { jwtPayloadSchema } from './jwtPayloadSchema'
 
 export const findAllSchedulerLogSchema = z.object({
   jwtPayload: jwtPayloadSchema,
+  page: z.coerce.number().int().min(1).default(1),
+  size: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().optional(),
+  pagination: z.boolean().optional(),
+
   type: z.enum(['actuator', 'sensor_data']).optional(),
   status: z.enum(['pending', 'completed', 'failed']).optional(),
   deviceName: z.string().optional(),
-  page: z.number().int().optional(),
-  size: z.number().int().optional(),
-  pagination: z.boolean().optional(),
+
   dateFrom: z.date().optional(),
-  search: z.string().optional(),
   dateTo: z.date().optional()
 })
 

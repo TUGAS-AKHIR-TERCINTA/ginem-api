@@ -36,13 +36,13 @@ export class SchedulerLogService {
         type,
         status,
         deviceName,
-        page = 0,
+        page = 1,
         size = 20,
         pagination = true,
         dateFrom,
         dateTo
       } = options
-      const pager = new Pagination(Number(page) || 0, Number(size) || 20)
+      const pager = new Pagination(Number(page) || 1, Number(size) || 20)
 
       const where: Record<string, unknown> = { deleted: 0 }
 

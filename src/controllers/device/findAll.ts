@@ -12,7 +12,7 @@ export const findAllDevice = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { page, size, pagination, search } = req.query as FindAllDeviceSchema
+    const { page, size, pagination, search } = req.query as unknown as FindAllDeviceSchema
 
     const result = await DeviceService.findAll({
       page,

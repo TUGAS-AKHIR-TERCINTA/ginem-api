@@ -59,7 +59,7 @@ export class DeviceLogService {
   static async findAll(
     options: FindAllDeviceLogOptions = {}
   ): Promise<PaginatedDeviceLogResult> {
-    const { deviceLogDeviceId, page = 0, size = 10, pagination = true } = options
+    const { deviceLogDeviceId, page = 1, size = 10, pagination = true } = options
     const pager = new Pagination(Number(page) || 0, Number(size) || 10)
 
     const where: Record<string, unknown> = { deleted: 0 }

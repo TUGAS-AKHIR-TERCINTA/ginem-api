@@ -6,6 +6,7 @@ import { AppError } from '../utilities/AppError'
 
 /** Options for listing devices with optional pagination */
 export interface FindAllDeviceOptions {
+  /** 1-based page number (page 1 = first page) */
   page?: number
   size?: number
   pagination?: boolean
@@ -63,13 +64,13 @@ export class DeviceService {
   }
 
   /**
-   * List devices with optional pagination.
+   * List devices with optional pagination. Page is 1-based (page 1 = first page).
    */
   static async findAll(
     options: FindAllDeviceOptions = {}
   ): Promise<PaginatedDeviceResult> {
-    const { page = 0, size = 10, pagination = true } = options
-    const pager = new Pagination(Number(page) || 0, Number(size) || 10)
+    const { page = 1, size = 10, pagination = true } = options
+    const pager = new Pagination(Number(page) || 1, Number(size) || 10)
 
     const result = await DeviceModel.findAndCountAll({
       where: { deleted: 0 },

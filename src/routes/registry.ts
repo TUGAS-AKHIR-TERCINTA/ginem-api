@@ -1,7 +1,7 @@
 import AuthRoute from './AuthRouter'
 import DeviceRoute from './DeviceRouter'
 import HealthRoute from './HelthRouter'
-import McpRoute from './McpRouter'
+import ChatRoute from './ChatRouter'
 import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
 import SchedulerLogRoute from './SchedulerLogRouter'
@@ -13,7 +13,7 @@ const RoutesRegistry = {
   AppLogRoute,
   AuthRoute,
   HealthRoute,
-  McpRoute,
+  ChatRoute,
   MyProfileRoute,
   OtpRoute,
   DeviceRoute,

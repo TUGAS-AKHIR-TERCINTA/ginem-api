@@ -888,3 +888,86 @@
 {"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:33:44"}
 {"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:33:44"}
 {"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:33:59"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:35:20"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:36:01 +0000] \"GET /api/v1/logs HTTP/1.1\" 400 130 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:36:01"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:36:13 +0000] \"GET /api/v1/logs HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:36:13"}
+{"level":"warn","message":"[AppError] 409: Device already exists","service":"backend-service","timestamp":"2026-02-20 11:36:49"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:36:49 +0000] \"POST /api/v1/devices HTTP/1.1\" 409 129 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:36:49"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:37:14 +0000] \"GET /api/v1/devices HTTP/1.1\" 200 479 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:37:14"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:37:29 +0000] \"GET /api/v1/devices?page=0 HTTP/1.1\" 400 119 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:37:29"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:37:37 +0000] \"GET /api/v1/devices?page=1 HTTP/1.1\" 400 119 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:37:37"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:38:03 +0000] \"GET /api/v1/logs?page=1 HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:38:03"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:38:36"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:38:36"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:38:45"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:38:55 +0000] \"GET /api/v1/devices?page=1 HTTP/1.1\" 400 119 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:38:55"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:39:00 +0000] \"GET /api/v1/devices?page=1 HTTP/1.1\" 400 119 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:39:00"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:39:18"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:39:18"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:39:27"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:39:33 +0000] \"GET /api/v1/devices?page=1 HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:39:33"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:39:42 +0000] \"GET /api/v1/devices?page=0 HTTP/1.1\" 400 108 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:39:42"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:40:41"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:40:41"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:40:49"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:48:51"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:48:51"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:49:12"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:49:24"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:49:24"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:49:39"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:50:37 +0000] \"GET /api/v1/logs?page=1 HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:50:37"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:50:47 +0000] \"GET /api/v1/logs?page=1 HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:50:47"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:51:51"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:51:51"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:52:11"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:52:15"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:52:15"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:52:28"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:52:35 +0000] \"GET /api/v1/logs?page=1 HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:52:35"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:52:39 +0000] \"GET /api/v1/devices?page=0 HTTP/1.1\" 400 108 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:52:39"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:52:45 +0000] \"GET /api/v1/devices?page=1 HTTP/1.1\" 200 479 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:52:45"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:53:03 +0000] \"GET /api/v1/devices?page=0 HTTP/1.1\" 400 108 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:53:03"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:53:08 +0000] \"GET /api/v1/devices?page=1 HTTP/1.1\" 200 479 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:53:08"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:53:13 +0000] \"GET /api/v1/devices?page=1&size=0 HTTP/1.1\" 400 108 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:53:13"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:53:18 +0000] \"GET /api/v1/devices?page=1&size=1 HTTP/1.1\" 200 479 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:53:18"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:04:53:23 +0000] \"GET /api/v1/devices?page=1&size=1&search=ewe HTTP/1.1\" 200 479 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 11:53:23"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:06:11 +0000] \"GET /api/v1/devices?page=1&size=1&search=ewe HTTP/1.1\" 200 479 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:06:11"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:06:40 +0000] \"GET /api/v1/devices/logs HTTP/1.1\" 200 654 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:06:40"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:06:50 +0000] \"GET /api/v1/devices/logs?page=0 HTTP/1.1\" 200 654 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:06:50"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 12:07:43"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 12:07:43"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 12:07:57"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 12:08:32"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 12:08:32"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 12:08:47"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 12:09:53"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 12:09:53"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 12:10:18"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:10:37 +0000] \"GET /api/v1/devices?page=1&size=1&search=ewe HTTP/1.1\" 200 479 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:10:37"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:10:42 +0000] \"GET /api/v1/devices/logs?page=0 HTTP/1.1\" 400 108 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:10:42"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:10:48 +0000] \"GET /api/v1/devices/logs?page=1 HTTP/1.1\" 200 654 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:10:48"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:11:14 +0000] \"GET /api/v1/scheduler-logs?page=1 HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:11:14"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:11:20 +0000] \"GET /api/v1/scheduler-logs?page=0 HTTP/1.1\" 400 108 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:11:20"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:11:27 +0000] \"GET /api/v1/scheduler-logs?page=1 HTTP/1.1\" 200 179 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:11:27"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 12:31:54"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 12:31:54"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 12:32:10"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 12:32:23"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 12:32:23"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 12:32:37"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 12:32:40"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 12:32:40"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 12:33:02"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 12:33:03"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 12:33:03"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 12:36:56"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:07 +0000] \"GET /api/v1/docs/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:07"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:07 +0000] \"GET /api/v1/docs/swagger-ui.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:07"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:07 +0000] \"GET /api/v1/docs/swagger-ui-bundle.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:07"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:07 +0000] \"GET /api/v1/docs/swagger-ui-standalone-preset.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:07"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:07 +0000] \"GET /api/v1/docs/swagger-ui-init.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:07"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:21 +0000] \"POST /api/v1/chat HTTP/1.1\" 400 130 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:21"}
+{"level":"info","message":"User John Doe logged in successfully","service":"backend-service","timestamp":"2026-02-20 12:37:31"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:31 +0000] \"POST /api/v1/auth/login HTTP/1.1\" 200 340 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:31"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:05:37:47 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 209 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 12:37:47"}
