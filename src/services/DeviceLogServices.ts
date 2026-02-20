@@ -5,7 +5,7 @@ import {
 import { DeviceModel } from '../models/DeviceModel'
 import { DeviceLogModel } from '../models/DeviceLogModel'
 import { Pagination } from '../utilities/pagination'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../utilities/AppError'
 
 /** Options for listing device logs with optional pagination */
 export interface FindAllDeviceLogOptions {
@@ -44,9 +44,11 @@ export class DeviceLogService {
     const deviceExists = await DeviceModel.findOne({
       where: { deleted: 0, deviceId: payload.deviceLogDeviceId }
     })
+
     if (deviceExists == null) {
       throw AppError.notFound('Device not found')
     }
+
     const deviceLog = await DeviceLogModel.create(payload)
     return deviceLog
   }
@@ -61,6 +63,7 @@ export class DeviceLogService {
     const pager = new Pagination(Number(page) || 0, Number(size) || 10)
 
     const where: Record<string, unknown> = { deleted: 0 }
+
     if (deviceLogDeviceId != null) {
       where.deviceLogDeviceId = deviceLogDeviceId
     }
@@ -99,9 +102,11 @@ export class DeviceLogService {
         }
       ]
     })
+
     if (deviceLog == null) {
       throw AppError.notFound('Device log not found')
     }
+
     return deviceLog
   }
 
@@ -114,6 +119,7 @@ export class DeviceLogService {
       const deviceExists = await DeviceModel.findOne({
         where: { deleted: 0, deviceId: payload.deviceLogDeviceId }
       })
+
       if (deviceExists == null) {
         throw AppError.notFound('Device not found')
       }
@@ -122,9 +128,11 @@ export class DeviceLogService {
     const [affectedRows] = await DeviceLogModel.update(payload, {
       where: { deleted: 0, deviceLogId: payload.deviceLogId }
     })
+
     if (affectedRows === 0) {
       throw AppError.notFound('Device log not found')
     }
+
     return affectedRows
   }
 
@@ -136,9 +144,11 @@ export class DeviceLogService {
     const deviceLog = await DeviceLogModel.findOne({
       where: { deleted: 0, deviceLogId }
     })
+
     if (deviceLog == null) {
       throw AppError.notFound('Device log not found')
     }
+
     deviceLog.deleted = true
     await deviceLog.save()
     return deviceLog

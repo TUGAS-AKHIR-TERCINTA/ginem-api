@@ -2,7 +2,7 @@ import { DeviceLogModel } from '../models/DeviceLogModel'
 import { DeviceModel } from '../models/DeviceModel'
 import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../utilities/AppError'
 
 /** Options for listing devices with optional pagination */
 export interface FindAllDeviceOptions {
@@ -126,9 +126,11 @@ export class DeviceService {
     const device = await DeviceModel.findOne({
       where: { deleted: 0, deviceId }
     })
+
     if (device == null) {
       throw AppError.notFound('Device not found')
     }
+
     device.deleted = true
     await device.save()
     return device
@@ -153,6 +155,7 @@ export class DeviceService {
     const device = await DeviceModel.findOne({
       where: { deleted: 0, deviceName }
     })
+
     return device
   }
 }

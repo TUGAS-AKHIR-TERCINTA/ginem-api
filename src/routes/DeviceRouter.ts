@@ -16,21 +16,25 @@ DeviceRoute.get(
   MiddleWares.validate({ query: findAllDeviceSchema }),
   DeviceController.findAll
 )
+
 DeviceRoute.get(
   '/detail/:deviceId',
   MiddleWares.validate({ params: findDetailDeviceSchema }),
   DeviceController.findDetail
 )
+
 DeviceRoute.post(
   '/',
   MiddleWares.validate({ body: createDeviceSchema }),
   DeviceController.create
 )
+
 DeviceRoute.patch(
   '/',
   MiddleWares.validate({ body: updateDeviceSchema }),
   DeviceController.update
 )
+
 DeviceRoute.delete(
   '/:deviceId',
   MiddleWares.validate({ params: removeDeviceSchema }),

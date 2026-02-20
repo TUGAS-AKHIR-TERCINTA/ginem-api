@@ -1,72 +1,27 @@
 import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
-import { updateMyProfileSchema } from '../../schemas/myProfileSchema'
-import {
-  handleServerError,
-  handleValidationError,
-  validateRequest
-} from '../../utilities/requestHandler'
-import { IUserAttributes, UserModel } from '../../models/UserModel'
-import { appConfigs } from '../../configs'
+import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
+import { UpdateMyProfileSchema } from '../../schemas/myProfileSchema'
+import { MyProfileService } from '../../services/MyProfileService'
 
 export const updateMyProfile = async (
   req: IAuthenticatedRequest,
   res: Response
-): Promise<any> => {
-  const { error: validationError, value: validatedData } = validateRequest(
-    updateMyProfileSchema,
-    req.body
-  )
-
-  if (validationError) return handleValidationError(res, validationError)
+): Promise<Response> => {
+  const payload = req.body as UpdateMyProfileSchema
 
   try {
-    if ('userEmail' in validatedData) {
-      const userNameChek = await UserModel.findOne({
-        where: {
-          deleted: 0,
-          userEmail: validatedData.userEmail
-        }
-      })
-
-      if (userNameChek !== null) {
-        const message = 'email sudah digunakan!'
-        return res.status(StatusCodes.UNAUTHORIZED).json(ResponseData.error({ message }))
-      }
-    }
-
-    if ('userPassword' in validatedData) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      validatedData.userPassword = require('crypto')
-        .createHash('sha1')
-        .update(validatedData.userPassword + appConfigs.secret.passwordEncryption)
-        .digest('hex')
-    }
-
-    const newData: IUserAttributes | any = {
-      ...(validatedData?.userName?.length > 0 && {
-        userName: validatedData?.userName
-      }),
-      ...(validatedData?.userPassword?.length > 0 && {
-        userPassword: validatedData?.userPassword
-      }),
-      ...(validatedData?.userEmail?.length > 0 && {
-        userEmail: validatedData?.userEmail
-      })
-    }
-
-    await UserModel.update(newData, {
-      where: {
-        deleted: 0,
-        userId: req?.jwtPayload?.userId
-      }
+    await MyProfileService.updateProfile(payload.jwtPayload!.userId!, {
+      userName: payload.userName,
+      userPassword: payload.userPassword,
+      userEmail: payload.userEmail
     })
-
-    const response = ResponseData.success({ message: 'Profile updated successfully' })
-    return res.status(StatusCodes.OK).json(response)
-  } catch (serverError) {
-    return handleServerError(res, serverError)
+    return res
+      .status(StatusCodes.OK)
+      .json(ResponseData.success({ message: 'Profile updated successfully' }))
+  } catch (err) {
+    return handleError(res, err)
   }
 }

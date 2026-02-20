@@ -1,6 +1,6 @@
 import { tool } from '@langchain/core/tools'
 import { z } from 'zod'
-import { AppError } from '../../../errors/AppError'
+import { AppError } from '../../../utilities/AppError'
 import { DeviceService } from '../../DeviceServices'
 import { DeviceLogService } from '../../DeviceLogServices'
 import {

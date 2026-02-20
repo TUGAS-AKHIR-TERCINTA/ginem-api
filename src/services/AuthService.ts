@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { Op } from 'sequelize'
 import logger from '../../logs'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../utilities/AppError'
 import { generateAccessToken } from '../utilities/jwt'
 import { hashPassword } from '../utilities/scurePassword'
 import { sequelizeInit } from '../configs/database'

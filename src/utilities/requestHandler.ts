@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Response } from 'express'
 import { ResponseData } from './response'
 import logger from '../../logs'
-import { AppError } from '../errors/AppError'
+import { AppError } from './AppError'
 import { AppLogService } from '../services/AppLogService'
 
 export function handleServerError(res: Response, err: unknown) {

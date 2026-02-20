@@ -683,3 +683,153 @@
 {"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:37:43 +0000] \"GET /api/v1/devices/detail/1 HTTP/1.1\" 200 511 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:37:43"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:37:53 +0000] \"POST /api/v1/devices/logs HTTP/1.1\" 201 113 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:37:53"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [19/Feb/2026:06:37:57 +0000] \"GET /api/v1/devices/detail/1 HTTP/1.1\" 200 586 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-19 13:37:57"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:24:22"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:03:25:07 +0000] \"GET /api/v1/docs/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 10:25:07"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:03:25:08 +0000] \"GET /api/v1/docs/swagger-ui-init.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 10:25:08"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:03:25:08 +0000] \"GET /api/v1/docs/swagger-ui.css HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 10:25:08"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:03:25:08 +0000] \"GET /api/v1/docs/swagger-ui-standalone-preset.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 10:25:08"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Feb/2026:03:25:08 +0000] \"GET /api/v1/docs/swagger-ui-bundle.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-20 10:25:08"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:28:09"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:28:09"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:28:23"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:32:34"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:32:34"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:32:52"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:33:52"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:33:52"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:34:07"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:36:47"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:36:47"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:36:59"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:37:10"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:37:10"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:37:22"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:37:28"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:37:28"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:37:39"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:37:41"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:37:41"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:37:50"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:37:52"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:37:52"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:38:01"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:39:10"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:39:10"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:39:25"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:39:30"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:39:30"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:39:36"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:39:42"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:39:42"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:39:52"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:40:29"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:40:29"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:40:46"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:42:21"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:42:21"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:42:38"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:42:42"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:42:42"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:42:50"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:43:02"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:43:02"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:43:15"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:43:25"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:43:25"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:43:35"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:43:42"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:43:42"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:43:51"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:46:29"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:46:29"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:46:50"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:47:28"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:47:28"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:47:41"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:52:58"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:52:58"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:53:14"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:53:55"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:53:55"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:54:15"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:57:12"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:57:12"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:57:27"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:57:45"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:57:45"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:58:06"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:58:22"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:58:22"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:58:35"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:58:42"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:58:42"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:58:56"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 10:59:15"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 10:59:15"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 10:59:24"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:01:28"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:01:28"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:01:38"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:02:01"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:02:01"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:02:11"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:03:57"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:03:57"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:04:06"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:04:38"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:04:38"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:04:50"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:04:59"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:04:59"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:05:15"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:05:28"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:05:28"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:05:43"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:05:47"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:05:47"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:05:57"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:07:28"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:07:28"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:10:23"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:10:53"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:10:53"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:11:03"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:11:34"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:11:34"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:11:45"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:12:05"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:12:05"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:12:21"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:12:37"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:12:37"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:12:46"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:13:03"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:13:03"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:13:38"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:15:57"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:15:57"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:16:11"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:16:21"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:16:21"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:16:32"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:16:46"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:16:46"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:16:58"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:17:32"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:17:32"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:17:42"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:17:49"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:17:49"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:18:03"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:18:24"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:18:24"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:18:34"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:18:46"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:18:46"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:19:11"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:19:11"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:19:12"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:19:22"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 11:19:49"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 11:19:49"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 11:20:03"}

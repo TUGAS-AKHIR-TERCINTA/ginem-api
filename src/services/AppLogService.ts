@@ -1,7 +1,7 @@
 import { Op } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
 import { AppLogModel, type AppLogLevel } from '../models/AppLogModel'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../utilities/AppError'
 import { Pagination } from '../utilities/pagination'
 import logger from '../../logs'
 
