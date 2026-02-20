@@ -2,6 +2,7 @@ import weaviate, { type WeaviateClient } from 'weaviate-client'
 import { StatusCodes } from 'http-status-codes'
 import { appConfigs } from '../configs'
 import { AppError } from '../utilities/AppError'
+import { VectorIndexesModel, VectorIndexSource } from '../models/VectorIndexesModel'
 import logger from '../../logs'
 
 type WeaviateMode = 'local' | 'cloud'
@@ -121,6 +122,19 @@ export class WeaviateService {
 
       const failedCount = errors.length
       const successCount = objects.length - failedCount
+
+      // Simpan ke MySQL (vector_indexes) untuk setiap item yang berhasil di-index ke Weaviate
+      const successIndices = Object.keys(result.uuids ?? {}).map(Number)
+      const toInsert = successIndices
+        .filter((i) => i >= 0 && i < objects.length)
+        .map((i) => ({
+          vectorIndexText: objects[i].text,
+          vectorIndexSource:
+            objects[i].source === 'pdf' ? VectorIndexSource.PDF : VectorIndexSource.TEXT
+        }))
+      if (toInsert.length > 0) {
+        await VectorIndexesModel.bulkCreate(toInsert)
+      }
 
       return {
         successCount,
