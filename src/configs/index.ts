@@ -61,7 +61,11 @@ export const appConfigs = {
     /** Cloud: API key for Weaviate Cloud. Required when mode=cloud */
     apiKey: process.env.WEAVIATE_API_KEY ?? '',
     /** Weaviate class name (set in .env as WEAVIATE_CLASS, e.g. ta-project) */
-    className: process.env.WEAVIATE_CLASS ?? 'ta-project'
+    className: process.env.WEAVIATE_CLASS ?? 'ta-project',
+    /** Text vectorizer: "text2vec-openai" or "text2vec-transformers". Used when creating collection if not exists. */
+    vectorizer: (process.env.WEAVIATE_VECTORIZER ?? 'text2vec-openai').toLowerCase() as
+      | 'text2vec-openai'
+      | 'text2vec-transformers'
   },
   dataBase: {
     development: {

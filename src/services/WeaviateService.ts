@@ -26,12 +26,74 @@ export interface IndexToWeaviateResult {
   errors?: Array<{ index: number; message: string }>
 }
 
+/** Single chunk returned from Weaviate search (for RAG context) */
+export interface WeaviateSearchHit {
+  text: string
+  source: string
+}
+
+/** Shape of our collection: text + source (used for vectorizer config) */
+type CollectionProperties = { text: string; source: string }
+
 /**
  * Weaviate service: connect to Weaviate and index data.
- * Collection must already exist in Weaviate; this service only inserts objects.
+ * Uses a single class (WEAVIATE_CLASS). If that collection does not exist or exists without a text vectorizer,
+ * it is created or replaced with one that uses the configured vectorizer (text2vec-openai or text2vec-transformers).
  */
 export class WeaviateService {
   private static client: WeaviateClient | null = null
+
+  /**
+   * Ensure the single Weaviate collection exists and uses a text vectorizer.
+   * - If the collection does not exist: create it with vectorizer.
+   * - If it exists but has no vectorizer or vectorizer is 'none': delete and recreate with vectorizer (one class only, with vectorize).
+   * Uses WEAVIATE_VECTORIZER and properties: text, source.
+   */
+  static async ensureCollection(): Promise<void> {
+    try {
+      const client = await WeaviateService.getClient()
+      const className = appConfigs.weaviate.className
+      const vectorizer = appConfigs.weaviate.vectorizer
+
+      const exists = await client.collections.exists(className)
+      if (exists) {
+        const config = await client.collections.export(className)
+        const vectorConfigs = config?.vectorizers ? Object.values(config.vectorizers) : []
+        const hasTextVectorizer = vectorConfigs.some(
+          (v) => v?.vectorizer?.name && v.vectorizer.name !== 'none'
+        )
+        if (hasTextVectorizer) return
+        logger.warn(
+          `[WeaviateService] Collection "${className}" exists without a text vectorizer; replacing with a single class that uses vectorizer ${vectorizer}.`
+        )
+        await client.collections.delete(className)
+      }
+
+      const vectorizerConfig =
+        vectorizer === 'text2vec-transformers'
+          ? weaviate.configure.vectorizer.text2VecTransformers<CollectionProperties>()
+          : weaviate.configure.vectorizer.text2VecOpenAI<CollectionProperties>()
+
+      await client.collections.create({
+        name: className,
+        properties: [
+          { name: 'text', dataType: 'text' as const },
+          { name: 'source', dataType: 'text' as const }
+        ],
+        vectorizers: vectorizerConfig
+      })
+      logger.info(
+        `[WeaviateService] Collection "${className}" created with vectorizer ${vectorizer} (single class only).`
+      )
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      logger.error(`[WeaviateService] ensureCollection failed: ${String(error)}`)
+      throw new AppError(
+        'Failed to ensure Weaviate collection',
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
+    }
+  }
 
   /**
    * Get or create a Weaviate client (connection reused).
@@ -96,6 +158,7 @@ export class WeaviateService {
     payload: IndexToWeaviatePayload
   ): Promise<IndexToWeaviateResult> {
     try {
+      await WeaviateService.ensureCollection()
       const client = await WeaviateService.getClient()
       const { objects } = payload
       const className = appConfigs.weaviate.className
@@ -148,6 +211,44 @@ export class WeaviateService {
         'Failed to index data to Weaviate',
         StatusCodes.INTERNAL_SERVER_ERROR
       )
+    }
+  }
+
+  /**
+   * Search the Weaviate collection by text (vector similarity). Used for RAG: retrieve relevant chunks for a user query.
+   * @param query - Search query (e.g. user question)
+   * @param limit - Max number of results (default 5)
+   * @returns Array of { text, source } from matching objects; empty if none or on error (logged)
+   */
+  static async search(query: string, limit: number = 5): Promise<WeaviateSearchHit[]> {
+    try {
+      if (!query?.trim()) return []
+
+      await WeaviateService.ensureCollection()
+      const client = await WeaviateService.getClient()
+      const className = appConfigs.weaviate.className
+      const collection = client.collections.use(className)
+
+      const result = await collection.query.nearText(query.trim(), {
+        limit: Math.min(Math.max(1, limit), 20)
+      })
+
+      const objects = result?.objects ?? []
+      const hits: WeaviateSearchHit[] = []
+      for (const obj of objects) {
+        const props = obj?.properties as Record<string, unknown> | undefined
+        if (props && typeof props.text === 'string') {
+          hits.push({
+            text: props.text,
+            source: typeof props.source === 'string' ? props.source : 'text'
+          })
+        }
+      }
+      return hits
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      logger.error(`[WeaviateService] search failed: ${String(error)}`)
+      return []
     }
   }
 

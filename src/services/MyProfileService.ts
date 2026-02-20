@@ -1,4 +1,3 @@
-import { StatusCodes } from 'http-status-codes'
 import { createHash } from 'crypto'
 import { UserModel } from '../models/UserModel'
 import type { UserInstance, IUserAttributes } from '../models/UserModel'

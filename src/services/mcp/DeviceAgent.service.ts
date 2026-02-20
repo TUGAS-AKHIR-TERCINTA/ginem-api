@@ -1,8 +1,9 @@
 import { createAgent } from 'langchain'
 import { LLMService } from '../LLMServices'
+import { WeaviateService } from '../WeaviateService'
 import { deviceTools } from './tools/device.tools'
 
-const DEVICE_AGENT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database.
+const DEVICE_AGENT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
 
 You have tools to:
 - list_devices: List devices with optional pagination (page, size).
@@ -31,15 +32,22 @@ export class DeviceAgentService {
   })
 
   /**
-   * Run the device agent with a user message.
-   * The agent may call list_devices and/or get_device_by_id, then reply using the LLM.
+   * Run the device agent with a user message. Uses RAG: retrieves relevant chunks from Weaviate and injects them as context before the user question.
    *
-   * @param userMessage - Natural language question about devices (e.g. "List all devices", "Get device with ID 5")
+   * @param userMessage - Natural language question (e.g. about devices or knowledge base)
    * @returns Final assistant message content (string)
    */
   static async query(userMessage: string): Promise<string> {
+    let messageToSend = userMessage
+
+    const ragHits = await WeaviateService.search(userMessage, 5)
+    if (ragHits.length > 0) {
+      const contextBlock = ragHits.map((h) => h.text).join('\n\n')
+      messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
+    }
+
     const result = await DeviceAgentService.agent.invoke({
-      messages: [{ role: 'human', content: userMessage }]
+      messages: [{ role: 'human', content: messageToSend }]
     })
 
     const lastMessage = result.messages?.at(-1)
