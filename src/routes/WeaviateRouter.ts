@@ -5,9 +5,10 @@ import { indexToWeaviateSchema } from '../schemas/weaviateSchema'
 
 const WeaviateRoute = Router()
 
+WeaviateRoute.use(MiddleWares.useAuthorization)
+
 WeaviateRoute.post(
   '/index',
-  MiddleWares.useAuthorization,
   MiddleWares.validate({ body: indexToWeaviateSchema }),
   WeaviateController.indexToWeaviate
 )

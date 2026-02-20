@@ -11,6 +11,8 @@ import {
 
 const DeviceRoute = Router()
 
+DeviceRoute.use(MiddleWares.useAuthorization)
+
 DeviceRoute.get(
   '/',
   MiddleWares.validate({ query: findAllDeviceSchema }),

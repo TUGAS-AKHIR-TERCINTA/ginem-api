@@ -5,6 +5,8 @@ import { mcpQuerySchema } from '../schemas/mcpSchema'
 
 const McpRoute = Router()
 
+McpRoute.use(MiddleWares.useAuthorization)
+
 McpRoute.post('/', MiddleWares.validate({ body: mcpQuerySchema }), McpController.query)
 
 export default McpRoute

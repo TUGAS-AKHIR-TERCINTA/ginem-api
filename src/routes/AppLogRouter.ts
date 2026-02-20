@@ -5,7 +5,8 @@ import { createAppLogSchema, findAllAppLogsSchema } from '../schemas/AppLogSchem
 
 const AppLogRoute = Router()
 
-// LogRouter.use(MiddleWares.useAuthorization)
+AppLogRoute.use(MiddleWares.useAuthorization)
+
 AppLogRoute.post(
   '/',
   MiddleWares.validate({ body: createAppLogSchema }),

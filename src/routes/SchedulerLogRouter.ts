@@ -6,6 +6,8 @@ import { findAllAppLogsSchema } from '../schemas/AppLogSchema'
 
 const SchedulerLogRoute = Router()
 
+SchedulerLogRoute.use(MiddleWares.useAuthorization)
+
 SchedulerLogRoute.get(
   '/',
   MiddleWares.validate({ query: findAllAppLogsSchema }),
