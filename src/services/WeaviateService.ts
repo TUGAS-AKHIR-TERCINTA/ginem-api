@@ -56,16 +56,21 @@ export class WeaviateService {
       const vectorizer = appConfigs.weaviate.vectorizer
 
       const exists = await client.collections.exists(className)
+
       if (exists) {
         const config = await client.collections.export(className)
         const vectorConfigs = config?.vectorizers ? Object.values(config.vectorizers) : []
+
         const hasTextVectorizer = vectorConfigs.some(
           (v) => v?.vectorizer?.name && v.vectorizer.name !== 'none'
         )
+
         if (hasTextVectorizer) return
+
         logger.warn(
           `[WeaviateService] Collection "${className}" exists without a text vectorizer; replacing with a single class that uses vectorizer ${vectorizer}.`
         )
+
         await client.collections.delete(className)
       }
 
@@ -82,6 +87,7 @@ export class WeaviateService {
         ],
         vectorizers: vectorizerConfig
       })
+
       logger.info(
         `[WeaviateService] Collection "${className}" created with vectorizer ${vectorizer} (single class only).`
       )
@@ -106,6 +112,20 @@ export class WeaviateService {
 
     try {
       const { weaviate: config } = appConfigs
+      const openAIApiKey = appConfigs.llm?.openAIApiKey?.trim()
+      const vectorizer = config.vectorizer
+
+      // text2vec-openai needs OpenAI API key in header so Weaviate can call OpenAI for embeddings
+      const headers: Record<string, string> = {}
+      if (vectorizer === 'text2vec-openai') {
+        if (!openAIApiKey) {
+          throw AppError.badRequest(
+            'OPENAI_API_KEY is required when using Weaviate vectorizer text2vec-openai. Set it in .env.'
+          )
+        }
+        headers['X-OpenAI-Api-Key'] = openAIApiKey
+      }
+
       const mode: WeaviateMode = config.mode === 'cloud' ? 'cloud' : 'local'
 
       let client: WeaviateClient
@@ -124,7 +144,8 @@ export class WeaviateService {
         }
         client = await weaviate.connectToWeaviateCloud(clusterUrl, {
           authCredentials: new weaviate.ApiKey(config.apiKey),
-          skipInitChecks: true
+          skipInitChecks: true,
+          ...(Object.keys(headers).length > 0 && { headers })
         })
       } else {
         client = await weaviate.connectToCustom({
@@ -134,7 +155,8 @@ export class WeaviateService {
           grpcHost: config.httpHost,
           grpcPort: config.grpcPort,
           grpcSecure: config.httpSecure,
-          skipInitChecks: true
+          skipInitChecks: true,
+          ...(Object.keys(headers).length > 0 && { headers })
         })
       }
 
@@ -174,6 +196,7 @@ export class WeaviateService {
       )
 
       const errors: Array<{ index: number; message: string }> = []
+
       if (result.hasErrors && result.errors != null) {
         for (const [key, err] of Object.entries(result.errors)) {
           errors.push({
@@ -188,6 +211,7 @@ export class WeaviateService {
 
       // Simpan ke MySQL (vector_indexes) untuk setiap item yang berhasil di-index ke Weaviate
       const successIndices = Object.keys(result.uuids ?? {}).map(Number)
+
       const toInsert = successIndices
         .filter((i) => i >= 0 && i < objects.length)
         .map((i) => ({
@@ -195,6 +219,7 @@ export class WeaviateService {
           vectorIndexSource:
             objects[i].source === 'pdf' ? VectorIndexSource.PDF : VectorIndexSource.TEXT
         }))
+
       if (toInsert.length > 0) {
         await VectorIndexesModel.bulkCreate(toInsert)
       }

@@ -1019,3 +1019,61 @@
 {"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-20 13:55:52"}
 {"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-20 13:55:52"}
 {"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-20 13:56:05"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:11:37"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:02 +0000] \"GET /api/v1/docs/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:02"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:02 +0000] \"GET /api/v1/docs/swagger-ui-init.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:02"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:02 +0000] \"GET /api/v1/docs/swagger-ui.css HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:02"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:02 +0000] \"GET /api/v1/docs/swagger-ui-standalone-preset.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:02"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:02 +0000] \"GET /api/v1/docs/swagger-ui-bundle.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:02"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:15 +0000] \"GET /api/v1/logs HTTP/1.1\" 400 130 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:15"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:27 +0000] \"POST /api/v1/chat HTTP/1.1\" 400 130 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:27"}
+{"level":"info","message":"User John Doe logged in successfully","service":"backend-service","timestamp":"2026-02-21 13:12:37"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:37 +0000] \"POST /api/v1/auth/login HTTP/1.1\" 200 340 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:37"}
+{"level":"error","message":"[WeaviateService] ensureCollection failed: TypeError: fetch failed","service":"backend-service","timestamp":"2026-02-21 13:12:51"}
+{"level":"warn","message":"[AppError] 500: Failed to ensure Weaviate collection","service":"backend-service","timestamp":"2026-02-21 13:12:51"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:12:51 +0000] \"POST /api/v1/chat HTTP/1.1\" 500 144 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:12:51"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:34:58"}
+{"level":"error","message":"[WeaviateService] ensureCollection failed: WeaviateUnauthenticatedError: Unauthenticated: {\"code\":401,\"message\":\"unauthorized: invalid api key: invalid token\"}","service":"backend-service","timestamp":"2026-02-21 13:35:20"}
+{"level":"warn","message":"[AppError] 500: Failed to ensure Weaviate collection","service":"backend-service","timestamp":"2026-02-21 13:35:20"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:35:20 +0000] \"POST /api/v1/chat HTTP/1.1\" 500 144 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:35:20"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-21 13:36:45"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-21 13:36:45"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:36:57"}
+{"level":"error","message":"[WeaviateService] ensureCollection failed: WeaviateUnauthenticatedError: Unauthenticated: {\"code\":401,\"message\":\"unauthorized: invalid api key: invalid token\"}","service":"backend-service","timestamp":"2026-02-21 13:37:00"}
+{"level":"warn","message":"[AppError] 500: Failed to ensure Weaviate collection","service":"backend-service","timestamp":"2026-02-21 13:37:00"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:37:00 +0000] \"POST /api/v1/chat HTTP/1.1\" 500 144 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:37:00"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:39:12"}
+{"level":"error","message":"[WeaviateService] ensureCollection failed: WeaviateUnauthenticatedError: Unauthenticated: {\"code\":401,\"message\":\"unauthorized: invalid api key: invalid token\"}","service":"backend-service","timestamp":"2026-02-21 13:39:20"}
+{"level":"warn","message":"[AppError] 500: Failed to ensure Weaviate collection","service":"backend-service","timestamp":"2026-02-21 13:39:20"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:39:20 +0000] \"POST /api/v1/chat HTTP/1.1\" 500 144 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:39:20"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:40:27"}
+{"level":"error","message":"[WeaviateService] ensureCollection failed: WeaviateUnexpectedStatusCodeError: The request to Weaviate failed with status code: 422 and message: {\"error\":[{\"message\":\"'Ta-project' is not a valid class name\"}]}","service":"backend-service","timestamp":"2026-02-21 13:40:33"}
+{"level":"warn","message":"[AppError] 500: Failed to ensure Weaviate collection","service":"backend-service","timestamp":"2026-02-21 13:40:33"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:40:33 +0000] \"POST /api/v1/chat HTTP/1.1\" 500 144 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:40:33"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:46:16"}
+{"level":"error","message":"[WeaviateService] ensureCollection failed: WeaviateUnexpectedStatusCodeError: The request to Weaviate failed with status code: 422 and message: {\"error\":[{\"message\":\"'Iot-project' is not a valid class name\"}]}","service":"backend-service","timestamp":"2026-02-21 13:46:45"}
+{"level":"warn","message":"[AppError] 500: Failed to ensure Weaviate collection","service":"backend-service","timestamp":"2026-02-21 13:46:45"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:46:45 +0000] \"POST /api/v1/chat HTTP/1.1\" 500 144 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:46:45"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-21 13:51:48"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-21 13:51:48"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:52:10"}
+{"level":"info","message":"[WeaviateService] Collection \"IotProject\" created with vectorizer text2vec-openai (single class only).","service":"backend-service","timestamp":"2026-02-21 13:52:13"}
+{"level":"error","message":"[WeaviateService] search failed: WeaviateQueryError: Query call with protocol gRPC failed with message: /weaviate.v1.Weaviate/Search UNKNOWN: explorer: get class: concurrentTargetVectorSearch): explorer: get class: vectorize search vector: vectorize params: vectorize params: vectorize keywords: remote client vectorize: API Key: no api key found neither in request header: X-Openai-Api-Key nor in environment variable under OPENAI_APIKEY","service":"backend-service","timestamp":"2026-02-21 13:52:13"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:52:15 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 246 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:52:15"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:06:53:18 +0000] \"POST /api/v1/weaviate/index HTTP/1.1\" 200 308 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 13:53:18"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-21 13:55:13"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-21 13:55:13"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:55:30"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-21 13:56:05"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-21 13:56:05"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:56:21"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-21 13:57:23"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-21 13:57:23"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 13:57:39"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 14:15:30"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:07:15:37 +0000] \"POST /api/v1/weaviate/index HTTP/1.1\" 200 308 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 14:15:37"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-02-21 14:18:01"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-02-21 14:18:01"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-02-21 14:18:30"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:07:18:59 +0000] \"POST /api/v1/weaviate/index HTTP/1.1\" 200 155 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 14:18:59"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [21/Feb/2026:07:20:22 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 238 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0\"","service":"backend-service","timestamp":"2026-02-21 14:20:22"}
