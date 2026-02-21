@@ -16,7 +16,7 @@ export const queryChat = async (
   try {
     const answer = await DeviceAgentService.query(payload.message)
     const response = ResponseData.success({
-      data: { answer },
+      data: { reply: answer },
       message: 'Chat completed successfully'
     })
     return res.status(StatusCodes.OK).json(response)

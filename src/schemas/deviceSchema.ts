@@ -33,7 +33,7 @@ export const findAllDeviceSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   size: z.coerce.number().int().min(1).max(100).default(20),
   search: z.string().optional(),
-  pagination: z.boolean().optional()
+  pagination: z.string().optional()
 })
 
 export type UpdateDeviceSchema = z.infer<typeof updateDeviceSchema>
