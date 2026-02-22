@@ -8,6 +8,7 @@ import SchedulerLogRoute from './SchedulerLogRouter'
 import WeaviateRoute from './WeaviateRouter'
 import AppLogRoute from './AppLogRouter'
 import DeviceLogRoute from './DeviceLogRouter'
+import StatsRoute from './StatsRouter'
 
 const RoutesRegistry = {
   AppLogRoute,
@@ -19,7 +20,8 @@ const RoutesRegistry = {
   DeviceRoute,
   DeviceLogRoute,
   SchedulerLogRoute,
-  WeaviateRoute
+  WeaviateRoute,
+  StatsRoute
 }
 
 export default RoutesRegistry
