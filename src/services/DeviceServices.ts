@@ -74,6 +74,14 @@ export class DeviceService {
 
     const result = await DeviceModel.findAndCountAll({
       where: { deleted: 0 },
+      include: [
+        {
+          model: DeviceLogModel,
+          as: 'deviceLogs',
+          attributes: ['deviceLogId', 'deviceLogData', 'createdAt']
+        }
+      ],
+
       order: [['deviceId', 'desc']],
       ...(pagination === true && {
         limit: pager.limit,

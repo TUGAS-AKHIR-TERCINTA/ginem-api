@@ -21,6 +21,7 @@ routers.use('/api/v1/my-profiles', RoutesRegistry.MyProfileRoute)
 routers.use('/api/v1/otp', RoutesRegistry.OtpRoute)
 routers.use('/api/v1/weaviate', RoutesRegistry.WeaviateRoute)
 routers.use('/api/v1/stats', RoutesRegistry.StatsRoute)
+routers.use('/api/v1/vector-indexes', RoutesRegistry.VectorIndexesRoute)
 
 routers.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
