@@ -2,10 +2,11 @@ import { DeviceLogModel } from '../models/DeviceLogModel'
 import { DeviceModel } from '../models/DeviceModel'
 import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../utilities/AppError'
 
 /** Options for listing devices with optional pagination */
 export interface FindAllDeviceOptions {
+  /** 1-based page number (page 1 = first page) */
   page?: number
   size?: number
   pagination?: boolean
@@ -63,16 +64,24 @@ export class DeviceService {
   }
 
   /**
-   * List devices with optional pagination.
+   * List devices with optional pagination. Page is 1-based (page 1 = first page).
    */
   static async findAll(
     options: FindAllDeviceOptions = {}
   ): Promise<PaginatedDeviceResult> {
-    const { page = 0, size = 10, pagination = true } = options
-    const pager = new Pagination(Number(page) || 0, Number(size) || 10)
+    const { page = 1, size = 10, pagination = true } = options
+    const pager = new Pagination(Number(page) || 1, Number(size) || 10)
 
     const result = await DeviceModel.findAndCountAll({
       where: { deleted: 0 },
+      include: [
+        {
+          model: DeviceLogModel,
+          as: 'deviceLogs',
+          attributes: ['deviceLogId', 'deviceLogData', 'createdAt']
+        }
+      ],
+
       order: [['deviceId', 'desc']],
       ...(pagination === true && {
         limit: pager.limit,
@@ -126,9 +135,11 @@ export class DeviceService {
     const device = await DeviceModel.findOne({
       where: { deleted: 0, deviceId }
     })
+
     if (device == null) {
       throw AppError.notFound('Device not found')
     }
+
     device.deleted = true
     await device.save()
     return device
@@ -153,6 +164,7 @@ export class DeviceService {
     const device = await DeviceModel.findOne({
       where: { deleted: 0, deviceName }
     })
+
     return device
   }
 }

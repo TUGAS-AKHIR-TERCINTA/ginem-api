@@ -58,23 +58,28 @@ function runActuatorJob(job: ScheduledJob): void {
   void (async () => {
     try {
       const device = await DeviceService.findByName(job.deviceName)
+
       if (device == null) {
         job.status = 'failed'
         job.error = `Device not found: ${job.deviceName}`
         await recordSchedulerResult(job.id, 'failed', undefined, job.error)
         return
       }
+
       if (device.deviceType !== 'actuator') {
         job.status = 'failed'
         job.error = `Device "${job.deviceName}" is not an actuator (type: ${device.deviceType})`
         await recordSchedulerResult(job.id, 'failed', undefined, job.error)
         return
       }
+
       const value = job.state === 'on' ? '1' : '0'
+
       const deviceValue = await DeviceLogService.create({
         deviceLogDeviceId: device.deviceId,
         deviceLogData: value
       })
+
       job.status = 'completed'
       job.result = {
         success: true,
@@ -88,7 +93,9 @@ function runActuatorJob(job: ScheduledJob): void {
         deviceLogData: deviceValue.deviceLogData,
         executedAt: new Date().toISOString()
       }
+
       await recordSchedulerResult(job.id, 'completed', job.result)
+
       logger.info(
         `[DeviceScheduleService] Actuator job ${job.id} executed: ${job.deviceName} -> ${job.state}`
       )
@@ -105,13 +112,16 @@ function runSensorDataJob(job: ScheduledJob): void {
   void (async () => {
     try {
       const device = await DeviceService.findByName(job.deviceName)
+
       if (device == null) {
         job.status = 'failed'
         job.error = `Device not found: ${job.deviceName}`
         await recordSchedulerResult(job.id, 'failed', undefined, job.error)
         return
       }
+
       const items = await DeviceLogService.getLastLogsByDeviceId(device.deviceId, 10)
+
       job.status = 'completed'
       job.result = {
         deviceName: job.deviceName,
@@ -124,6 +134,7 @@ function runSensorDataJob(job: ScheduledJob): void {
         })),
         executedAt: new Date().toISOString()
       }
+
       await recordSchedulerResult(job.id, 'completed', job.result)
       logger.info(
         `[DeviceScheduleService] Sensor data job ${job.id} executed: ${job.deviceName}`
@@ -160,6 +171,7 @@ export function scheduleActuatorState(
     runAt,
     status: 'pending'
   }
+
   jobs.set(id, job)
 
   const createPayload: ISchedulerLogCreationModelAttributes = {
@@ -172,6 +184,7 @@ export function scheduleActuatorState(
     runAt,
     status: 'pending'
   }
+
   void SchedulerLogModel.create(createPayload).then(() => {
     setTimeout(() => runActuatorJob(job), delayMinutes * 60 * 1000)
   })
@@ -200,6 +213,7 @@ export function scheduleSensorData(
     runAt,
     status: 'pending'
   }
+
   jobs.set(id, job)
 
   const createPayload: ISchedulerLogCreationModelAttributes = {
@@ -211,6 +225,7 @@ export function scheduleSensorData(
     runAt,
     status: 'pending'
   }
+
   void SchedulerLogModel.create(createPayload).then(() => {
     setTimeout(() => runSensorDataJob(job), delayMinutes * 60 * 1000)
   })

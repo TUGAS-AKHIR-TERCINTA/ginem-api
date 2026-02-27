@@ -9,6 +9,8 @@ import { removeDeviceLogSchema } from '../schemas/DeviceLogSchema'
 
 const DeviceLogRoute = Router()
 
+DeviceLogRoute.use(MiddleWares.useAuthorization)
+
 DeviceLogRoute.get(
   '/',
   MiddleWares.validate({ query: findAllDeviceLogSchema }),

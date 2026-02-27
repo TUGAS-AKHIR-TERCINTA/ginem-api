@@ -1,11 +1,10 @@
 import { StatusCodes } from 'http-status-codes'
 import { Op } from 'sequelize'
 import logger from '../../logs'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../utilities/AppError'
 import { generateAccessToken } from '../utilities/jwt'
 import { hashPassword } from '../utilities/scurePassword'
 import { sequelizeInit } from '../configs/database'
-import { type AdminLoginInput } from '../schemas/AuthSchema'
 import {
   type UserRegistrationInput,
   type UserLoginInput,
@@ -56,7 +55,7 @@ export class AuthService {
       userName: payload.userName ?? '',
       userEmail: payload.userEmail,
       userPassword: payload.userPassword,
-      userRole: 'user',
+      userRole: payload.userRole,
       userOnboardingStatus: 'waiting'
     }
 
@@ -85,45 +84,6 @@ export class AuthService {
     } catch (error) {
       await transaction.rollback()
       throw error
-    }
-  }
-
-  static async loginAdmin(payload: AdminLoginInput) {
-    const { userEmail, userPassword } = payload
-
-    const user = await UserModel.findOne({
-      where: {
-        deleted: 0,
-        userEmail,
-        userRole: 'admin'
-      }
-    })
-
-    if (user == null) {
-      const message = 'Account not found. Please register first!'
-      logger.info(`Login Administrator attempt failed: ${message}`)
-      throw AppError.notFound(message)
-    }
-
-    const isPasswordValid = hashPassword(userPassword) === user.userPassword
-
-    if (!isPasswordValid) {
-      const message = 'Invalid email and password combination!'
-      logger.error(`Login attempt failed: ${message}`)
-      throw new AppError(message, StatusCodes.UNAUTHORIZED)
-    }
-
-    const token = generateAccessToken({
-      userId: user.userId,
-      userRole: user.userRole,
-      userEmail: user.userEmail
-    })
-
-    logger.info(`Administrator ${user.userName} logged in successfully`)
-
-    return {
-      accessToken: token,
-      refreshToken: ''
     }
   }
 

@@ -1,7 +1,7 @@
 import { Op } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
 import { AppLogModel, type AppLogLevel } from '../models/AppLogModel'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../utilities/AppError'
 import { Pagination } from '../utilities/pagination'
 import logger from '../../logs'
 
@@ -13,6 +13,7 @@ export interface CreateLogParams {
 }
 
 export interface FindAllLogsParams {
+  /** 1-based page number (page 1 = first page) */
   page: number
   size: number
   appLogLevel?: AppLogLevel | null
@@ -37,7 +38,7 @@ export class AppLogService {
 
   static async findAll(params: FindAllLogsParams) {
     try {
-      const { page, size, appLogLevel, search, pagination } = params
+      const { page = 1, size = 20, appLogLevel, search, pagination } = params
 
       const paginationInfo = new Pagination(page, size)
 

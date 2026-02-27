@@ -1,15 +1,15 @@
 /**
  * @swagger
  * tags:
- *   name: MCP
- *   description: Model Context Protocol – AI agent for device data (natural language query)
+ *   name: Chat
+ *   description: Chat with the AI agent
  */
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     McpQueryRequest:
+ *     ChatRequest:
  *       type: object
  *       required:
  *         - message
@@ -20,7 +20,7 @@
  *           maxLength: 2000
  *           description: Natural language question about devices (e.g. list devices, get device by ID)
  *           example: "List all devices"
- *     McpQueryResponse:
+ *     ChatResponse:
  *       type: object
  *       properties:
  *         success:
@@ -48,31 +48,26 @@
 
 /**
  * @swagger
- * /api/v1/mcp:
+ * /api/v1/chat:
  *   post:
- *     summary: Send message to MCP device agent
+ *     summary: Send message to chat agent
  *     description: |
- *       Sends a natural language message to the MCP-backed device agent.
- *       The agent can list devices or get device by ID via internal tools and returns a text answer.
- *     tags: [MCP]
+ *       Sends a natural language message to the chat agent.
+ *     tags: [Chat]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/McpQueryRequest'
+ *             $ref: '#/components/schemas/ChatRequest'
  *           examples:
- *             listDevices:
- *               summary: List devices
+ *             chat:
+ *               summary: Chat
  *               value:
- *                 message: "List all devices"
- *             getDeviceById:
- *               summary: Get device by ID
- *               value:
- *                 message: "Get device with ID 5"
+ *                 message: "Hello, how are you?"
  *     responses:
  *       200:
- *         description: MCP query completed successfully
+ *         description: Chat completed successfully
  *         content:
  *           application/json:
  *             schema:
@@ -83,7 +78,7 @@
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: MCP query completed successfully
+ *                   example: Chat completed successfully
  *                 data:
  *                   type: object
  *                   properties:

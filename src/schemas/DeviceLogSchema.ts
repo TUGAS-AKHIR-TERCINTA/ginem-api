@@ -25,11 +25,12 @@ export const removeDeviceLogSchema = z.object({
 })
 
 export const findAllDeviceLogSchema = z.object({
-  jwtPayload: jwtPayloadSchema.optional(),
   deviceLogDeviceId: z.coerce.number().int().positive().optional(),
-  page: z.coerce.number().int().optional(),
-  size: z.coerce.number().int().optional(),
-  pagination: z.coerce.boolean().optional()
+  jwtPayload: jwtPayloadSchema,
+  page: z.coerce.number().int().min(1).default(1),
+  size: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().optional(),
+  pagination: z.boolean().optional()
 })
 
 export type CreateDeviceLogSchema = z.infer<typeof createDeviceLogSchema>
