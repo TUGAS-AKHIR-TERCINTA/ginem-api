@@ -6,16 +6,16 @@ import { type IAuthenticatedRequest } from '../../interfaces/shared/request.inte
 import {
   FindAllSchedulerLogOptions,
   SchedulerLogService
-} from '../../services/SchedulerLogServices'
+} from '../../services/SchedulerLog.service'
 import { handleError } from '../../utilities/requestHandler'
 
 export const findAllSchedulerLog = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const payload = req.query as FindAllSchedulerLogOptions
-
   try {
+    const payload = req.query as FindAllSchedulerLogOptions
+
     const result = await SchedulerLogService.findAll(payload)
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
   } catch (err) {

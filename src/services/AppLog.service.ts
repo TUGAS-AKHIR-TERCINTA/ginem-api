@@ -13,12 +13,11 @@ export interface CreateLogParams {
 }
 
 export interface FindAllLogsParams {
-  /** 1-based page number (page 1 = first page) */
   page: number
   size: number
-  appLogLevel?: AppLogLevel | null
+  level?: AppLogLevel | null
   search?: string | null
-  pagination?: string | null
+  pagination?: boolean | null
 }
 
 export class AppLogService {
@@ -38,36 +37,31 @@ export class AppLogService {
 
   static async findAll(params: FindAllLogsParams) {
     try {
-      const { page = 1, size = 20, appLogLevel, search, pagination } = params
+      const { page = 1, size = 10, level, search, pagination } = params
 
-      const paginationInfo = new Pagination(page, size)
+      const pager = new Pagination(page, size)
 
-      const where: any = {}
+      const where: Record<string, unknown> = {}
 
-      if (appLogLevel && ['error', 'warn', 'info'].includes(appLogLevel)) {
-        where.appLogLevel = appLogLevel
+      if (level && ['error', 'warn', 'info'].includes(level)) {
+        where.appLogLevel = level
       }
 
       if (search && String(search).trim()) {
         const term = `%${String(search).trim()}%`
-        where[Op.or] = [
-          { appLogMessage: { [Op.like]: term } },
-          { appLogSource: { [Op.like]: term } }
-        ]
+        where.appLogMessage = { [Op.like]: term }
       }
 
       const result = await AppLogModel.findAndCountAll({
         where,
         order: [['appLogId', 'DESC']],
-        ...(pagination === 'true' && {
-          limit: paginationInfo.limit,
-          offset: paginationInfo.offset
+        ...(pagination === true && {
+          limit: pager.limit,
+          offset: pager.offset
         })
       })
 
-      const formatted = paginationInfo.formatData(result)
-
-      return { data: result, formatted }
+      return pager.formatData(result)
     } catch (error) {
       logger.error(`[AppLogService] findAll failed: ${String(error)}`)
       throw new AppError('Failed to fetch logs', StatusCodes.INTERNAL_SERVER_ERROR)

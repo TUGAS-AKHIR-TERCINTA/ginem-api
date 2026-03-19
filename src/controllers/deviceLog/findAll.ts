@@ -6,15 +6,15 @@ import { type IAuthenticatedRequest } from '../../interfaces/shared/request.inte
 import {
   DeviceLogService,
   FindAllDeviceLogOptions
-} from '../../services/DeviceLogServices'
+} from '../../services/DeviceLog.service'
 
 export const findAllDeviceLog = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const payload = req.query as FindAllDeviceLogOptions
-
   try {
+    const payload = req.query as FindAllDeviceLogOptions
+
     const result = await DeviceLogService.findAll(payload)
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
   } catch (err) {

@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { MyProfileService } from '../../services/MyProfileService'
+import { MyProfileService } from '../../services/MyProfile.service'
 import { JwtPayload } from 'jsonwebtoken'
 
 export const findMyProfile = async (

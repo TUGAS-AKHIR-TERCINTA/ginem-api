@@ -7,14 +7,10 @@ import { Pagination } from '../utilities/pagination'
 import logger from '../../logs'
 
 export interface FindAllVectorIndexesParams {
-  /** 1-based page number (page 1 = first page) */
   page?: number
   size?: number
-  /** When 'true', apply limit/offset */
-  pagination?: string | null
-  /** Filter by source (pdf | text) */
+  pagination?: boolean | null
   source?: VectorIndexSource | string | null
-  /** Search in vectorIndexText (LIKE) */
   search?: string | null
 }
 
@@ -35,7 +31,7 @@ export class VectorIndexesService {
     try {
       const page = params.page ?? 1
       const size = params.size ?? 20
-      const paginationInfo = new Pagination(page, size)
+      const pager = new Pagination(page, size)
 
       const where: Record<string, unknown> = {}
 
@@ -51,14 +47,15 @@ export class VectorIndexesService {
       const result = await VectorIndexesModel.findAndCountAll({
         where,
         order: [['vectorIndexId', 'DESC']],
-        ...(params.pagination === 'true' && {
-          limit: paginationInfo.limit,
-          offset: paginationInfo.offset
+        ...(params.pagination === true && {
+          limit: pager.limit,
+          offset: pager.offset
         })
       })
 
-      return paginationInfo.formatData(result) as PaginatedVectorIndexesResult
+      return pager.formatData(result)
     } catch (error) {
+      if (error instanceof AppError) throw error
       logger.error(`[VectorIndexesService] findAll failed: ${String(error)}`)
       throw new AppError(
         'Failed to fetch vector indexes',

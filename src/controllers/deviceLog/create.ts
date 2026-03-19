@@ -6,7 +6,7 @@ import { type IAuthenticatedRequest } from '../../interfaces/shared/request.inte
 import {
   CreateDeviceLogPayload,
   DeviceLogService
-} from '../../services/DeviceLogServices'
+} from '../../services/DeviceLog.service'
 
 export const createDeviceLog = async (
   req: IAuthenticatedRequest,

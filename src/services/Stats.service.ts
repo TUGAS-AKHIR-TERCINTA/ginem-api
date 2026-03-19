@@ -41,6 +41,7 @@ export class StatsService {
         appLogs
       }
     } catch (error) {
+      if (error instanceof AppError) throw error
       logger.error(`[StatsService] getCounts failed: ${String(error)}`)
       throw new AppError(
         'Failed to fetch stats counts',

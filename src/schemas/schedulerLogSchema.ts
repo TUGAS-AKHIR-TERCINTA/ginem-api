@@ -6,7 +6,10 @@ export const findAllSchedulerLogSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   size: z.coerce.number().int().min(1).max(100).default(20),
   search: z.string().optional(),
-  pagination: z.boolean().optional(),
+  pagination: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
 
   type: z.enum(['actuator', 'sensor_data']).optional(),
   status: z.enum(['pending', 'completed', 'failed']).optional(),

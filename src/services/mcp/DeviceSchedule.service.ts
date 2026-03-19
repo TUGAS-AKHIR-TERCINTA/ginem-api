@@ -1,10 +1,10 @@
-import { DeviceService } from '../DeviceServices'
+import { DeviceService } from '../Device.service'
 import {
   SchedulerLogModel,
   ISchedulerLogCreationModelAttributes
 } from '../../models/SchedulerLogModel'
 import logger from '../../../logs'
-import { DeviceLogService } from '../DeviceLogServices'
+import { DeviceLogService } from '../DeviceLog.service'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'
 export type ScheduledJobStatus = 'pending' | 'completed' | 'failed'

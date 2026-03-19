@@ -83,6 +83,7 @@ export class SchedulerLogService {
 
       return pager.formatData(result) as PaginatedSchedulerLogResult
     } catch (error) {
+      if (error instanceof AppError) throw error
       logger.error(`[SchedulerLogService] findAll failed: ${String(error)}`)
       throw new AppError(
         'Failed to fetch scheduler logs',
@@ -105,6 +106,7 @@ export class SchedulerLogService {
 
       return log
     } catch (error) {
+      if (error instanceof AppError) throw error
       logger.error(`[SchedulerLogService] findById failed: ${String(error)}`)
       throw new AppError(
         'Failed to fetch scheduler log',

@@ -3,7 +3,7 @@ import { Response } from 'express'
 import { ResponseData } from './response'
 import logger from '../../logs'
 import { AppError } from './AppError'
-import { AppLogService } from '../services/AppLogService'
+import { AppLogService } from '../services/AppLog.service'
 
 export function handleServerError(res: Response, err: unknown) {
   if (err instanceof Error) {
@@ -14,7 +14,7 @@ export function handleServerError(res: Response, err: unknown) {
       appLogMessage: message,
       appLogSource: 'handleServerError',
       appLogMeta: err.stack ?? null
-    }).catch(() => {})
+    })
     const response = ResponseData.error({
       message: 'Unable to process request! Error code 1T33'
     })
@@ -28,15 +28,11 @@ export function handleServerError(res: Response, err: unknown) {
     appLogMessage: message,
     appLogSource: 'handleServerError',
     appLogMeta: null
-  }).catch(() => {})
+  })
   const response = ResponseData.error({ message: 'Unable to process request!' })
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response)
 }
 
-/**
- * Handles errors and returns appropriate HTTP status.
- * Use for controllers: AppError -> its statusCode, other errors -> 500.
- */
 export function handleError(res: Response, err: unknown): Response {
   if (err instanceof AppError) {
     logger.warn(`[AppError] ${err.statusCode}: ${err.message}`)
