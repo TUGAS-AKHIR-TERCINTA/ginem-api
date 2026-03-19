@@ -2,7 +2,7 @@ import { type Request, type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
-import { AuthService } from '../../services/AuthService'
+import { AuthService } from '../../services/Auth.service'
 import { type UserLoginInput } from '../../schemas/AuthSchema'
 
 export const userLogin = async (

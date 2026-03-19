@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { IndexToWeaviateSchema } from '../../schemas/weaviateSchema'
-import { WeaviateService } from '../../services/WeaviateService'
+import { WeaviateService } from '../../services/Weaviate.service'
 import { handleError } from '../../utilities/requestHandler'
 
 export const indexToWeaviate = async (

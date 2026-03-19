@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { FindDetailSchedulerLogSchema } from '../../schemas/schedulerLogSchema'
-import { SchedulerLogService } from '../../services/SchedulerLogServices'
+import { SchedulerLogService } from '../../services/SchedulerLog.service'
 import { handleError } from '../../utilities/requestHandler'
 
 export const findDetailSchedulerLog = async (

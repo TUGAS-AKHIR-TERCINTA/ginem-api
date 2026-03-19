@@ -1,7 +1,10 @@
+import { StatusCodes } from 'http-status-codes'
 import { createAgent } from 'langchain'
-import { LLMService } from '../LLMServices'
-import { WeaviateService } from '../WeaviateService'
-import { deviceTools } from './tools/device.tools'
+import { LLMService } from '../LLM.service'
+import { WeaviateService } from '../Weaviate.service'
+import { deviceTools } from './tools/index'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../../logs'
 
 const DEVICE_AGENT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
 
@@ -38,27 +41,36 @@ export class DeviceAgentService {
    * @returns Final assistant message content (string)
    */
   static async query(userMessage: string): Promise<string> {
-    let messageToSend = userMessage
+    try {
+      let messageToSend = userMessage
 
-    const ragHits = await WeaviateService.search(userMessage, 5)
-    if (ragHits.length > 0) {
-      const contextBlock = ragHits.map((h) => h.text).join('\n\n')
-      messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
-    }
+      const ragHits = await WeaviateService.search(userMessage, 5)
+      if (ragHits.length > 0) {
+        const contextBlock = ragHits.map((h) => h.text).join('\n\n')
+        messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
+      }
 
-    const result = await DeviceAgentService.agent.invoke({
-      messages: [{ role: 'human', content: messageToSend }]
-    })
+      const result = await DeviceAgentService.agent.invoke({
+        messages: [{ role: 'human', content: messageToSend }]
+      })
 
-    const lastMessage = result.messages?.at(-1)
-    const content = lastMessage?.content
-    if (typeof content === 'string') return content
-    if (Array.isArray(content)) {
-      const textPart = content.find(
-        (c: { type?: string; text?: string }) => c.type === 'text'
+      const lastMessage = result.messages?.at(-1)
+      const content = lastMessage?.content
+      if (typeof content === 'string') return content
+      if (Array.isArray(content)) {
+        const textPart = content.find(
+          (c: { type?: string; text?: string }) => c.type === 'text'
+        )
+        return (textPart as { text?: string })?.text ?? JSON.stringify(content)
+      }
+      return content != null ? String(content) : JSON.stringify(result)
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      logger.error(`[DeviceAgentService] query failed: ${String(error)}`)
+      throw new AppError(
+        'Failed to process chat query',
+        StatusCodes.INTERNAL_SERVER_ERROR
       )
-      return (textPart as { text?: string })?.text ?? JSON.stringify(content)
     }
-    return content != null ? String(content) : JSON.stringify(result)
   }
 }

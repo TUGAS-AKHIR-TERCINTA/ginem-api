@@ -26,7 +26,7 @@ export const createAppLogSchema = z.object({
 export const findAllAppLogsSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   size: z.coerce.number().int().min(1).max(100).default(20),
-  appLogLevel: z
+  level: z
     .union([logLevelEnum, z.literal('')])
     .optional()
     .transform((v) => (v === '' ? undefined : v)),
