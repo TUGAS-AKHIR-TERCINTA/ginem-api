@@ -36,8 +36,16 @@ export const findAllDeviceLogSchema = z.object({
     .transform((v) => v === 'true')
 })
 
+export const findLastLatestDeviceLogByDeviceIdSchema = z.object({
+  jwtPayload: jwtPayloadSchema.optional(),
+  deviceId: z.coerce.number().int().positive()
+})
+
 export type CreateDeviceLogSchema = z.infer<typeof createDeviceLogSchema>
 export type UpdateDeviceLogSchema = z.infer<typeof updateDeviceLogSchema>
 export type FindDetailDeviceLogSchema = z.infer<typeof findDetailDeviceLogSchema>
 export type RemoveDeviceLogSchema = z.infer<typeof removeDeviceLogSchema>
 export type FindAllDeviceLogSchema = z.infer<typeof findAllDeviceLogSchema>
+export type FindLastLatestDeviceLogByDeviceIdSchema = z.infer<
+  typeof findLastLatestDeviceLogByDeviceIdSchema
+>

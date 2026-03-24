@@ -3,6 +3,7 @@ import { DeviceLogController } from '../controllers/deviceLog'
 import { MiddleWares } from '../middlewares'
 import { findAllDeviceLogSchema } from '../schemas/DeviceLogSchema'
 import { findDetailDeviceLogSchema } from '../schemas/DeviceLogSchema'
+import { findLastLatestDeviceLogByDeviceIdSchema } from '../schemas/DeviceLogSchema'
 import { createDeviceLogSchema } from '../schemas/DeviceLogSchema'
 import { updateDeviceLogSchema } from '../schemas/DeviceLogSchema'
 import { removeDeviceLogSchema } from '../schemas/DeviceLogSchema'
@@ -20,6 +21,16 @@ DeviceLogRoute.get(
   '/detail/:deviceLogId',
   MiddleWares.validate({ params: findDetailDeviceLogSchema }),
   DeviceLogController.findDetail
+)
+DeviceLogRoute.get(
+  '/last/:deviceId',
+  MiddleWares.validate({ params: findLastLatestDeviceLogByDeviceIdSchema }),
+  DeviceLogController.findLast
+)
+DeviceLogRoute.get(
+  '/latest/:deviceId',
+  MiddleWares.validate({ params: findLastLatestDeviceLogByDeviceIdSchema }),
+  DeviceLogController.findLatest
 )
 DeviceLogRoute.post(
   '/',

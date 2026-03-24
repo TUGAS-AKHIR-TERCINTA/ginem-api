@@ -19,9 +19,9 @@ routers.use('/api/v1/chat', RoutesRegistry.ChatRoute)
 routers.use('/api/v1/auth', RoutesRegistry.AuthRoute)
 routers.use('/api/v1/my-profiles', RoutesRegistry.MyProfileRoute)
 routers.use('/api/v1/otp', RoutesRegistry.OtpRoute)
-routers.use('/api/v1/weaviate', RoutesRegistry.WeaviateRoute)
 routers.use('/api/v1/stats', RoutesRegistry.StatsRoute)
 routers.use('/api/v1/vector-indexes', RoutesRegistry.VectorIndexesRoute)
+routers.use('/api/v1/whatsapp', RoutesRegistry.WhatsAppRoute)
 
 routers.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 

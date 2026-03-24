@@ -1,12 +1,13 @@
 import { StatusCodes } from 'http-status-codes'
 import { createAgent } from 'langchain'
-import { LLMService } from '../LLM.service'
-import { WeaviateService } from '../Weaviate.service'
-import { deviceTools } from './tools/index'
-import { AppError } from '../../utilities/AppError'
-import logger from '../../../logs'
 
-const DEVICE_AGENT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
+import logger from '../../logs'
+import { AppError } from '../utilities/AppError'
+import { LLMService } from './LLM.service'
+import { deviceTools } from './mcp/tools/index'
+import { PineconeService } from './Pinecone.service'
+
+const DEVICE_CHAT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
 
 You have tools to:
 - list_devices: List devices with optional pagination (page, size).
@@ -24,33 +25,32 @@ For "X menit lagi" / "in N minutes" instructions: use schedule_actuator_state_af
 Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so.`
 
 /**
- * MCP-backed agent for device domain.
- * Uses LLM + device tools to answer natural language queries about devices.
+ * Chat layer: LLM + device MCP tools + optional Pinecone RAG context.
  */
-export class DeviceAgentService {
+export class ChatService {
   private static agent = createAgent({
     model: LLMService.create(),
     tools: deviceTools,
-    systemPrompt: DEVICE_AGENT_SYSTEM_PROMPT
+    systemPrompt: DEVICE_CHAT_SYSTEM_PROMPT
   })
 
   /**
-   * Run the device agent with a user message. Uses RAG: retrieves relevant chunks from Weaviate and injects them as context before the user question.
+   * Run a chat turn with a user message. Injects Pinecone knowledge chunks when available.
    *
-   * @param userMessage - Natural language question (e.g. about devices or knowledge base)
+   * @param userMessage - Natural language question (devices or knowledge base)
    * @returns Final assistant message content (string)
    */
   static async query(userMessage: string): Promise<string> {
     try {
       let messageToSend = userMessage
 
-      const ragHits = await WeaviateService.search(userMessage, 5)
+      const ragHits = await PineconeService.searchKnowledgeChunks(userMessage, 5)
       if (ragHits.length > 0) {
         const contextBlock = ragHits.map((h) => h.text).join('\n\n')
         messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
       }
 
-      const result = await DeviceAgentService.agent.invoke({
+      const result = await ChatService.agent.invoke({
         messages: [{ role: 'human', content: messageToSend }]
       })
 
@@ -66,7 +66,7 @@ export class DeviceAgentService {
       return content != null ? String(content) : JSON.stringify(result)
     } catch (error) {
       if (error instanceof AppError) throw error
-      logger.error(`[DeviceAgentService] query failed: ${String(error)}`)
+      logger.error(`[ChatService] query failed: ${String(error)}`)
       throw new AppError(
         'Failed to process chat query',
         StatusCodes.INTERNAL_SERVER_ERROR

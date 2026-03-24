@@ -203,3 +203,84 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     DeviceLogLastRow:
+ *       type: object
+ *       properties:
+ *         deviceLogId:
+ *           type: number
+ *           example: 1
+ *         deviceLogDeviceId:
+ *           type: number
+ *           example: 1
+ *         deviceLogData:
+ *           type: string
+ *           example: "25.5"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ */
+
+/**
+ * @swagger
+ * /api/v1/devices/logs/last/{deviceId}:
+ *   get:
+ *     summary: Get last device log by device id
+ *     description: Fetch the last device log row for a device (ordered by deviceLogId desc).
+ *     tags: [DEVICE LOGS]
+ *     parameters:
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         schema:
+ *           type: number
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Device log retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/DeviceLogLastRow'
+ *       404:
+ *         description: Device log not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/v1/devices/logs/latest/{deviceId}:
+ *   get:
+ *     summary: Get newest device log by device id
+ *     description: Fetch the newest device log row for a device (ordered by createdAt desc).
+ *     tags: [DEVICE LOGS]
+ *     parameters:
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         schema:
+ *           type: number
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Device log retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/DeviceLogLastRow'
+ *       404:
+ *         description: Device log not found
+ *       500:
+ *         description: Internal server error
+ */
