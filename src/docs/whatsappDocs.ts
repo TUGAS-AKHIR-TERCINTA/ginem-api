@@ -1,265 +1,184 @@
 /**
  * @swagger
  * tags:
- *   name: WHATSAPP
- *   description: WhatsApp connectivity (Baileys) using per-user sessions and QR login
+ *   name: WhatsApp
+ *   description: Pairing and status for WhatsApp (Baileys) per authenticated user
  */
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     WhatsAppConnectRequest:
+ *     WhatsappConnectBody:
+ *       type: object
+ *       additionalProperties: false
+ *       description: Empty JSON object `{}` (body is validated but has no required fields).
+ *       example: {}
+ *     WhatsappConnectionStatus:
+ *       type: string
+ *       enum: [disconnected, connecting, connected, error]
+ *     WhatsappConnectStatusData:
  *       type: object
  *       properties:
- *         timeoutMs:
- *           type: integer
- *           minimum: 1
- *           maximum: 120000
- *           default: 30000
- *           description: How long to wait for the QR code to be generated
- *     WhatsAppConnectData:
- *       type: object
- *       properties:
- *         status:
- *           type: string
- *           enum: [disconnected, connecting, connected, error]
- *         qrDataUrl:
+ *         connectionStatus:
+ *           $ref: '#/components/schemas/WhatsappConnectionStatus'
+ *         lastDisconnectReason:
  *           type: string
  *           nullable: true
- *           description: Data URL (base64 PNG) for the current QR code
- *     WhatsAppStatusData:
+ *           description: Present when the last close had an error or logout message
+ *     WhatsappPairingJsonData:
  *       type: object
  *       properties:
- *         status:
- *           type: string
- *           enum: [disconnected, connecting, connected, error]
- *         qrDataUrl:
+ *         connectionStatus:
+ *           $ref: '#/components/schemas/WhatsappConnectionStatus'
+ *         timedOut:
+ *           type: boolean
+ *           description: True if pairing QR was not received within timeoutMs
+ *         lastDisconnectReason:
  *           type: string
  *           nullable: true
- *         lastError:
+ *         mimeType:
  *           type: string
- *           nullable: true
- *     WhatsAppSendRequest:
- *       type: object
- *       required: [to, message]
- *       properties:
- *         to:
+ *           example: image/png
+ *           description: Only when type=base64 and QR was returned
+ *         qrImageBase64:
  *           type: string
- *           example: 6281234567890
- *           description: "Phone number digits (or international format). Example 628... for Indonesia."
+ *           description: PNG file as base64 string (no data URL prefix)
  *         message:
  *           type: string
- *           minLength: 1
- *           maxLength: 2000
- *           example: Hello from our backend
- *     WhatsAppSendResult:
+ *           description: Human-readable hint (e.g. already connected, timeout)
+ *     ApiSuccessEnvelope:
  *       type: object
  *       properties:
- *         toJid:
- *           type: string
- *           example: 6281234567890@s.whatsapp.net
  *         success:
  *           type: boolean
  *           example: true
+ *         message:
+ *           type: string
+ *         data:
+ *           type: object
+ *         meta:
+ *           type: object
+ *           nullable: true
  */
 
 /**
  * @swagger
  * /api/v1/whatsapp/connect:
  *   post:
- *     summary: Start WhatsApp session and get QR code
- *     tags: [WHATSAPP]
+ *     summary: Start or resume WhatsApp session
+ *     description: |
+ *       Starts the Baileys connection for the JWT user.
+ *
+ *       - **No query `type`**: returns JSON immediately after connect is initiated (`connectionStatus` may be `connecting`).
+ *       - **`type=base64`**: waits up to `timeoutMs` (default 30s) for a pairing QR, then returns JSON with `qrImageBase64` (PNG) when available.
+ *       - **`type=image`**: same wait; response **body is raw PNG** (`Content-Type: image/png`) when QR is available. If already connected or no QR, response is JSON like other cases (see implementation).
+ *     tags: [WhatsApp]
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/WhatsAppConnectRequest'
- *     responses:
- *       200:
- *         description: QR generated or session already connected
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/WhatsAppConnectData'
- */
-
-/**
- * @swagger
- * /api/v1/whatsapp/status:
- *   get:
- *     summary: Get current WhatsApp session status
- *     tags: [WHATSAPP]
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Session status retrieved
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/WhatsAppStatusData'
- */
-
-/**
- * @swagger
- * /api/v1/whatsapp/send:
- *   post:
- *     summary: Send a text message to a WhatsApp number
- *     tags: [WHATSAPP]
- *     security:
- *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [base64, image]
+ *         required: false
+ *         description: Omit for status-only JSON; `base64` = JSON with PNG base64; `image` = binary PNG body when QR exists
+ *       - in: query
+ *         name: timeoutMs
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 120000
+ *         required: false
+ *         description: Max wait for pairing QR when `type` is set (default 30000)
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/WhatsAppSendRequest'
+ *             $ref: '#/components/schemas/WhatsappConnectBody'
+ *           examples:
+ *             empty:
+ *               summary: Empty body
+ *               value: {}
  *     responses:
  *       200:
- *         description: Message sent successfully
+ *         description: |
+ *           Success. Response is **application/json** except when `type=image` and a QR PNG is returned (then **image/png**).
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/WhatsAppSendResult'
- */
-
-/**
- * @swagger
- * /api/v1/whatsapp/disconnect:
- *   post:
- *     summary: Disconnect WhatsApp session for the authenticated user
- *     tags: [WHATSAPP]
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Disconnected
- */
-
-/**
- * @swagger
- * /api/v1/whatsapp/qr:
- *   get:
- *     summary: Render current WhatsApp QR as PNG image
- *     tags: [WHATSAPP]
- *     produces:
- *       - image/png
- *     description: |
- *       Returns raw PNG bytes when `format=png` (default). **Authorize first** (Bearer) — opening this URL in a new tab without the token returns JSON error, not an image.
- *       For Swagger “Try it out”, use **`format=json`** and paste `data.image` into an `<img src="...">` (binary preview is unreliable in Swagger).
- *       Cross-origin frontends can embed the PNG URL in `<img>` (response sets `Cross-Origin-Resource-Policy: cross-origin`).
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: query
- *         name: timeoutMs
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 120000
- *           default: 30000
- *         required: false
- *         description: How long to wait until QR is available
- *       - in: query
- *         name: format
- *         schema:
- *           type: string
- *           enum: [png, json]
- *           default: png
- *         required: false
- *         description: |
- *           `png` = raw PNG bytes (default). `json` = same QR as data URL in JSON (recommended for Swagger “Try it out” preview).
- *     responses:
- *       200:
- *         description: QR code (PNG bytes, or JSON with data URL when format=json)
- *         content:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiSuccessEnvelope'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       oneOf:
+ *                         - $ref: '#/components/schemas/WhatsappConnectStatusData'
+ *                         - $ref: '#/components/schemas/WhatsappPairingJsonData'
+ *             examples:
+ *               statusOnly:
+ *                 summary: Without type query
+ *                 value:
+ *                   success: true
+ *                   message: WhatsApp connect diproses
+ *                   data:
+ *                     connectionStatus: connecting
+ *               base64Qr:
+ *                 summary: type=base64 with QR
+ *                 value:
+ *                   success: true
+ *                   message: WhatsApp pairing QR
+ *                   data:
+ *                     connectionStatus: connecting
+ *                     timedOut: false
+ *                     mimeType: image/png
+ *                     qrImageBase64: iVBORw0KGgo...
  *           image/png:
  *             schema:
  *               type: string
- *               format: byte
- *               description: When format is omitted or png
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     image:
- *                       type: string
- *                       example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA...
- *               description: When format=json
- *       409:
- *         description: Session already connected (QR not required)
- *       408:
- *         description: QR not ready yet
+ *               format: binary
+ *             examples:
+ *               qrPng:
+ *                 summary: Raw QR PNG (type=image)
+ *       400:
+ *         description: Invalid body or query (e.g. unknown query keys with strict validation)
+ *       401:
+ *         description: Missing or invalid Bearer token
+ *       500:
+ *         description: Internal server error
  */
 
 /**
  * @swagger
- * /api/v1/whatsapp/qr-base64:
+ * /api/v1/whatsapp/connection-status:
  *   get:
- *     summary: Get WhatsApp QR as data URL base64 (useful for Swagger preview)
- *     tags: [WHATSAPP]
+ *     summary: Get WhatsApp connection status
+ *     description: Returns current `connectionStatus` and optional `lastDisconnectReason` for the authenticated user session.
+ *     tags: [WhatsApp]
  *     security:
  *       - BearerAuth: []
- *     parameters:
- *       - in: query
- *         name: timeoutMs
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 120000
- *           default: 30000
- *         required: false
- *         description: How long to wait until QR is available
  *     responses:
  *       200:
- *         description: QR rendered as base64 data URL
+ *         description: Current session status
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: QR rendered as base64
- *                 data:
- *                   type: object
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiSuccessEnvelope'
+ *                 - type: object
  *                   properties:
- *                     base64:
- *                       type: string
- *                       example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA...
+ *                     data:
+ *                       $ref: '#/components/schemas/WhatsappConnectStatusData'
+ *             example:
+ *               success: true
+ *               message: Status koneksi WhatsApp
+ *               data:
+ *                 connectionStatus: disconnected
+ *                 lastDisconnectReason: null
+ *       401:
+ *         description: Missing or invalid Bearer token
+ *       500:
+ *         description: Internal server error
  */

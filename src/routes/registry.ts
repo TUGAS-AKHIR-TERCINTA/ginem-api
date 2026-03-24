@@ -23,7 +23,7 @@ const RoutesRegistry = {
   SchedulerLogRoute,
   StatsRoute,
   VectorIndexesRoute,
-  WhatsAppRoute
+  WhatsAppRoute,
 }
 
 export default RoutesRegistry

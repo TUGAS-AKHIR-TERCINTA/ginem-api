@@ -1,28 +1,34 @@
 import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import { ResponseData } from '../../utilities/response'
-import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { WhatsAppService } from '../../services/WhatsApp.service'
+import { WhatsappService } from '../../services/whatsapp'
+import { handleError } from '../../utilities/requestHandler'
+import { ResponseData } from '../../utilities/response'
 
-export const getWhatsAppStatus = async (
+export const getWhatsappConnectionStatus = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   const userId = req.jwtPayload?.userId
 
-  if (!userId) {
+  if (userId == null) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json(ResponseData.error({ message: 'Unauthorized' }))
   }
 
   try {
-    const status = await WhatsAppService.getStatus(userId)
+    const session = WhatsappService.forUser(userId)
+    const data = {
+      connectionStatus: session.connectionStatus,
+      ...(session.lastDisconnectReason != null
+        ? { lastDisconnectReason: session.lastDisconnectReason }
+        : {})
+    }
     return res
       .status(StatusCodes.OK)
-      .json(ResponseData.success({ data: status, message: 'WhatsApp status retrieved' }))
+      .json(ResponseData.success({ data, message: 'Status koneksi WhatsApp' }))
   } catch (err) {
     return handleError(res, err)
   }
