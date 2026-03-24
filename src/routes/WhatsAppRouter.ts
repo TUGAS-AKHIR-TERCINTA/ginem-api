@@ -4,7 +4,8 @@ import { WhatsappController } from '../controllers/whatsapp'
 import { MiddleWares } from '../middlewares'
 import {
   whatsappConnectBodySchema,
-  whatsappConnectQuerySchema
+  whatsappConnectQuerySchema,
+  whatsappDisconnectBodySchema
 } from '../schemas/WhatsAppSchema'
 
 const WhatsAppRoute = Router()
@@ -21,5 +22,11 @@ WhatsAppRoute.post(
 )
 
 WhatsAppRoute.get('/connection-status', WhatsappController.connectionStatus)
+
+WhatsAppRoute.post(
+  '/disconnect',
+  MiddleWares.validate({ body: whatsappDisconnectBodySchema }),
+  WhatsappController.disconnect
+)
 
 export default WhatsAppRoute

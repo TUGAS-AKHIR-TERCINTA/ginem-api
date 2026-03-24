@@ -51,6 +51,30 @@ export type WhatsappSocketBindings = {
 export class WhatsappBaileysSocket {
   constructor(private readonly bind: WhatsappSocketBindings) {}
 
+  /**
+   * Tutup socket WA, hentikan reconnect, dan bersihkan listener event.
+   * Kredensial di disk tidak dihapus — panggil `attach()` / `connect()` untuk menyambung lagi.
+   */
+  detach(): void {
+    this.bind.setReconnectScheduled(false)
+    this.bind.setLastPairingQr(undefined)
+    const sock = this.bind.getSocket()
+    if (sock == null) return
+    try {
+      sock.ev.removeAllListeners('creds.update')
+      sock.ev.removeAllListeners('connection.update')
+      sock.ev.removeAllListeners('messages.upsert')
+    } catch (error) {
+      logger.warn(`${LOG_PREFIX} detach removeListeners: ${String(error)}`)
+    }
+    this.bind.setSocket(undefined)
+    try {
+      sock.end(undefined)
+    } catch (error) {
+      logger.warn(`${LOG_PREFIX} detach end failed: ${String(error)}`)
+    }
+  }
+
   attach(): void {
     try {
       this.bind.getSocket()?.end(undefined)
@@ -171,10 +195,16 @@ export class WhatsappBaileysSocket {
       const chat = msg.key.remoteJid
       if (chat == null || chat === 'status@broadcast') return
 
-      const incoming = plainTextFromMessage(msg.message)
-      if (incoming?.trim().toLowerCase() !== 'ping') return
+      console.log("chat: ", chat)
+      console.log("userLabel: ", this.bind.userLabel())
 
-      const answer = await ChatService.query(incoming)
+      const incoming = plainTextFromMessage(msg.message)
+      // if (incoming?.trim().toLowerCase() !== 'ping') return
+
+      if(chat !== '6281379574223@s.whatsapp.net') return
+      
+
+      const answer = await ChatService.query(incoming ?? '')
 
       await sock.sendMessage(chat, { text: answer }, { quoted: msg })
       logger.info(

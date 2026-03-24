@@ -1,4 +1,5 @@
 import path from 'path'
+import { rm } from 'fs/promises'
 
 import { StatusCodes } from 'http-status-codes'
 import {
@@ -22,6 +23,9 @@ type AuthBundle = Awaited<ReturnType<typeof useMultiFileAuthState>>
 type WaVersion = Awaited<ReturnType<typeof fetchLatestBaileysVersion>>['version']
 
 const LOG_PREFIX = '[WhatsappService]'
+
+const DISCONNECT_CLEARED_MESSAGE =
+  'Session removed. Connect again and scan the QR code on your phone.'
 
 /**
  * WhatsApp (Baileys) per user aplikasi. Socket & event di `WhatsApp.socket.ts`.
@@ -174,14 +178,52 @@ export class WhatsappService {
     }
   }
 
+  /**
+   * Logout dari WhatsApp (jika sedang connected), hapus folder sesi di disk, dan reset auth di memori.
+   * Setelah ini, `connect` memerlukan pairing QR lagi; bootstrap server juga tidak akan auto-connect user ini.
+   */
   async disconnect(): Promise<void> {
     try {
-      this.intentionalDisconnect = true
       this.reconnectScheduled = false
-      const current = this.socket
-      this.socket = undefined
-      current?.end(undefined)
+      this.lastPairingQr = undefined
+
+      const sock = this.socket
+      const wasConnected = this.state === 'connected'
+
+      if (sock != null && wasConnected) {
+        this.intentionalDisconnect = false
+        try {
+          await sock.logout()
+        } catch (error) {
+          logger.warn(
+            `${LOG_PREFIX} logout() failed (${this.userLabel()}), closing socket: ${String(error)}`
+          )
+          this.intentionalDisconnect = true
+          this.baileysSocket.detach()
+        }
+      } else if (sock != null) {
+        this.intentionalDisconnect = true
+        this.baileysSocket.detach()
+      }
+
+      this.baileysSocket.detach()
+
+      try {
+        await rm(this.authDir, { recursive: true, force: true })
+        logger.info(`${LOG_PREFIX} session dir removed (${this.userLabel()}): ${this.authDir}`)
+      } catch (error) {
+        if (error instanceof AppError) throw error
+        logger.error(`${LOG_PREFIX} remove session dir failed: ${String(error)}`)
+        throw new AppError(
+          'Failed to remove WhatsApp session from disk',
+          StatusCodes.INTERNAL_SERVER_ERROR
+        )
+      }
+
+      this.credentialsReady = false
+      this.intentionalDisconnect = false
       this.state = 'disconnected'
+      this.lastDisconnectReason = DISCONNECT_CLEARED_MESSAGE
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`${LOG_PREFIX} disconnect failed: ${String(error)}`)

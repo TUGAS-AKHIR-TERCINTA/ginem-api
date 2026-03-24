@@ -14,3 +14,8 @@ export const whatsappConnectQuerySchema = z
   .strict()
 
 export type WhatsappConnectQueryInput = z.infer<typeof whatsappConnectQuerySchema>
+
+/** POST /disconnect — body kosong, sama pola keamanan dengan `/connect`. */
+export const whatsappDisconnectBodySchema = z.object({}).strict().default({})
+
+export type WhatsappDisconnectBodyInput = z.infer<typeof whatsappDisconnectBodySchema>

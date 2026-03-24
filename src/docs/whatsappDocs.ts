@@ -152,6 +152,54 @@
 
 /**
  * @swagger
+ * /api/v1/whatsapp/disconnect:
+ *   post:
+ *     summary: Log out and remove WhatsApp session (requires QR on next connect)
+ *     description: |
+ *       When the session is **connected**, calls Baileys `logout()` (unlink companion device on WhatsApp servers).
+ *       Then **deletes** the user's session folder on disk and resets in-memory auth so a **new pairing QR** is required.
+ *       After a server restart, **auto-connect will not** restore this user until they connect and scan QR again.
+ *     tags: [WhatsApp]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/WhatsappConnectBody'
+ *           examples:
+ *             empty:
+ *               summary: Empty body
+ *               value: {}
+ *     responses:
+ *       200:
+ *         description: Session cleared; status is `disconnected` (may include `lastDisconnectReason` hint to scan QR next)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiSuccessEnvelope'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/WhatsappConnectStatusData'
+ *             example:
+ *               success: true
+ *               message: WhatsApp disconnected
+ *               data:
+ *                 connectionStatus: disconnected
+ *                 lastDisconnectReason: Session removed. Connect again and scan the QR code on your phone.
+ *       400:
+ *         description: Invalid body (strict JSON)
+ *       401:
+ *         description: Missing or invalid Bearer token
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
  * /api/v1/whatsapp/connection-status:
  *   get:
  *     summary: Get WhatsApp connection status
