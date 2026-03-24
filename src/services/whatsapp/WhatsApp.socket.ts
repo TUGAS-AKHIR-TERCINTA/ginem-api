@@ -61,10 +61,8 @@ export class WhatsappBaileysSocket {
         version: this.bind.getWaVersion(),
         auth: this.bind.getAuth(),
         browser: Browsers.macOS('Chrome'),
-        printQRInTerminal: true,
         syncFullHistory: false,
         logger: pino({ level: "silent" }),
-
       })
       this.bind.setSocket(sock)
 

@@ -25,12 +25,27 @@ function parseMaxUsers(): number | undefined {
   return n
 }
 
-async function dirHasRegisteredCreds(authDir: string): Promise<boolean> {
+type CredsJsonShape = {
+  registered?: boolean
+  me?: { id?: string }
+}
+
+/**
+ * Baileys sering menulis `registered: false` di `creds.json` meski akun sudah login;
+ * sinyal andal untuk sesi yang bisa di-restore: `registered === true` atau ada `me.id` JID WA.
+ */
+function credsJsonIndicatesLoggedInSession(parsed: CredsJsonShape): boolean {
+  if (parsed.registered === true) return true
+  const jid = parsed.me?.id
+  return typeof jid === 'string' && jid.includes('@s.whatsapp.net')
+}
+
+async function dirHasResumableSession(authDir: string): Promise<boolean> {
   const credsPath = path.join(authDir, 'creds.json')
   try {
     const raw = await readFile(credsPath, 'utf8')
-    const parsed = JSON.parse(raw) as { registered?: boolean }
-    return parsed.registered === true
+    const parsed = JSON.parse(raw) as CredsJsonShape
+    return credsJsonIndicatesLoggedInSession(parsed)
   } catch {
     return false
   }
@@ -50,8 +65,8 @@ function collectNumericUserIds(entries: Dirent[]): number[] {
 }
 
 /**
- * Setelah server listen: hubungkan ulang sesi yang sudah pernah dipasangkan (ada `creds.json` dengan `registered: true`).
- * Non-blocking; kegagalan per-user hanya di-log.
+ * Setelah server listen: hubungkan ulang sesi yang punya `creds.json` dengan kredensial login
+ * (`registered` atau `me.id` ber-JID WhatsApp). Non-blocking; kegagalan per-user hanya di-log.
  */
 export async function resumeWhatsappSessionsOnBoot(): Promise<void> {
   if (!isWhatsappAutoConnectOnBootEnabled()) {
@@ -75,7 +90,7 @@ export async function resumeWhatsappSessionsOnBoot(): Promise<void> {
 
   for (const userId of numericIds) {
     const authDir = path.join(WHATSAPP_SESSIONS_ROOT, String(userId))
-    if (await dirHasRegisteredCreds(authDir)) {
+    if (await dirHasResumableSession(authDir)) {
       paired.push(userId)
     }
   }
