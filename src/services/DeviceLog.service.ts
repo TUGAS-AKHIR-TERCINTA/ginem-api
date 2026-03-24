@@ -7,7 +7,7 @@ import { DeviceModel } from '../models/DeviceModel'
 import { DeviceLogModel } from '../models/DeviceLogModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
-import logger from '../../logs'
+import logger from '../utilities/logger'
 
 /** Options for listing device logs with optional pagination */
 export interface FindAllDeviceLogOptions {

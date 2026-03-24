@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { AppLogModel, type AppLogLevel } from '../models/AppLogModel'
 import { AppError } from '../utilities/AppError'
 import { Pagination } from '../utilities/pagination'
-import logger from '../../logs'
+import logger from '../utilities/logger'
 
 export interface CreateLogParams {
   appLogLevel: AppLogLevel

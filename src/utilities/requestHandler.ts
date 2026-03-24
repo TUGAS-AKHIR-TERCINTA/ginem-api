@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { Response } from 'express'
 import { ResponseData } from './response'
-import logger from '../../logs'
+import logger from './logger'
 import { AppError } from './AppError'
 import { AppLogService } from '../services/AppLog.service'
 

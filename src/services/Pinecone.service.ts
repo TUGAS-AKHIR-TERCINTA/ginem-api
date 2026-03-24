@@ -1,7 +1,7 @@
 import { Pinecone, type IndexModel } from '@pinecone-database/pinecone'
 import { StatusCodes } from 'http-status-codes'
 
-import logger from '../../logs'
+import logger from '../utilities/logger'
 import { pineconeConfig, type PineconeConfig } from '../configs/pinecone'
 import { AppError } from '../utilities/AppError'
 

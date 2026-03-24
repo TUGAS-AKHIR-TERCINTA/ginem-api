@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { createAgent } from 'langchain'
 
-import logger from '../../logs'
+import logger from '../utilities/logger'
 import { AppError } from '../utilities/AppError'
 import { LLMService } from './LLM.service'
 import { deviceTools } from './mcp/tools/index'

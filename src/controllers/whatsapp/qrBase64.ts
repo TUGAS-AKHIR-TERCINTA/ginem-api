@@ -12,7 +12,7 @@ export const getWhatsAppQrBase64 = async (
   res: Response
 ): Promise<Response> => {
   const userId = req.jwtPayload?.userId
-  const payload = req.query as WhatsAppQrQueryInput
+  const payload = req.query as unknown as WhatsAppQrQueryInput
 
   if (!userId) {
     return res

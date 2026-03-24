@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 import swaggerUi from 'swagger-ui-express'
 
 import RoutesRegistry from './registry'
-import logger from '../../logs'
+import logger from '../utilities/logger'
 import { ResponseData } from '../utilities/response'
 import swaggerSpec from '../configs/swagger'
 

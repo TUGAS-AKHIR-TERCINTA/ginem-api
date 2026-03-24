@@ -13,7 +13,7 @@ import makeWASocket, {
 
 import * as QRCode from 'qrcode'
 
-import logger from '../../logs'
+import logger from '../utilities/logger'
 import { AppError } from '../utilities/AppError'
 
 type WhatsAppSessionStatus = 'disconnected' | 'connecting' | 'connected' | 'error'
@@ -84,6 +84,26 @@ function normalizePhoneNumberToWhatsAppJid(rawPhoneOrJid: string): string {
 
 async function ensureAuthDirectoryExists(authDirectoryPath: string): Promise<void> {
   await fs.promises.mkdir(authDirectoryPath, { recursive: true })
+}
+
+/** PNG bytes from session, or decoded from `qrDataUrl` when `qrPng` is missing (e.g. toBuffer failed). */
+function resolveQrPngBufferFromSession(
+  session: WhatsAppSessionState | undefined
+): Buffer | undefined {
+  if (session == null) return undefined
+  if (session.qrPng != null && session.qrPng.length > 0) {
+    return session.qrPng
+  }
+  const dataUrl = session.qrDataUrl
+  if (dataUrl == null) return undefined
+  const match = /^data:image\/png;[^,]*base64,(.+)$/i.exec(dataUrl)
+  if (match == null) return undefined
+  try {
+    const buf = Buffer.from(match[1], 'base64')
+    return buf.length > 0 ? buf : undefined
+  } catch {
+    return undefined
+  }
 }
 
 async function waitUntilConditionMet<T>(options: {
@@ -498,7 +518,7 @@ export class WhatsAppService {
       return waitUntilConditionMet<Buffer>({
         timeoutMs,
         onTimeoutMessage: 'WhatsApp QR code is not ready yet',
-        getValue: () => sessionsByUserId.get(userId)?.qrPng
+        getValue: () => resolveQrPngBufferFromSession(sessionsByUserId.get(userId))
       })
     } catch (error) {
       if (error instanceof AppError) throw error

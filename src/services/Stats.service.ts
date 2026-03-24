@@ -5,7 +5,7 @@ import { SchedulerLogModel } from '../models/SchedulerLogModel'
 import { UserModel } from '../models/UserModel'
 import { VectorIndexesModel } from '../models/VectorIndexesModel'
 import { AppError } from '../utilities/AppError'
-import logger from '../../logs'
+import logger from '../utilities/logger'
 
 export interface StatsCounts {
   devices: number

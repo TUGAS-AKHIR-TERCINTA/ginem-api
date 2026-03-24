@@ -3,7 +3,7 @@ import {
   SchedulerLogModel,
   ISchedulerLogCreationModelAttributes
 } from '../../models/SchedulerLogModel'
-import logger from '../../../logs'
+import logger from '../../utilities/logger'
 import { DeviceLogService } from '../DeviceLog.service'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'

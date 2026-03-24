@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ChatOpenAI } from '@langchain/openai'
 import { appConfigs } from '../configs'
 import { AppError } from '../utilities/AppError'
-import logger from '../../logs'
+import logger from '../utilities/logger'
 
 export class LLMService {
   static create() {

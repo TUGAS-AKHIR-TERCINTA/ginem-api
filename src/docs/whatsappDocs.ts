@@ -169,6 +169,10 @@
  *     tags: [WHATSAPP]
  *     produces:
  *       - image/png
+ *     description: |
+ *       Returns raw PNG bytes when `format=png` (default). **Authorize first** (Bearer) — opening this URL in a new tab without the token returns JSON error, not an image.
+ *       For Swagger “Try it out”, use **`format=json`** and paste `data.image` into an `<img src="...">` (binary preview is unreliable in Swagger).
+ *       Cross-origin frontends can embed the PNG URL in `<img>` (response sets `Cross-Origin-Resource-Policy: cross-origin`).
  *     security:
  *       - BearerAuth: []
  *     parameters:
