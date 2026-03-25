@@ -5,7 +5,7 @@ import logger from '../utilities/logger'
 import { AppError } from '../utilities/AppError'
 import { LLMService } from './LLM.service'
 import { deviceTools } from './mcp/tools/index'
-import { PineconeService } from './Pinecone.service'
+import { pineconeService, RagDocument } from './Pinecone.service'
 
 const DEVICE_CHAT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
 
@@ -44,9 +44,9 @@ export class ChatService {
     try {
       let messageToSend = userMessage
 
-      const ragHits = await PineconeService.searchKnowledgeChunks(userMessage, 5)
+      const ragHits = await pineconeService.search(userMessage, 5)
       if (ragHits.length > 0) {
-        const contextBlock = ragHits.map((h) => h.text).join('\n\n')
+        const contextBlock = ragHits.map((h: RagDocument) => h.content).join('\n\n')
         messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
       }
 

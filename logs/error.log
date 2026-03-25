@@ -1,0 +1,4 @@
+{"level":"error","message":"[AuthService] loginUser failed: SequelizeConnectionRefusedError","service":"backend-service","timestamp":"2026-03-25 10:07:07"}
+{"level":"error","message":"[PineconeService] upsertChunks failed: PineconeBadRequestError: {\"error\":{\"code\":\"INVALID_ARGUMENT\",\"message\":\"Error parsing request: Missing field_mapping field 'text' in record _id='vidx-e6a5980575a3c4fa8f875a4861c675ddfbe14592'\"},\"status\":400}","service":"backend-service","timestamp":"2026-03-25 10:18:29"}
+{"level":"error","message":"[PineconeService] upsertChunks failed: TypeError: fetch failed","service":"backend-service","timestamp":"2026-03-25 10:23:53"}
+{"level":"error","message":"[PineconeService] upsertChunks failed: TypeError: fetch failed","service":"backend-service","timestamp":"2026-03-25 10:24:30"}

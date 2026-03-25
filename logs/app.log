@@ -604,3 +604,167 @@
 {"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-24 22:41:34"}
 {"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-24 22:41:36"}
 {"level":"info","message":"[WhatsappService] auto-reply pong → 6281379574223@s.whatsapp.net (user=2)","service":"backend-service","timestamp":"2026-03-24 22:42:00"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 09:46:23"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 09:46:23"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 09:46:24"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 09:46:25"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 09:49:36"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 09:49:36"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 09:50:04"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 09:50:04"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 09:50:04"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 09:50:06"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 09:50:36"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 09:50:36"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 09:50:59"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 09:50:59"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 09:50:59"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 09:51:00"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 09:51:12"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 09:51:12"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 09:51:32"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 09:51:32"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 09:51:32"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 09:51:34"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 09:52:01"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 09:52:01"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 09:52:17"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 09:52:17"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 09:52:17"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 09:52:19"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 09:52:27"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 09:52:27"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 09:52:39"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 09:52:39"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 09:52:39"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 09:52:40"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:06:58 +0000] \"GET /api/v1/docs/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:06:58"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:06:58 +0000] \"GET /api/v1/docs/swagger-ui-bundle.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:06:58"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:06:58 +0000] \"GET /api/v1/docs-static/swagger-qr-preview.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:06:58"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:06:58 +0000] \"GET /api/v1/docs/swagger-ui.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:06:58"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:06:58 +0000] \"GET /api/v1/docs/swagger-ui-standalone-preset.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:06:58"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:06:58 +0000] \"GET /api/v1/docs/swagger-ui-init.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:06:58"}
+{"level":"error","message":"[AuthService] loginUser failed: SequelizeConnectionRefusedError","service":"backend-service","timestamp":"2026-03-25 10:07:07"}
+{"level":"warn","message":"[AppError] 500: Failed to login","service":"backend-service","timestamp":"2026-03-25 10:07:07"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:07:07 +0000] \"POST /api/v1/auth/login HTTP/1.1\" 500 123 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:07:07"}
+{"level":"info","message":"User John Doe logged in successfully","service":"backend-service","timestamp":"2026-03-25 10:07:47"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:07:47 +0000] \"POST /api/v1/auth/login HTTP/1.1\" 200 340 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:07:47"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:12:54"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:12:54"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:13:16"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:13:16"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:13:16"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:13:17"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:13:26"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:13:26"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:13:49"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:13:49"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:13:49"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:13:51"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:14:06"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:14:06"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:14:18"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:14:18"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:14:18"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:14:20"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:16:57 +0000] \"GET /api/v1/docs/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:16:57"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:16:57 +0000] \"GET /api/v1/docs/swagger-ui-bundle.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:16:57"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:16:57 +0000] \"GET /api/v1/docs/swagger-ui-standalone-preset.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:16:57"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:16:57 +0000] \"GET /api/v1/docs-static/swagger-qr-preview.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:16:57"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:16:57 +0000] \"GET /api/v1/docs/swagger-ui-init.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:16:57"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:16:57 +0000] \"GET /api/v1/docs/swagger-ui.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:16:57"}
+{"level":"info","message":"User John Doe logged in successfully","service":"backend-service","timestamp":"2026-03-25 10:17:11"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:17:11 +0000] \"POST /api/v1/auth/login HTTP/1.1\" 200 340 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:17:11"}
+{"level":"error","message":"[PineconeService] upsertChunks failed: PineconeBadRequestError: {\"error\":{\"code\":\"INVALID_ARGUMENT\",\"message\":\"Error parsing request: Missing field_mapping field 'text' in record _id='vidx-e6a5980575a3c4fa8f875a4861c675ddfbe14592'\"},\"status\":400}","service":"backend-service","timestamp":"2026-03-25 10:18:29"}
+{"level":"warn","message":"[AppError] 500: Failed to upsert Pinecone records","service":"backend-service","timestamp":"2026-03-25 10:18:29"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:18:29 +0000] \"POST /api/v1/vector-indexes/pinecone/chunks HTTP/1.1\" 500 141 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:18:29"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:20:23"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:20:23"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:20:38"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:20:38"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:20:38"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:20:39"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:20:41"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:20:41"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:20:56"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:20:56"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:20:56"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:20:58"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:21:03"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:21:03"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:21:19"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:21:19"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:21:19"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:21:20"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:21:20"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:21:21"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:21:35"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:21:35"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:21:35"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:21:36"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:21:40"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:21:40"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:21:55"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:21:55"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:21:55"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:21:57"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:23:30"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:23:30"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:23:30"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:23:32"}
+{"level":"error","message":"[PineconeService] upsertChunks failed: TypeError: fetch failed","service":"backend-service","timestamp":"2026-03-25 10:23:53"}
+{"level":"warn","message":"[AppError] 500: Failed to upsert Pinecone records","service":"backend-service","timestamp":"2026-03-25 10:23:53"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:23:53 +0000] \"POST /api/v1/vector-indexes/pinecone/chunks HTTP/1.1\" 500 141 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:23:53"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:24:11"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:24:11"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:24:11"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:24:13"}
+{"level":"error","message":"[PineconeService] upsertChunks failed: TypeError: fetch failed","service":"backend-service","timestamp":"2026-03-25 10:24:30"}
+{"level":"warn","message":"[AppError] 500: Failed to upsert Pinecone records","service":"backend-service","timestamp":"2026-03-25 10:24:30"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:03:24:30 +0000] \"POST /api/v1/vector-indexes/pinecone/chunks HTTP/1.1\" 500 141 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 10:24:30"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:25:55"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:25:55"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:26:08"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:26:08"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:26:08"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:26:10"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:26:11"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:26:11"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:26:44"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:26:44"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:26:45"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:26:46"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:26:47"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:26:47"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 10:27:07"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 10:27:07"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 10:27:07"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 10:27:08"}
+{"level":"info","message":"SIGTERM received. Shutting down gracefully.","service":"backend-service","timestamp":"2026-03-25 10:29:45"}
+{"level":"info","message":"HTTP server closed.","service":"backend-service","timestamp":"2026-03-25 10:29:45"}
+{"level":"info","message":"Server running on http://localhost:8000","service":"backend-service","timestamp":"2026-03-25 11:11:28"}
+{"level":"info","message":"[WhatsappBoot] resuming 1 WhatsApp session(s) in background","service":"backend-service","timestamp":"2026-03-25 11:11:28"}
+{"level":"info","message":"[WhatsappService] session dir ready (user=2): /Users/dear/Documents/DEVELOPER/TA/BACKEND/resources/whatsapp/sessions/2","service":"backend-service","timestamp":"2026-03-25 11:11:28"}
+{"level":"info","message":"[WhatsappService] connected (user=2)","service":"backend-service","timestamp":"2026-03-25 11:11:30"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:11:39 +0000] \"GET /api/v1/docs/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:11:39"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:11:39 +0000] \"GET /api/v1/docs/swagger-ui-bundle.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:11:39"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:11:39 +0000] \"GET /api/v1/docs/swagger-ui-standalone-preset.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:11:39"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:11:39 +0000] \"GET /api/v1/docs-static/swagger-qr-preview.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:11:39"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:11:39 +0000] \"GET /api/v1/docs/swagger-ui.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:11:39"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:11:39 +0000] \"GET /api/v1/docs/swagger-ui-init.js HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:11:39"}
+{"level":"info","message":"User John Doe logged in successfully","service":"backend-service","timestamp":"2026-03-25 11:11:45"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:11:45 +0000] \"POST /api/v1/auth/login HTTP/1.1\" 200 340 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:11:45"}
+{"level":"info","message":"[PineconeService] addDocuments -> index=tatercinta, namespace=tatercinta-namespace, docs=2","service":"backend-service","timestamp":"2026-03-25 11:12:49"}
+{"level":"info","message":"[PineconeService] upsert verify -> index=tatercinta, namespace=tatercinta-namespace, id=c8cfda5544..., found=true","service":"backend-service","timestamp":"2026-03-25 11:12:58"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:12:58 +0000] \"POST /api/v1/indexing/index HTTP/1.1\" 200 140 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:12:58"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:14:12 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 159 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:14:12"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:16:02 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 492 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:16:02"}
+{"level":"info","message":"[PineconeService] addDocuments -> index=tatercinta, namespace=tatercinta-namespace, docs=1","service":"backend-service","timestamp":"2026-03-25 11:16:45"}
+{"level":"info","message":"[PineconeService] upsert verify -> index=tatercinta, namespace=tatercinta-namespace, id=ad68cf694b..., found=true","service":"backend-service","timestamp":"2026-03-25 11:17:00"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:17:00 +0000] \"POST /api/v1/indexing/index HTTP/1.1\" 200 140 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:17:00"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:17:21 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 481 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:17:21"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:18:13 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 363 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:18:13"}
+{"level":"info","message":"[PineconeService] addDocuments -> index=tatercinta, namespace=tatercinta-namespace, docs=1","service":"backend-service","timestamp":"2026-03-25 11:19:08"}
+{"level":"info","message":"[PineconeService] upsert verify -> index=tatercinta, namespace=tatercinta-namespace, id=74972a8eb5..., found=true","service":"backend-service","timestamp":"2026-03-25 11:19:17"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:19:17 +0000] \"POST /api/v1/indexing/index HTTP/1.1\" 200 140 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:19:17"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [25/Mar/2026:04:19:29 +0000] \"POST /api/v1/chat HTTP/1.1\" 200 203 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0\"","service":"backend-service","timestamp":"2026-03-25 11:19:29"}
