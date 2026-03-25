@@ -5,7 +5,7 @@ import { ResponseData } from '../../utilities/response'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { ChatSchema } from '../../schemas/ChatSchema'
 import { handleError } from '../../utilities/requestHandler'
-import { DeviceAgentService } from '../../services/mcp'
+import { ChatService } from '../../services/Chat.service'
 
 export const queryChat = async (
   req: IAuthenticatedRequest,
@@ -14,7 +14,7 @@ export const queryChat = async (
   const payload = req.body as ChatSchema
 
   try {
-    const answer = await DeviceAgentService.query(payload.message)
+    const answer = await ChatService.query(payload.message)
     const response = ResponseData.success({
       data: { reply: answer },
       message: 'Chat completed successfully'

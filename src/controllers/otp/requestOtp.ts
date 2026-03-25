@@ -10,7 +10,7 @@ import {
 import { UserModel } from '../../models/UserModel'
 import { ResponseData } from '../../utilities/response'
 import redisClient from '../../configs/redis'
-import logger from '../../../logs'
+import logger from '../../utilities/logger'
 
 export const requestOtp = async (req: Request, res: Response): Promise<Response> => {
   const { error: validationError, value: validatedData } = validateRequest(

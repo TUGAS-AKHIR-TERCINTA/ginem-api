@@ -4,7 +4,7 @@ import { VectorIndexesModel, VectorIndexSource } from '../models/VectorIndexesMo
 import type { VectorIndexesInstance } from '../models/VectorIndexesModel'
 import { AppError } from '../utilities/AppError'
 import { Pagination } from '../utilities/pagination'
-import logger from '../../logs'
+import logger from '../utilities/logger'
 
 export interface FindAllVectorIndexesParams {
   page?: number

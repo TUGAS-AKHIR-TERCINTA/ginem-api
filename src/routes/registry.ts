@@ -5,11 +5,11 @@ import ChatRoute from './ChatRouter'
 import MyProfileRoute from './MyProfileRouter'
 import OtpRoute from './OtpRouter'
 import SchedulerLogRoute from './SchedulerLogRouter'
-import WeaviateRoute from './WeaviateRouter'
 import AppLogRoute from './AppLogRouter'
 import DeviceLogRoute from './DeviceLogRouter'
 import StatsRoute from './StatsRouter'
 import VectorIndexesRoute from './VectorIndexesRouter'
+import WhatsAppRoute from './WhatsAppRouter'
 
 const RoutesRegistry = {
   AppLogRoute,
@@ -21,9 +21,9 @@ const RoutesRegistry = {
   DeviceRoute,
   DeviceLogRoute,
   SchedulerLogRoute,
-  WeaviateRoute,
   StatsRoute,
-  VectorIndexesRoute
+  VectorIndexesRoute,
+  WhatsAppRoute,
 }
 
 export default RoutesRegistry

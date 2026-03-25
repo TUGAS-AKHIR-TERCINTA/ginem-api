@@ -5,3 +5,5 @@ node_modules
 build
 tmp
 public/*
+whatsapp-sessions/*
+logs/*

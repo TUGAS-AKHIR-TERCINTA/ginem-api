@@ -4,7 +4,7 @@ import { SchedulerLogModel } from '../models/SchedulerLogModel'
 import type { SchedulerLogInstance } from '../models/SchedulerLogModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
-import logger from '../../logs'
+import logger from '../utilities/logger'
 
 export type SchedulerLogType = 'actuator' | 'sensor_data'
 export type SchedulerLogStatus = 'pending' | 'completed' | 'failed'
