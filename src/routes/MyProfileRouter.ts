@@ -5,7 +5,7 @@ import {
   findMyProfileSchema,
   updateMyProfileSchema,
   updateOnboardingSchema
-} from '../schemas/myProfileSchema'
+} from '../schemas/MyProfileSchema'
 
 const MyProfileRoute = Router()
 

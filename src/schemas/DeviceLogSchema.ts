@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { jwtPayloadSchema } from './jwtPayloadSchema'
+import { jwtPayloadSchema } from './JwtPayloadSchema'
 
 export const createDeviceLogSchema = z.object({
   jwtPayload: jwtPayloadSchema.optional(),

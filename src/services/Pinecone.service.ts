@@ -1,12 +1,10 @@
 import axios from 'axios'
 import crypto from 'crypto'
-import fs from 'fs'
 import logger from '../utilities/logger'
 import { StatusCodes } from 'http-status-codes'
 import { Pinecone } from '@pinecone-database/pinecone'
 import { appConfigs } from '../configs'
 import { AppError } from '../utilities/AppError'
-import { IndexingModel, IndexingSourceType } from '../models/indexingModel'
 
 export type RagDocument = { content: string; source?: string }
 export type IndexPdfResult = { indexed: number; source: string }

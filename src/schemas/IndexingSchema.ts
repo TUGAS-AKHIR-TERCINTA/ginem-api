@@ -2,10 +2,7 @@ import { z } from 'zod'
 
 const vectorIndexSourceEnum = z.enum(['pdf', 'text'])
 
-/**
- * Query schema for GET /vector-indexes (list with pagination)
- */
-export const findAllVectorIndexesSchema = z.object({
+export const findAllIndexingsSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   size: z.coerce.number().int().min(1).max(100).default(20),
   pagination: z
@@ -22,20 +19,15 @@ export const findAllVectorIndexesSchema = z.object({
     .transform((v) => (v === '' ? undefined : v))
 })
 
-export type FindAllVectorIndexesInput = z.infer<typeof findAllVectorIndexesSchema>
-
-const indexPineconeItemSchema = z
+export const createIndexingItemSchema = z
   .object({
     text: z.string().max(200_000),
     source: vectorIndexSourceEnum
   })
   .strict()
 
-/**
- * Body POST /vector-indexes/pinecone/chunks: JSON array `[{ "text": "...", "source": "text" | "pdf" }]`.
- */
-export const indexPineconeChunksBodySchema = z
-  .array(indexPineconeItemSchema)
+export const createIndexingBodySchema = z
+  .array(createIndexingItemSchema)
   .min(1)
   .max(100)
   .superRefine((items, ctx) => {
@@ -50,9 +42,10 @@ export const indexPineconeChunksBodySchema = z
     })
   })
 
-export const DeleteIndexingParamsSchema = z.object({
+export const deleteIndexingParamsSchema = z.object({
   id: z.string().regex(/^\d+$/, { message: 'id must be a positive integer' })
 })
 
-export type IDeleteIndexingParams = z.infer<typeof DeleteIndexingParamsSchema>
-export type IndexPineconeChunksBodyInput = z.infer<typeof indexPineconeChunksBodySchema>
+export type FindAllIndexingsInput = z.infer<typeof findAllIndexingsSchema>
+export type IDeleteIndexingParams = z.infer<typeof deleteIndexingParamsSchema>
+export type CreateIndexingBodyInput = z.infer<typeof createIndexingBodySchema>

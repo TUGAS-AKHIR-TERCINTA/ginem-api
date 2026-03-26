@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { MyProfileService } from '../../services/MyProfile.service'
-import { UpdateOnboardingSchema } from '../../schemas/myProfileSchema'
+import { UpdateOnboardingSchema } from '../../schemas/MyProfileSchema'
 
 export const updateOnboardingStatus = async (
   req: IAuthenticatedRequest,
