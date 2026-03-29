@@ -1,4 +1,4 @@
-import { appConfigs } from '../configs'
+import { appConfigs } from '../configs/appConfig'
 
 export interface MetaAttributes {
   version: string

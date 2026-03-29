@@ -1,5 +1,5 @@
 import app from './src/app'
-import { appConfigs } from './src/configs'
+import { appConfigs } from './src/configs/appConfig'
 import { resumeWhatsappSessionsOnBoot } from './src/services/whatsapp'
 import logger from './src/utilities/logger'
 

@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import logger from '../utilities/logger'
 import { StatusCodes } from 'http-status-codes'
 import { Pinecone } from '@pinecone-database/pinecone'
-import { appConfigs } from '../configs'
+import { appConfigs } from '../configs/appConfig'
 import { AppError } from '../utilities/AppError'
 
 export type RagDocument = { content: string; source?: string }

@@ -26,25 +26,10 @@ export const appConfigs = {
     pinEncryption: process.env.SECRET_PIN_ENCRYPTION,
     jwtToken: process.env.JWT_TOKEN
   },
-  etherScan: {
-    baseUrl: process.env.ETHERSCAN_BASE_URL,
-    token: process.env.ETHERSCAN_TOKEN
-  },
-  coingecko: {
-    baseUrl: process.env.COINGECKO_BASE_URL
-  },
-  cryptopanic: {
-    baseUrl: process.env.CRYPTOPANIC_BASE_URL,
-    apiKey: process.env.CRYPTOPANIC_API_KEY
-  },
-  binance: {
-    baseUrl: process.env.BINANCE_BASE_URL
-  },
   llm: {
     deepSeekApiKey: process.env.DEEPSEEK_API_KEY,
     openAIApiKey: process.env.OPENAI_API_KEY
   },
-  maximumUploadFile: process.env.MAXIMUM_UPLOAD_FILE ?? 1024,
   pinecone: {
     apiKey: process.env.PINECONE_API_KEY,
     indexName: process.env.PINECONE_INDEX_NAME,

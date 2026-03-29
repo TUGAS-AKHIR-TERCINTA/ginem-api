@@ -1,5 +1,5 @@
 import cors from 'cors'
-import { appConfigs } from '../configs'
+import { appConfigs } from '../configs/appConfig'
 
 export const corsOrigin = () =>
   cors({

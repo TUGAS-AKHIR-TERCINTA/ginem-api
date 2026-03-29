@@ -2,7 +2,7 @@ import { createHash } from 'crypto'
 import { UserModel } from '../models/UserModel'
 import type { UserInstance, IUserAttributes } from '../models/UserModel'
 import { AppError } from '../utilities/AppError'
-import { appConfigs } from '../configs'
+import { appConfigs } from '../configs/appConfig'
 import logger from '../utilities/logger'
 
 /** Payload for updating profile (optional fields; password will be hashed in service) */

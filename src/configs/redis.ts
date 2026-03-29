@@ -1,5 +1,5 @@
 import Redis from 'ioredis'
-import { appConfigs } from '.'
+import { appConfigs } from './appConfig'
 
 const redisClient = new Redis({
   host: appConfigs.redis.host || '127.0.0.1',
