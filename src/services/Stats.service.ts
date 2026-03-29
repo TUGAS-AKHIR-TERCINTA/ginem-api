@@ -3,9 +3,9 @@ import { AppLogModel } from '../models/AppLogModel'
 import { DeviceModel } from '../models/DeviceModel'
 import { SchedulerLogModel } from '../models/SchedulerLogModel'
 import { UserModel } from '../models/UserModel'
-import { VectorIndexesModel } from '../models/VectorIndexesModel'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
+import { IndexingModel } from '../models/indexingModel'
 
 export interface StatsCounts {
   devices: number
@@ -28,7 +28,7 @@ export class StatsService {
       const [devices, users, vectorIndexes, schedulerLogs, appLogs] = await Promise.all([
         DeviceModel.count(),
         UserModel.count(),
-        VectorIndexesModel.count(),
+        IndexingModel.count(),
         SchedulerLogModel.count(),
         AppLogModel.count()
       ])

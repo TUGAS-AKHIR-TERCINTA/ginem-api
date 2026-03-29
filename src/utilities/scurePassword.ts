@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { appConfigs } from '../configs'
+import { appConfigs } from '../configs/appConfig'
 
 export function hashPassword(password: string) {
   return require('crypto')

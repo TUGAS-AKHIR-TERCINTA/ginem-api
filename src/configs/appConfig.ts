@@ -26,46 +26,15 @@ export const appConfigs = {
     pinEncryption: process.env.SECRET_PIN_ENCRYPTION,
     jwtToken: process.env.JWT_TOKEN
   },
-  etherScan: {
-    baseUrl: process.env.ETHERSCAN_BASE_URL,
-    token: process.env.ETHERSCAN_TOKEN
-  },
-  coingecko: {
-    baseUrl: process.env.COINGECKO_BASE_URL
-  },
-  cryptopanic: {
-    baseUrl: process.env.CRYPTOPANIC_BASE_URL,
-    apiKey: process.env.CRYPTOPANIC_API_KEY
-  },
-  binance: {
-    baseUrl: process.env.BINANCE_BASE_URL
-  },
   llm: {
     deepSeekApiKey: process.env.DEEPSEEK_API_KEY,
     openAIApiKey: process.env.OPENAI_API_KEY
   },
-  maximumUploadFile: process.env.MAXIMUM_UPLOAD_FILE ?? 1024,
-  weaviate: {
-    /** Connection mode: "local" (self-hosted/Docker) or "cloud" (Weaviate Cloud). Set WEAVIATE_MODE in .env */
-    mode: (process.env.WEAVIATE_MODE ?? 'local').toLowerCase() as 'local' | 'cloud',
-    /** Local: HTTP host (e.g. localhost) */
-    httpHost: process.env.WEAVIATE_HTTP_HOST ?? 'localhost',
-    /** Local: HTTP port (e.g. 8080) */
-    httpPort: parseInt(process.env.WEAVIATE_HTTP_PORT ?? '8080', 10),
-    /** Local: gRPC port (e.g. 50051) */
-    grpcPort: parseInt(process.env.WEAVIATE_GRPC_PORT ?? '50051', 10),
-    /** Local: use HTTPS/WSS */
-    httpSecure: process.env.WEAVIATE_HTTP_SECURE === 'true',
-    /** Cloud: cluster URL (e.g. https://xxx.weaviate.network). Required when mode=cloud */
-    clusterUrl: process.env.WEAVIATE_CLUSTER_URL ?? '',
-    /** Cloud: API key for Weaviate Cloud. Required when mode=cloud */
-    apiKey: process.env.WEAVIATE_API_KEY ?? '',
-    /** Weaviate class name (set in .env as WEAVIATE_CLASS, e.g. ta-project) */
-    className: process.env.WEAVIATE_CLASS ?? 'ta-project',
-    /** Text vectorizer: "text2vec-openai" or "text2vec-transformers". Used when creating collection if not exists. */
-    vectorizer: (process.env.WEAVIATE_VECTORIZER ?? 'text2vec-openai').toLowerCase() as
-      | 'text2vec-openai'
-      | 'text2vec-transformers'
+  pinecone: {
+    apiKey: process.env.PINECONE_API_KEY,
+    indexName: process.env.PINECONE_INDEX_NAME,
+    namespace: process.env.PINECONE_NAMESPACE,
+    embeddingModel: process.env.PINECONE_EMBEDDING_MODEL
   },
   dataBase: {
     development: {

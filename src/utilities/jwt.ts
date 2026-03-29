@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { appConfigs } from '../configs'
+import { appConfigs } from '../configs/appConfig'
 import { IJwtPayload } from '../interfaces/shared/jwt.interface'
 
 export const generateAccessToken = (user: IJwtPayload): any => {

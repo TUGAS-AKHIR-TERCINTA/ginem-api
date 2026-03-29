@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { ChatOpenAI } from '@langchain/openai'
-import { appConfigs } from '../configs'
+import { appConfigs } from '../configs/appConfig'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
 

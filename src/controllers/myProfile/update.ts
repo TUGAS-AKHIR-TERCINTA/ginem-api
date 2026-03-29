@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { UpdateMyProfileSchema } from '../../schemas/myProfileSchema'
+import { UpdateMyProfileSchema } from '../../schemas/MyProfileSchema'
 import { MyProfileService } from '../../services/MyProfile.service'
 
 export const updateMyProfile = async (
