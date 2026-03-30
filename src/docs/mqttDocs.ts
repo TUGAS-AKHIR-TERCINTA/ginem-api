@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: MQTT
- *   description: Publish messages to the MQTT broker (device commands and status)
+ *   description: Publish messages to the MQTT broker (device commands and status) and read last known status
  */
 
 /**
@@ -63,6 +63,30 @@
  *               description: Whether the API process is connected to the MQTT broker
  *         meta:
  *           type: object
+ *     MqttLastStatusResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         message:
+ *           type: string
+ *         data:
+ *           type: object
+ *           properties:
+ *             deviceId:
+ *               type: string
+ *               example: sensor-01
+ *             payload:
+ *               description: Last JSON payload from device/.../status (shape depends on device)
+ *               example:
+ *                 status: "online"
+ *             receivedAt:
+ *               type: string
+ *               format: date-time
+ *               description: When this status was last updated (MQTT message or API publish)
+ *         meta:
+ *           type: object
  */
 
 /**
@@ -81,6 +105,42 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/MqttConnectionResponse'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/v1/mqtt/devices/{deviceId}/status:
+ *   get:
+ *     summary: Get last known status for a device
+ *     description: |
+ *       Returns the most recent status payload cached in memory for `device/{deviceId}/status`
+ *       (updated when a message is received from MQTT or when you POST publish status via API).
+ *       Data is not persisted across server restarts.
+ *     tags: [MQTT]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           pattern: '^[a-zA-Z0-9_-]+$'
+ *         description: Device id (same segment as in MQTT topic)
+ *         example: sensor-01
+ *     responses:
+ *       200:
+ *         description: Last status found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MqttLastStatusResponse'
+ *       404:
+ *         description: No status recorded yet for this device
  *       401:
  *         description: Unauthorized
  *       500:

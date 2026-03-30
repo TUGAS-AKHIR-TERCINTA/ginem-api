@@ -27,5 +27,17 @@ export const mqttPublishStatusSchema = z.object({
   status: z.string().min(1).max(2000)
 })
 
+export const mqttDeviceIdParamSchema = z.object({
+  deviceId: z
+    .string()
+    .min(1)
+    .max(128)
+    .regex(
+      deviceIdPattern,
+      'deviceId must contain only letters, digits, underscore, or hyphen'
+    )
+})
+
 export type MqttSendCommandInput = z.infer<typeof mqttSendCommandSchema>
 export type MqttPublishStatusInput = z.infer<typeof mqttPublishStatusSchema>
+export type MqttDeviceIdParam = z.infer<typeof mqttDeviceIdParamSchema>

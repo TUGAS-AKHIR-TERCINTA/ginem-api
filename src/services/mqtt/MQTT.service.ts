@@ -5,8 +5,15 @@ import logger from '../../utilities/logger'
 
 export type MqttMessageListener = (deviceId: string, payload: unknown) => void
 
-const STATUS_TOPIC_PATTERN = /^iot\/([^/]+)\/status$/
-const COMMAND_TOPIC_PATTERN = /^iot\/([^/]+)\/command$/
+/** Last known status for a device (from MQTT or from API publish). */
+export type LastDeviceStatusRecord = {
+  deviceId: string
+  payload: unknown
+  receivedAt: string
+}
+
+const STATUS_TOPIC_PATTERN = /^device\/([^/]+)\/status$/
+const COMMAND_TOPIC_PATTERN = /^device\/([^/]+)\/command$/
 
 /**
  * Bridges HTTP-facing flows with the MQTT broker: publish commands/status,
@@ -15,6 +22,7 @@ const COMMAND_TOPIC_PATTERN = /^iot\/([^/]+)\/command$/
 export class MQTTService {
   private static statusListeners = new Set<MqttMessageListener>()
   private static commandListeners = new Set<MqttMessageListener>()
+  private static lastStatusByDevice = new Map<string, LastDeviceStatusRecord>()
   private static messageHandlersRegistered = false
 
   /**
@@ -54,6 +62,22 @@ export class MQTTService {
   /** Publish status on behalf of a device (e.g. tests or gateway emulation). */
   static publishStatus(deviceId: string, status: string): void {
     publishDeviceStatus(deviceId, status)
+    MQTTService.recordDeviceStatus(deviceId, { status })
+  }
+
+  /**
+   * Last status received from MQTT (`device/{id}/status`) or recorded after API publish.
+   */
+  static getLastDeviceStatus(deviceId: string): LastDeviceStatusRecord | null {
+    return MQTTService.lastStatusByDevice.get(deviceId) ?? null
+  }
+
+  private static recordDeviceStatus(deviceId: string, payload: unknown): void {
+    MQTTService.lastStatusByDevice.set(deviceId, {
+      deviceId,
+      payload,
+      receivedAt: new Date().toISOString()
+    })
   }
 
   static subscribeAllDeviceStatus(): void {
@@ -65,7 +89,7 @@ export class MQTTService {
   }
 
   /**
-   * Subscribe to parsed status payloads for `iot/{deviceId}/status`.
+   * Subscribe to parsed status payloads for `device/{deviceId}/status`.
    * @returns Unsubscribe function.
    */
   static onDeviceStatus(listener: MqttMessageListener): () => void {
@@ -76,7 +100,7 @@ export class MQTTService {
   }
 
   /**
-   * Subscribe to parsed payloads for `iot/{deviceId}/command` (inbound on that topic).
+   * Subscribe to parsed payloads for `device/{deviceId}/command` (inbound on that topic).
    * @returns Unsubscribe function.
    */
   static onDeviceCommand(listener: MqttMessageListener): () => void {
@@ -100,6 +124,7 @@ export class MQTTService {
     const statusMatch = topic.match(STATUS_TOPIC_PATTERN)
     if (statusMatch) {
       const deviceId = statusMatch[1]
+      MQTTService.recordDeviceStatus(deviceId, parsed)
       MQTTService.emitTo(MQTTService.statusListeners, deviceId, parsed)
     }
 

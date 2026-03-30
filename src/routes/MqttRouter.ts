@@ -2,13 +2,23 @@ import { Router } from 'express'
 
 import { MqttController } from '../controllers/mqtt'
 import { MiddleWares } from '../middlewares'
-import { mqttPublishStatusSchema, mqttSendCommandSchema } from '../schemas/MqttSchema'
+import {
+  mqttDeviceIdParamSchema,
+  mqttPublishStatusSchema,
+  mqttSendCommandSchema
+} from '../schemas/MqttSchema'
 
 const MqttRoute = Router()
 
 MqttRoute.use(MiddleWares.useAuthorization)
 
 MqttRoute.get('/connection', MqttController.getConnection)
+
+MqttRoute.get(
+  '/devices/:deviceId/status',
+  MiddleWares.validate({ params: mqttDeviceIdParamSchema }),
+  MqttController.getLastStatus
+)
 
 MqttRoute.post(
   '/commands',
