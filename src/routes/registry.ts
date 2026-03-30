@@ -10,6 +10,7 @@ import DeviceLogRoute from './DeviceLogRouter'
 import StatsRoute from './StatsRouter'
 import WhatsAppRoute from './WhatsAppRouter'
 import IndexingRoute from './IndexingRouter'
+import MqttRoute from './MqttRouter'
 
 const RoutesRegistry = {
   AppLogRoute,
@@ -23,7 +24,8 @@ const RoutesRegistry = {
   SchedulerLogRoute,
   StatsRoute,
   WhatsAppRoute,
-  IndexingRoute
+  IndexingRoute,
+  MqttRoute
 }
 
 export default RoutesRegistry

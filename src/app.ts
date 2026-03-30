@@ -5,14 +5,12 @@ import helmet from 'helmet'
 import compression from 'compression'
 import routers from './routes'
 import { MiddleWares } from './middlewares'
-import { registerMqttHandlers } from './services/mqtt/handler'
-// import { Scheduler } from './schedulers'
+import { MQTTService } from './services/mqtt/MQTT.service'
 
 const app: Express = express()
 
-// Scheduler.NewsScheduler()
-// Scheduler.DailySummaryScheduler()
-registerMqttHandlers()
+MQTTService.registerMessageHandlers()
+MQTTService.initialize()
 app.use(helmet())
 app.use(MiddleWares.corsOrigin())
 // app.use(MiddleWares.limiter())

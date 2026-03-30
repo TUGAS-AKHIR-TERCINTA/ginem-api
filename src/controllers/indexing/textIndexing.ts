@@ -4,15 +4,17 @@ import { ResponseData } from '../../utilities/response'
 import { PineconeService, RagDocument } from '../../services/Pinecone.service'
 import { PineconeBackupService } from '../../services/PineconeBackup.service'
 import { handleError } from '../../utilities/requestHandler'
+import { CreateIndexingBodyInput } from '../../schemas/IndexingSchema'
 
 export const indexingTextDocuments = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const payload = req.body as { documents: RagDocument[] }
+  console.log(req.body)
+  const payload = req.body as CreateIndexingBodyInput
   try {
-    await new PineconeService().addDocuments(payload.documents)
-    await PineconeBackupService.saveIndexingBackup(payload.documents, 'json')
+    await new PineconeService().addDocuments(payload)
+    await PineconeBackupService.saveIndexingBackup(payload, 'json')
 
     const response = ResponseData.success({
       message: `document(s) indexed to Pinecone successfully.`

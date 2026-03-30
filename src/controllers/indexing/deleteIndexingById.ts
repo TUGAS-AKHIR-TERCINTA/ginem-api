@@ -12,7 +12,7 @@ export const removeIndexingById = async (
   const params = req.params as unknown as IDeleteIndexingParams
 
   try {
-    await PineconeBackupService.deleteIndexingById(parseInt(params.id, 10))
+    await PineconeBackupService.deleteIndexingById(parseInt(params.indexingId, 10))
 
     return res
       .status(StatusCodes.OK)

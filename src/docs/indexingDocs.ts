@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /api/v1/indexing/index:
+ * /api/v1/indexing:
  *   post:
  *     summary: Index documents into Weaviate for RAG
  *     tags: [INDEXING]
@@ -75,7 +75,7 @@
 
 /**
  * @swagger
- * /api/v1/indexing/index:
+ * /api/v1/indexing:
  *   get:
  *     summary: List all indexed documents (from main database)
  *     tags: [INDEXING]
@@ -137,7 +137,7 @@
 
 /**
  * @swagger
- * /api/v1/indexing/index/{id}:
+ * /api/v1/indexing/{indexingId}:
  *   delete:
  *     summary: Delete one indexing (database + Weaviate)
  *     tags: [INDEXING]
@@ -146,7 +146,7 @@
  *       Data di Weaviate dihapus berdasarkan content dan source yang sama.
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: indexingId
  *         required: true
  *         schema: { type: integer, minimum: 1 }
  *         description: indexingId
@@ -160,9 +160,9 @@
  *               properties:
  *                 success: { type: boolean }
  *                 message: { type: string }
- *                 data: { type: object, properties: { id: { type: integer } } }
+ *                 data: { type: object, properties: { indexingId: { type: integer } } }
  *       400:
- *         description: Invalid id
+ *         description: Invalid indexingId
  *       404:
  *         description: Indexing not found
  *       500:
