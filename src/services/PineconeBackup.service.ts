@@ -3,7 +3,7 @@ import { pineconeService } from './Pinecone.service'
 import logger from '../utilities/logger'
 import { StatusCodes } from 'http-status-codes'
 import { Pagination } from '../utilities/pagination'
-import { IndexingModel, IndexingSourceType } from '../models/indexingModel'
+import { IndexingModel, IndexingSourceType } from '../models/IndexingModel'
 import { AppError } from '../utilities/AppError'
 
 export type IndexingDocument = { content: string; source?: string }

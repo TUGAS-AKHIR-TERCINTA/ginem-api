@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Pinecone } from '@pinecone-database/pinecone'
 import { appConfigs } from '../configs/appConfig'
 import { AppError } from '../utilities/AppError'
+import { ICreateIndexing } from '../schemas/IndexingSchema'
 
 export type RagDocument = { content: string; source?: string }
 export type IndexPdfResult = { indexed: number; source: string }
@@ -163,7 +164,7 @@ class PineconeService {
     }
   }
 
-  async addDocuments(documents: RagDocument[]): Promise<void> {
+  async addDocuments(documents: ICreateIndexing): Promise<void> {
     try {
       if (documents.length === 0) return
 

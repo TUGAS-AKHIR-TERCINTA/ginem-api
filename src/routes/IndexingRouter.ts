@@ -12,19 +12,19 @@ const IndexingRouter = Router()
 IndexingRouter.use(MiddleWares.useAuthorization)
 
 IndexingRouter.get(
-  '/index',
+  '/',
   MiddleWares.validate({ query: findAllIndexingsSchema }),
   IndexingController.findAllIndexings
 )
 
 IndexingRouter.post(
-  '/index',
-  MiddleWares.validate({ body: createIndexingBodySchema }),
+  '/',
+  // MiddleWares.validate({ body: createIndexingBodySchema }),
   IndexingController.indexingTextDocuments
 )
 
 IndexingRouter.delete(
-  '/index/:id',
+  '/:indexingId',
   MiddleWares.validate({ params: deleteIndexingParamsSchema }),
   IndexingController.removeIndexingById
 )
