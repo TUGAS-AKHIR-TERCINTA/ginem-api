@@ -1,5 +1,5 @@
-export const deviceCommandTopic = (deviceId: string) => `device/${deviceId}/command`
+export const deviceCommandTopic = (deviceName: string) => `device/${deviceName}/command`
 
-export const deviceStatusTopic = (deviceId: string) => `device/${deviceId}/status`
+export const deviceStatusTopic = (deviceName: string) => `device/${deviceName}/status`
 
 export const ALL_DEVICE_STATUS = 'device/+/status'

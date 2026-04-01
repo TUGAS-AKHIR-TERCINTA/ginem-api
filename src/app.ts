@@ -13,7 +13,6 @@ MQTTService.registerMessageHandlers()
 MQTTService.initialize()
 app.use(helmet())
 app.use(MiddleWares.corsOrigin())
-// app.use(MiddleWares.limiter())
 app.use(MiddleWares.loggerMidleWare())
 
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))

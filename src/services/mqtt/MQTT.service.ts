@@ -55,8 +55,17 @@ export class MQTTService {
   }
 
   /** HTTP / API → MQTT: send a command to a device. */
-  static sendCommand(deviceId: string, command: string): void {
-    publishDeviceCommand(deviceId, command)
+  static sendCommand(deviceName: string, command: string): void {
+    publishDeviceCommand(deviceName, command)
+  }
+
+  /**
+   * Publish actuator on/off to `device/{deviceId}/command` as `{ command: "1" | "0" }`.
+   * Uses the numeric DB `deviceId` as the MQTT topic segment (same as REST MQTT API).
+   */
+  static publishActuatorState(deviceName: string, state: 'on' | 'off'): void {
+    const command = state === 'on' ? '1' : '0'
+    MQTTService.sendCommand(deviceName, command)
   }
 
   /** Publish status on behalf of a device (e.g. tests or gateway emulation). */

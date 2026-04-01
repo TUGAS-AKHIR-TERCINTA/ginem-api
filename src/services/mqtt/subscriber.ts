@@ -8,8 +8,8 @@ export function subscribeToAllDeviceStatus() {
   })
 }
 
-export function subscribeToDeviceCommand(deviceId: string) {
-  mqttClient.subscribe(deviceCommandTopic(deviceId), () => {
-    logger.info(`Subscribed to ${deviceId} command topic`)
+export function subscribeToDeviceCommand(deviceName: string) {
+  mqttClient.subscribe(deviceCommandTopic(deviceName), () => {
+    logger.info(`Subscribed to ${deviceName} command topic`)
   })
 }
