@@ -32,6 +32,6 @@ export const deleteIndexingParamsSchema = z.object({
     .regex(/^\d+$/, { message: 'indexingId must be a positive integer' })
 })
 
-export type IFindAllIndexingsInput = z.infer<typeof findAllIndexingsSchema>
-export type IDeleteIndexingParams = z.infer<typeof deleteIndexingParamsSchema>
+export type IFindAllIndexing = z.infer<typeof findAllIndexingsSchema>
+export type IDeleteIndexing = z.infer<typeof deleteIndexingParamsSchema>
 export type ICreateIndexing = z.infer<typeof createIndexingBodySchema>

@@ -3,13 +3,13 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { PineconeBackupService } from '../../services/PineconeBackup.service'
 import { handleError } from '../../utilities/requestHandler'
-import { IDeleteIndexingParams } from '../../schemas/IndexingSchema'
+import { IDeleteIndexing } from '../../schemas/IndexingSchema'
 
 export const removeIndexingById = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const params = req.params as unknown as IDeleteIndexingParams
+  const params = req.params as unknown as IDeleteIndexing
 
   try {
     await PineconeBackupService.deleteIndexingById(parseInt(params.indexingId, 10))

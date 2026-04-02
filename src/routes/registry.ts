@@ -11,6 +11,7 @@ import StatsRoute from './StatsRouter'
 import WhatsAppRoute from './WhatsAppRouter'
 import IndexingRoute from './IndexingRouter'
 import MqttRoute from './MqttRouter'
+import AdminRoute from './AdminRouter'
 
 const RoutesRegistry = {
   AppLogRoute,
@@ -25,7 +26,8 @@ const RoutesRegistry = {
   StatsRoute,
   WhatsAppRoute,
   IndexingRoute,
-  MqttRoute
+  MqttRoute,
+  AdminRoute
 }
 
 export default RoutesRegistry
