@@ -29,7 +29,7 @@ export const adminUserIdParamSchema = z.object({
   userId: z.coerce.number().int().positive()
 })
 
-export type CreateAdminBody = z.infer<typeof createAdminBodySchema>
-export type UpdateAdminBody = z.infer<typeof updateAdminBodySchema>
-export type FindAllAdminQuery = z.infer<typeof findAllAdminQuerySchema>
-export type AdminUserIdParam = z.infer<typeof adminUserIdParamSchema>
+export type ICreateAdmin = z.infer<typeof createAdminBodySchema>
+export type IUpdateAdmin = z.infer<typeof updateAdminBodySchema>
+export type IFindAllAdmin = z.infer<typeof findAllAdminQuerySchema>
+export type IAdminUserIdParam = z.infer<typeof adminUserIdParamSchema>

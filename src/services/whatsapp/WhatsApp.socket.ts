@@ -22,7 +22,7 @@ import {
 } from './helpers'
 import type { WhatsappConnectionStatus } from './types'
 import { ChatService } from '../Chat.service'
-import pino from "pino"
+import pino from 'pino'
 
 type AuthBundle = Awaited<ReturnType<typeof useMultiFileAuthState>>
 type WaVersion = Awaited<ReturnType<typeof fetchLatestBaileysVersion>>['version']
@@ -86,7 +86,7 @@ export class WhatsappBaileysSocket {
         auth: this.bind.getAuth(),
         browser: Browsers.macOS('Chrome'),
         syncFullHistory: false,
-        logger: pino({ level: "silent" }),
+        logger: pino({ level: 'silent' })
       })
       this.bind.setSocket(sock)
 
@@ -195,21 +195,20 @@ export class WhatsappBaileysSocket {
       const chat = msg.key.remoteJid
       if (chat == null || chat === 'status@broadcast') return
 
-      console.log("chat: ", chat)
-      console.log("userLabel: ", this.bind.userLabel())
+      console.log('chat: ', chat)
+      console.log('userLabel: ', this.bind.userLabel())
 
       const incoming = plainTextFromMessage(msg.message)
       // if (incoming?.trim().toLowerCase() !== 'ping') return
 
-      if(chat !== '6281379574223@s.whatsapp.net') return
-      
+      if (chat !== '6281379574223@s.whatsapp.net') return
+
+      console.log('incoming: ', incoming)
 
       const answer = await ChatService.query(incoming ?? '')
 
       await sock.sendMessage(chat, { text: answer }, { quoted: msg })
-      logger.info(
-        `${LOG_PREFIX} auto-reply pong → ${chat} (${this.bind.userLabel()})`
-      )
+      logger.info(`${LOG_PREFIX} auto-reply pong → ${chat} (${this.bind.userLabel()})`)
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`${LOG_PREFIX} maybePingPong failed: ${String(error)}`)

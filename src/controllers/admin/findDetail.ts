@@ -2,7 +2,7 @@ import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { type AdminUserIdParam } from '../../schemas/AdminSchema'
+import { type IAdminUserIdParam } from '../../schemas/AdminSchema'
 import { AdminService } from '../../services/Admin.service'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
@@ -12,7 +12,7 @@ export const findDetailAdmin = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { userId } = req.params as unknown as AdminUserIdParam
+    const { userId } = req.params as unknown as IAdminUserIdParam
     const data = await AdminService.findById(userId)
     return res.status(StatusCodes.OK).json(ResponseData.success({ data }))
   } catch (err) {

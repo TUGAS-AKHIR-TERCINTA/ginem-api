@@ -6,50 +6,10 @@ import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
 import { hashPassword } from '../utilities/scurePassword'
+import { ICreateAdmin, IFindAllAdmin, IUpdateAdmin } from '../schemas/AdminSchema'
 
-/** Admin user as returned to clients (no password hash). */
-export type PublicAdminUser = Omit<IUserAttributes, 'userPassword'>
-
-export interface FindAllAdminOptions {
-  page?: number
-  size?: number
-  pagination?: boolean
-  search?: string
-}
-
-export interface PaginatedAdminResult {
-  totalItems: number
-  items: PublicAdminUser[]
-  totalPages: number
-  currentPage: number
-}
-
-export interface CreateAdminPayload {
-  userName: string
-  userEmail: string
-  userPassword: string
-  userOnboardingStatus?: 'waiting' | 'completed'
-}
-
-export interface UpdateAdminPayload {
-  userId: number
-  userName?: string
-  userEmail?: string
-  userPassword?: string
-  userOnboardingStatus?: 'waiting' | 'completed'
-}
-
-function stripPassword(user: UserInstance): PublicAdminUser {
-  const plain = user.get({ plain: true }) as IUserAttributes
-  const { userPassword: _, ...rest } = plain
-  return rest
-}
-
-/**
- * CRUD for admin accounts (`userRole === 'admin'` in `users` table).
- */
 export class AdminService {
-  static async findAll(options: FindAllAdminOptions = {}): Promise<PaginatedAdminResult> {
+  static async findAll(options: IFindAllAdmin) {
     try {
       const { page = 1, size = 10, pagination = true, search } = options
       const pager = new Pagination(Number(page) || 1, Number(size) || 10)
@@ -88,7 +48,7 @@ export class AdminService {
         totalItems: formatted.totalItems,
         totalPages: formatted.totalPages,
         currentPage: formatted.currentPage,
-        items: formatted.items.map((u) => stripPassword(u))
+        items: formatted.items
       }
     } catch (error) {
       if (error instanceof AppError) throw error
@@ -100,7 +60,7 @@ export class AdminService {
   /**
    * @throws {AppError} notFound when user is missing or not an admin
    */
-  static async findById(userId: number): Promise<PublicAdminUser> {
+  static async findById(userId: number) {
     try {
       const user = await UserModel.findOne({
         where: { userId, deleted: 0, userRole: 'admin' },
@@ -111,7 +71,7 @@ export class AdminService {
         throw AppError.notFound('Admin not found')
       }
 
-      return stripPassword(user)
+      return user
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`[AdminService] findById failed: ${String(error)}`)
@@ -119,7 +79,7 @@ export class AdminService {
     }
   }
 
-  static async create(payload: CreateAdminPayload): Promise<PublicAdminUser> {
+  static async create(payload: ICreateAdmin) {
     try {
       const existing = await UserModel.findOne({
         where: { deleted: 0, userEmail: payload.userEmail }
@@ -129,15 +89,13 @@ export class AdminService {
         throw AppError.conflict('Email already registered')
       }
 
-      const user = await UserModel.create({
+      await UserModel.create({
         userName: payload.userName,
         userEmail: payload.userEmail,
         userPassword: hashPassword(payload.userPassword),
         userRole: 'admin',
         userOnboardingStatus: payload.userOnboardingStatus ?? 'waiting'
       })
-
-      return stripPassword(user)
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`[AdminService] create failed: ${String(error)}`)
@@ -145,7 +103,7 @@ export class AdminService {
     }
   }
 
-  static async update(payload: UpdateAdminPayload): Promise<void> {
+  static async update(payload: IUpdateAdmin): Promise<void> {
     try {
       const user = await UserModel.findOne({
         where: { userId: payload.userId, deleted: 0, userRole: 'admin' }

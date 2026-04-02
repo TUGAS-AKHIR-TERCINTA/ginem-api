@@ -2,7 +2,7 @@ import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { type UpdateAdminBody } from '../../schemas/AdminSchema'
+import { type IUpdateAdmin } from '../../schemas/AdminSchema'
 import { AdminService } from '../../services/Admin.service'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
@@ -12,7 +12,7 @@ export const updateAdmin = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const payload = req.body as UpdateAdminBody
+    const payload = req.body as unknown as IUpdateAdmin
     await AdminService.update(payload)
     const response = ResponseData.success({ message: 'Admin updated successfully' })
     return res.status(StatusCodes.OK).json(response)
