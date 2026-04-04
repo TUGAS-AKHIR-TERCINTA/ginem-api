@@ -16,18 +16,15 @@
  *         - command
  *       properties:
  *         deviceId:
- *           type: string
- *           minLength: 1
- *           maxLength: 128
- *           pattern: '^[a-zA-Z0-9_-]+$'
- *           description: Device identifier used in topic iot/{deviceId}/command
- *           example: lamp-01
+ *           type: number
+ *           description: Device identifier used in topic iot/v1/device/{deviceId}/command
+ *           example: 1
  *         command:
  *           type: string
  *           minLength: 1
  *           maxLength: 2000
- *           description: Command string published as JSON { "command" } to the broker
- *           example: "on"
+ *           description: Command string published as JSON { "command": "0" | "1" } to the broker
+ *           example: "1"
  *     MqttPublishStatusRequest:
  *       type: object
  *       required:
@@ -35,18 +32,16 @@
  *         - status
  *       properties:
  *         deviceId:
- *           type: string
- *           minLength: 1
- *           maxLength: 128
- *           pattern: '^[a-zA-Z0-9_-]+$'
- *           description: Device identifier used in topic iot/{deviceId}/status
- *           example: sensor-01
+ *           type: number
+ *           description: Device identifier used in topic iot/v1/device/{deviceId}/state
+ *           example: 1
  *         status:
- *           type: string
- *           minLength: 1
- *           maxLength: 2000
- *           description: Status string published as JSON { "status" } to the broker
- *           example: "online"
+ *           type: enum
+ *           enum:
+ *             - on
+ *             - off
+ *           description: State string published as JSON { "state" } to the broker
+ *           example: "on"
  *     MqttConnectionResponse:
  *       type: object
  *       properties:

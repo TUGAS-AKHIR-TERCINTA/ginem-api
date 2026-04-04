@@ -18,7 +18,7 @@ export const sendCommand = async (
     const response = ResponseData.success({
       data: {
         deviceId,
-        topic: `iot/${deviceId}/command`,
+        topic: `iot/v1/device/${deviceId}/command`,
         brokerConnected: MQTTService.isConnected()
       },
       message: 'Command published to MQTT broker'

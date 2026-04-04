@@ -6,11 +6,14 @@ import compression from 'compression'
 import routers from './routes'
 import { MiddleWares } from './middlewares'
 import { MQTTService } from './services/mqtt/MQTT.service'
+import { TelemetryService } from './services/mqtt/Telemetry.service'
 
 const app: Express = express()
 
 MQTTService.registerMessageHandlers()
 MQTTService.initialize()
+TelemetryService.initialize()
+
 app.use(helmet())
 app.use(MiddleWares.corsOrigin())
 app.use(MiddleWares.loggerMidleWare())

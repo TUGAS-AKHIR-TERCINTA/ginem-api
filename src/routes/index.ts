@@ -29,6 +29,7 @@ routers.use('/api/v1/indexing', RoutesRegistry.IndexingRoute)
 routers.use('/api/v1/whatsapp', RoutesRegistry.WhatsAppRoute)
 routers.use('/api/v1/mqtt', RoutesRegistry.MqttRoute)
 routers.use('/api/v1/admins', RoutesRegistry.AdminRoute)
+routers.use('/api/v1/settings', RoutesRegistry.SettingRoute)
 
 routers.use(
   '/api/v1/docs',

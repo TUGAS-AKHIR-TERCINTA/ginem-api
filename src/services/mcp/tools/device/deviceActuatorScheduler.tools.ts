@@ -35,7 +35,7 @@ export const setActuatorStateByDeviceNameTool = tool(
       deviceLogData
     })
 
-    MQTTService.publishActuatorState(device.deviceName, state)
+    MQTTService.publishActuatorState(device.deviceId, state)
 
     return JSON.stringify(
       {
@@ -49,7 +49,7 @@ export const setActuatorStateByDeviceNameTool = tool(
         deviceLogData: deviceLog.deviceLogData,
         createdAt: deviceLog.createdAt,
         mqtt: {
-          topic: `device/${device.deviceName}/command`,
+          topic: `iot/v1/device/${device.deviceId}/command`,
           command: deviceLogData,
           brokerConnected: MQTTService.isConnected()
         }
