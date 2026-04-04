@@ -14,11 +14,11 @@ export const publishStatus = async (
   const { deviceId, status } = req.body as MqttPublishStatusInput
 
   try {
-    MQTTService.publishStatus(deviceId, status)
+    MQTTService.publishState(deviceId, status)
     const response = ResponseData.success({
       data: {
         deviceId,
-        topic: `iot/${deviceId}/status`,
+        topic: `iot/v1/device/${deviceId}/state`,
         brokerConnected: MQTTService.isConnected()
       },
       message: 'Status published to MQTT broker'

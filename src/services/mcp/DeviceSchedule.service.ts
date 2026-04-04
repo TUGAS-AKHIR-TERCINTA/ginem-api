@@ -5,6 +5,7 @@ import {
 } from '../../models/SchedulerLogModel'
 import logger from '../../utilities/logger'
 import { DeviceLogService } from '../DeviceLog.service'
+import { MQTTService } from '../mqtt/MQTT.service'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'
 export type ScheduledJobStatus = 'pending' | 'completed' | 'failed'
@@ -80,6 +81,8 @@ function runActuatorJob(job: ScheduledJob): void {
         deviceLogData: value
       })
 
+      MQTTService.publishActuatorState(device.deviceName, job.state!)
+
       job.status = 'completed'
       job.result = {
         success: true,
@@ -91,7 +94,12 @@ function runActuatorJob(job: ScheduledJob): void {
         deviceId: device.deviceId,
         deviceLogId: deviceValue.deviceLogId,
         deviceLogData: deviceValue.deviceLogData,
-        executedAt: new Date().toISOString()
+        executedAt: new Date().toISOString(),
+        mqtt: {
+          topic: `device/${device.deviceName}/command`,
+          command: value,
+          brokerConnected: MQTTService.isConnected()
+        }
       }
 
       await recordSchedulerResult(job.id, 'completed', job.result)

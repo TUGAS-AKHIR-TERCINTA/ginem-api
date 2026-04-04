@@ -25,7 +25,7 @@ export const findDetailDeviceSchema = z.object({
 })
 
 export const removeDeviceSchema = z.object({
-  deviceId: z.number().int().positive()
+  deviceId: z.coerce.number().int().positive()
 })
 
 export const findAllDeviceSchema = z.object({

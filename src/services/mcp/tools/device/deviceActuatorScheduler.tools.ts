@@ -8,6 +8,7 @@ import {
   getScheduledJob,
   listScheduledJobs
 } from '../../DeviceSchedule.service'
+import { MQTTService } from '../../../mqtt/MQTT.service'
 
 export const setActuatorStateByDeviceNameTool = tool(
   async ({ deviceName, state }) => {
@@ -34,6 +35,8 @@ export const setActuatorStateByDeviceNameTool = tool(
       deviceLogData
     })
 
+    MQTTService.publishActuatorState(device.deviceId, state)
+
     return JSON.stringify(
       {
         success: true,
@@ -44,7 +47,12 @@ export const setActuatorStateByDeviceNameTool = tool(
         deviceType: device.deviceType,
         deviceLogId: deviceLog.deviceLogId,
         deviceLogData: deviceLog.deviceLogData,
-        createdAt: deviceLog.createdAt
+        createdAt: deviceLog.createdAt,
+        mqtt: {
+          topic: `iot/v1/device/${device.deviceId}/command`,
+          command: deviceLogData,
+          brokerConnected: MQTTService.isConnected()
+        }
       },
       null,
       2

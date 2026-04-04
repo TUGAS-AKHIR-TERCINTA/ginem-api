@@ -20,7 +20,7 @@ routers.use('/api/v1/logs', RoutesRegistry.AppLogRoute)
 routers.use('/api/v1/scheduler-logs', RoutesRegistry.SchedulerLogRoute)
 routers.use('/api/v1/devices', RoutesRegistry.DeviceRoute)
 routers.use('/api/v1/devices/logs', RoutesRegistry.DeviceLogRoute)
-routers.use('/api/v1/chats', RoutesRegistry.ChatRoute)
+routers.use('/api/v1/chat', RoutesRegistry.ChatRoute)
 routers.use('/api/v1/auth', RoutesRegistry.AuthRoute)
 routers.use('/api/v1/my-profiles', RoutesRegistry.MyProfileRoute)
 routers.use('/api/v1/otp', RoutesRegistry.OtpRoute)
@@ -28,6 +28,8 @@ routers.use('/api/v1/stats', RoutesRegistry.StatsRoute)
 routers.use('/api/v1/indexing', RoutesRegistry.IndexingRoute)
 routers.use('/api/v1/whatsapp', RoutesRegistry.WhatsAppRoute)
 routers.use('/api/v1/mqtt', RoutesRegistry.MqttRoute)
+routers.use('/api/v1/admins', RoutesRegistry.AdminRoute)
+routers.use('/api/v1/settings', RoutesRegistry.SettingRoute)
 
 routers.use(
   '/api/v1/docs',

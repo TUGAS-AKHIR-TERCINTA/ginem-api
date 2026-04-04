@@ -12,7 +12,7 @@ const WhatsAppRoute = Router()
 
 WhatsAppRoute.use(MiddleWares.useAuthorization)
 
-WhatsAppRoute.post(
+WhatsAppRoute.get(
   '/connect',
   MiddleWares.validate({
     body: whatsappConnectBodySchema,

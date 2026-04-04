@@ -65,7 +65,7 @@
 /**
  * @swagger
  * /api/v1/whatsapp/connect:
- *   post:
+ *   get:
  *     summary: Start or resume WhatsApp session
  *     description: |
  *       Starts the Baileys connection for the JWT user.
@@ -93,15 +93,7 @@
  *         required: false
  *         description: Max wait for pairing QR when `type` is set (default 30000)
  *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/WhatsappConnectBody'
- *           examples:
- *             empty:
- *               summary: Empty body
- *               value: {}
+ *       required: false
  *     responses:
  *       200:
  *         description: |
@@ -162,16 +154,6 @@
  *     tags: [WhatsApp]
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/WhatsappConnectBody'
- *           examples:
- *             empty:
- *               summary: Empty body
- *               value: {}
  *     responses:
  *       200:
  *         description: Session cleared; status is `disconnected` (may include `lastDisconnectReason` hint to scan QR next)

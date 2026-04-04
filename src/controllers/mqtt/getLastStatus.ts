@@ -12,10 +12,10 @@ export const getLastStatus = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const { deviceId } = req.params as MqttDeviceIdParam
+  const { deviceId } = req.params as unknown as MqttDeviceIdParam
 
   try {
-    const last = MQTTService.getLastDeviceStatus(deviceId)
+    const last = MQTTService.getLastDeviceState(deviceId)
     if (last == null) {
       throw AppError.notFound('No status has been recorded for this device yet')
     }
