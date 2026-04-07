@@ -67,16 +67,11 @@ export const connectWhatsapp = async (
       if (qrRaw == null || qrRaw.length === 0) {
         return res.status(StatusCodes.OK).json(
           ResponseData.success({
-            data: jsonStatusPayload(
-              session,
-              outcome.connectionStatus,
-              outcome.timedOut,
-              {
-                message: outcome.timedOut
-                  ? 'QR not received before timeout'
-                  : 'Pairing QR not available'
-              }
-            ),
+            data: jsonStatusPayload(session, outcome.connectionStatus, outcome.timedOut, {
+              message: outcome.timedOut
+                ? 'QR not received before timeout'
+                : 'Pairing QR not available'
+            }),
             message: 'WhatsApp connect'
           })
         )
@@ -90,15 +85,10 @@ export const connectWhatsapp = async (
 
       return res.status(StatusCodes.OK).json(
         ResponseData.success({
-          data: jsonStatusPayload(
-            session,
-            outcome.connectionStatus,
-            outcome.timedOut,
-            {
-              mimeType: 'image/png',
-              qrImageBase64: png.toString('base64')
-            }
-          ),
+          data: jsonStatusPayload(session, outcome.connectionStatus, outcome.timedOut, {
+            mimeType: 'image/png',
+            qrImageBase64: png.toString('base64')
+          }),
           message: 'WhatsApp pairing QR'
         })
       )
@@ -114,7 +104,7 @@ export const connectWhatsapp = async (
     return res
       .status(StatusCodes.OK)
       .json(ResponseData.success({ data, message: 'WhatsApp connect diproses' }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

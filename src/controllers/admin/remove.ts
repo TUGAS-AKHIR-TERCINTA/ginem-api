@@ -12,17 +12,21 @@ export const removeAdmin = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { userId } = req.params as unknown as IAdminUserIdParam
+    const payload = req.params as unknown as IAdminUserIdParam
     const requesterId = req.jwtPayload?.userId
+
     if (requesterId == null) {
-      const response = ResponseData.error({ message: 'Unauthorized' })
-      return res.status(StatusCodes.UNAUTHORIZED).json(response)
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json(ResponseData.error({ message: 'Unauthorized' }))
     }
 
-    await AdminService.remove(userId, requesterId)
-    const response = ResponseData.success({ message: 'Admin deleted successfully' })
-    return res.status(StatusCodes.OK).json(response)
-  } catch (err) {
-    return handleError(res, err)
+    await AdminService.remove(payload.userId, requesterId)
+
+    return res
+      .status(StatusCodes.OK)
+      .json(ResponseData.success({ message: 'Admin deleted successfully' }))
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

@@ -3,20 +3,20 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { FindDetailSchedulerLogSchema } from '../../schemas/SchedulerLogSchema'
 import { SchedulerLogService } from '../../services/SchedulerLog.service'
 import { handleError } from '../../utilities/requestHandler'
+import { IFindDetailSchedulerLog } from '../../schemas/SchedulerLogSchema'
 
 export const findDetailSchedulerLog = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const payload = req.params as unknown as FindDetailSchedulerLogSchema
-
   try {
+    const payload = req.params as unknown as IFindDetailSchedulerLog
     const result = await SchedulerLogService.findById(payload.schedulerLogId)
+
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

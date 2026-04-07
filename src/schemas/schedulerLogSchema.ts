@@ -24,5 +24,5 @@ export const findDetailSchedulerLogSchema = z.object({
   schedulerLogId: z.number().int().positive()
 })
 
-export type FindAllSchedulerLogSchema = z.infer<typeof findAllSchedulerLogSchema>
-export type FindDetailSchedulerLogSchema = z.infer<typeof findDetailSchedulerLogSchema>
+export type IFindAllSchedulerLog = z.infer<typeof findAllSchedulerLogSchema>
+export type IFindDetailSchedulerLog = z.infer<typeof findDetailSchedulerLogSchema>

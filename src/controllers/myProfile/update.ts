@@ -3,25 +3,28 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { UpdateMyProfileSchema } from '../../schemas/MyProfileSchema'
+import { IUpdateMyProfile } from '../../schemas/MyProfileSchema'
 import { MyProfileService } from '../../services/MyProfile.service'
+import { AppError } from '../../utilities/AppError'
 
 export const updateMyProfile = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const payload = req.body as UpdateMyProfileSchema
-
   try {
-    await MyProfileService.updateProfile(payload.jwtPayload!.userId!, {
-      userName: payload.userName,
-      userPassword: payload.userPassword,
-      userEmail: payload.userEmail
-    })
+    const payload = req.body as IUpdateMyProfile
+    const userId = req.jwtPayload?.userId
+
+    if (userId == null) {
+      throw AppError.badRequest('User not found')
+    }
+
+    await MyProfileService.updateProfile(userId, payload)
+
     return res
       .status(StatusCodes.OK)
       .json(ResponseData.success({ message: 'Profile updated successfully' }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

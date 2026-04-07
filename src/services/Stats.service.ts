@@ -15,9 +15,6 @@ export interface StatsCounts {
   appLogs: number
 }
 
-/**
- * Stats service: aggregate counts from devices, users, vector_indexes, scheduler_logs, app_logs.
- */
 export class StatsService {
   /**
    * Get total counts for devices, users, vector indexes, scheduler logs, and app logs.

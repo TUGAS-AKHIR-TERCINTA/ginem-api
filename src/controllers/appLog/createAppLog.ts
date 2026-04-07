@@ -1,31 +1,26 @@
-import { type Request, type Response } from 'express'
+import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
-import { type CreateAppLogInput } from '../../schemas/AppLogSchema'
 import { AppLogService } from '../../services/AppLog.service'
+import { ICreateAppLog } from '../../schemas/AppLogSchema'
+import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 
 export const createAppLog = async (
-  req: Request<{}, {}, CreateAppLogInput>,
+  req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
   try {
-    const { appLogLevel, appLogMessage, appLogSource, appLogMeta } = req.body
-
-    const record = await AppLogService.create({
-      appLogLevel,
-      appLogMessage,
-      appLogSource: appLogSource ?? null,
-      appLogMeta: appLogMeta ?? null
-    })
+    const payload = req.body as ICreateAppLog
+    const result = await AppLogService.create(payload)
 
     return res.status(StatusCodes.CREATED).json(
       ResponseData.success({
-        data: record,
-        message: 'AppLog created successfully'
+        data: result,
+        message: 'App log created successfully'
       })
     )
-  } catch (error) {
-    return handleError(res, error)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

@@ -16,7 +16,7 @@ export const createAdmin = async (
     await AdminService.create(payload)
     const response = ResponseData.success({ message: 'Admin created successfully' })
     return res.status(StatusCodes.CREATED).json(response)
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

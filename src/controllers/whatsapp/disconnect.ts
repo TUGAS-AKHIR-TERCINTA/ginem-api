@@ -30,7 +30,7 @@ export const disconnectWhatsapp = async (
     return res
       .status(StatusCodes.OK)
       .json(ResponseData.success({ data, message: 'WhatsApp disconnected' }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

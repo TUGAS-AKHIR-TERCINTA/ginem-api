@@ -15,8 +15,7 @@ export const healthCheck = async (req: Request, res: Response): Promise<Response
       timestamp: process.uptime()
     }
 
-    const response = ResponseData.success({ data })
-    return res.status(StatusCodes.OK).json(response)
+    return res.status(StatusCodes.OK).json(ResponseData.success({ data }))
   } catch (serverError) {
     return handleServerError(res, serverError)
   }

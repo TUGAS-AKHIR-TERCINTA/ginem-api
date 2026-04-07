@@ -1,36 +1,16 @@
 import { Op } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
 import { SchedulerLogModel } from '../models/SchedulerLogModel'
-import type { SchedulerLogInstance } from '../models/SchedulerLogModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
+import { IFindAllSchedulerLog } from '../schemas/SchedulerLogSchema'
 
 export type SchedulerLogType = 'actuator' | 'sensor_data'
 export type SchedulerLogStatus = 'pending' | 'completed' | 'failed'
 
-export interface FindAllSchedulerLogOptions {
-  type?: SchedulerLogType | string
-  status?: SchedulerLogStatus | string
-  deviceName?: string
-  page?: number
-  size?: number
-  pagination?: boolean
-  dateFrom?: string
-  dateTo?: string
-}
-
-export interface PaginatedSchedulerLogResult {
-  totalItems: number
-  items: SchedulerLogInstance[]
-  totalPages: number
-  currentPage: number
-}
-
 export class SchedulerLogService {
-  static async findAll(
-    options: FindAllSchedulerLogOptions = {}
-  ): Promise<PaginatedSchedulerLogResult> {
+  static async findAll(payload: IFindAllSchedulerLog) {
     try {
       const {
         type,
@@ -41,16 +21,16 @@ export class SchedulerLogService {
         pagination = true,
         dateFrom,
         dateTo
-      } = options
+      } = payload
       const pager = new Pagination(Number(page) || 1, Number(size) || 20)
 
       const where: Record<string, unknown> = { deleted: 0 }
 
-      if (type != null && type !== '') {
+      if (type != null && ['actuator', 'sensor_data'].includes(type)) {
         where.type = type
       }
 
-      if (status != null && status !== '') {
+      if (status != null && ['pending', 'completed', 'failed'].includes(status)) {
         where.status = status
       }
 
@@ -81,10 +61,10 @@ export class SchedulerLogService {
         })
       })
 
-      return pager.formatData(result) as PaginatedSchedulerLogResult
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[SchedulerLogService] findAll failed: ${String(error)}`)
+      return pager.formatData(result)
+    } catch (serverError) {
+      if (serverError instanceof AppError) throw serverError
+      logger.error(`[SchedulerLogService] findAll failed: ${String(serverError)}`)
       throw new AppError(
         'Failed to fetch scheduler logs',
         StatusCodes.INTERNAL_SERVER_ERROR
@@ -92,7 +72,7 @@ export class SchedulerLogService {
     }
   }
 
-  static async findById(schedulerLogId: number): Promise<SchedulerLogInstance | null> {
+  static async findById(schedulerLogId: number) {
     try {
       const log = await SchedulerLogModel.findOne({
         where: { deleted: 0, schedulerLogId }
@@ -105,9 +85,9 @@ export class SchedulerLogService {
       }
 
       return log
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[SchedulerLogService] findById failed: ${String(error)}`)
+    } catch (serverError) {
+      if (serverError instanceof AppError) throw serverError
+      logger.error(`[SchedulerLogService] findById failed: ${String(serverError)}`)
       throw new AppError(
         'Failed to fetch scheduler log',
         StatusCodes.INTERNAL_SERVER_ERROR

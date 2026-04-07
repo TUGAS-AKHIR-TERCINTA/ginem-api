@@ -6,13 +6,11 @@ import { handleServerError } from '../../utilities/requestHandler'
 export const mainApp = async (req: Request, res: Response): Promise<Response> => {
   try {
     const data = {
-      aboutMe: 'Welcome to NEURO AI API'
+      aboutMe: 'Welcome to API TUGAS AKHIR TERCINTA'
     }
-    const response = ResponseData.success({
-      data,
-      executionTime: res.locals.executionTime
-    })
-    return res.status(StatusCodes.OK).json(response)
+    return res
+      .status(StatusCodes.OK)
+      .json(ResponseData.success({ data, executionTime: res.locals.executionTime }))
   } catch (serverError) {
     return handleServerError(res, serverError)
   }

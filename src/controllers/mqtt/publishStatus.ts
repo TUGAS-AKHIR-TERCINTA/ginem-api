@@ -11,20 +11,14 @@ export const publishStatus = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const { deviceId, status } = req.body as MqttPublishStatusInput
-
   try {
-    MQTTService.publishState(deviceId, status)
-    const response = ResponseData.success({
-      data: {
-        deviceId,
-        topic: `iot/v1/device/${deviceId}/state`,
-        brokerConnected: MQTTService.isConnected()
-      },
-      message: 'Status published to MQTT broker'
-    })
-    return res.status(StatusCodes.OK).json(response)
-  } catch (err) {
-    return handleError(res, err)
+    const payload = req.body as MqttPublishStatusInput
+    MQTTService.publishState(payload.deviceId, payload.status)
+
+    return res
+      .status(StatusCodes.OK)
+      .json(ResponseData.success({ message: 'Status published to MQTT broker' }))
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

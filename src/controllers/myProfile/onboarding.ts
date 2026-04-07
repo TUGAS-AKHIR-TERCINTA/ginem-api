@@ -4,22 +4,22 @@ import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { MyProfileService } from '../../services/MyProfile.service'
-import { UpdateOnboardingSchema } from '../../schemas/MyProfileSchema'
+import { IUpdateOnboarding } from '../../schemas/MyProfileSchema'
 
 export const updateOnboardingStatus = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const payload = req.body as UpdateOnboardingSchema
-
   try {
+    const payload = req.body as IUpdateOnboarding
     await MyProfileService.updateOnboardingStatus(payload.jwtPayload!.userId!, {
       userOnboardingStatus: payload!.userOnboardingStatus!
     })
+
     return res
       .status(StatusCodes.OK)
       .json(ResponseData.success({ message: 'Onboarding status updated successfully' }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

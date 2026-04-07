@@ -1,68 +1,30 @@
 import { StatusCodes } from 'http-status-codes'
 import { DeviceLogModel } from '../models/DeviceLogModel'
 import { DeviceModel } from '../models/DeviceModel'
-import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
+import type { IDeviceAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
+import { ICreateDevice, IFindAllDevice, IUpdateDevice } from '../schemas/DeviceSchema'
+import { v4 as uuidv4 } from 'uuid'
+import { Op, WhereOptions } from 'sequelize'
 
-/** Options for listing devices with optional pagination */
-export interface FindAllDeviceOptions {
-  page?: number
-  size?: number
-  pagination?: boolean
-  search?: string
-}
-
-/** Result shape for paginated list (matches Pagination.formatData) */
-export interface PaginatedDeviceResult {
-  totalItems: number
-  items: DeviceInstance[]
-  totalPages: number
-  currentPage: number
-}
-
-/** Payload for creating a device (aligned with schema, excluding jwtPayload). deviceStatus is optional (defaults to 'offline'). */
-export type CreateDevicePayload = Omit<IDeviceCreationAttributes, 'deviceStatus'> & {
-  deviceStatus?: IDeviceCreationAttributes['deviceStatus']
-}
-
-/** Payload for updating a device (partial, with deviceId) */
-export interface UpdateDevicePayload {
-  deviceId: number
-  deviceToken?: string
-  deviceName?: string
-  deviceType?: IDeviceCreationAttributes['deviceType']
-  deviceStatus?: IDeviceCreationAttributes['deviceStatus']
-  deviceFirmwareVersion?: string
-  deviceMetadata?: object
-}
-
-/**
- * Device service: business logic for device CRUD.
- * Controllers handle HTTP (validation, status codes, response shape); this layer handles data.
- */
 export class DeviceService {
-  /**
-   * Create a new device.
-   */
-  static async create(payload: CreateDevicePayload): Promise<DeviceInstance> {
+  static async create(payload: ICreateDevice) {
     try {
-      const createData: IDeviceCreationAttributes = {
-        ...payload,
-        deviceStatus: payload.deviceStatus ?? 'offline'
-      }
-
       const existingDevice = await DeviceModel.findOne({
-        where: { deviceName: createData.deviceName.toLocaleUpperCase() }
+        where: { deviceName: payload.deviceName.toLocaleUpperCase() }
       })
 
       if (existingDevice) {
         throw AppError.conflict('Device already exists')
       }
 
-      const device = await DeviceModel.create(createData)
-      return device
+      await DeviceModel.create({
+        ...payload,
+        deviceStatus: payload.deviceStatus ?? 'offline',
+        deviceToken: `fck_${uuidv4()}`
+      })
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`[DeviceService] create failed: ${String(error)}`)
@@ -70,18 +32,25 @@ export class DeviceService {
     }
   }
 
-  /**
-   * List devices with optional pagination. Page is 1-based (page 1 = first page).
-   */
-  static async findAll(
-    options: FindAllDeviceOptions = {}
-  ): Promise<PaginatedDeviceResult> {
+  static async findAll(payload: IFindAllDevice) {
     try {
-      const { page = 1, size = 10, pagination = true } = options
+      const { page = 1, size = 10, pagination = true, search } = payload
       const pager = new Pagination(Number(page) || 1, Number(size) || 10)
 
+      let where: WhereOptions<IDeviceAttributes> = {
+        deleted: 0
+      }
+
+      if (search != null) {
+        const term = `%${search.trim()}%`
+        where = {
+          ...where,
+          [Op.or]: [{ deviceName: { [Op.like]: term } }]
+        }
+      }
+
       const result = await DeviceModel.findAndCountAll({
-        where: { deleted: 0 },
+        where,
         include: [
           {
             model: DeviceLogModel,
@@ -105,11 +74,7 @@ export class DeviceService {
     }
   }
 
-  /**
-   * Find a single device by id (non-deleted).
-   * @throws {AppError} AppError.notFound when device does not exist
-   */
-  static async findById(deviceId: number): Promise<DeviceInstance> {
+  static async findById(deviceId: number) {
     try {
       const device = await DeviceModel.findOne({
         where: { deleted: 0, deviceId },
@@ -121,9 +86,11 @@ export class DeviceService {
           }
         ]
       })
+
       if (device == null) {
         throw AppError.notFound('Device not found')
       }
+
       return device
     } catch (error) {
       if (error instanceof AppError) throw error
@@ -132,19 +99,39 @@ export class DeviceService {
     }
   }
 
-  /**
-   * Update an existing device.
-   * @throws {AppError} AppError.notFound when device does not exist
-   */
-  static async update(payload: UpdateDevicePayload): Promise<number> {
+  static async update(payload: IUpdateDevice) {
     try {
-      const [affectedRows] = await DeviceModel.update(payload, {
+      const device = await DeviceModel.findOne({
         where: { deleted: 0, deviceId: payload.deviceId }
       })
-      if (affectedRows === 0) {
+
+      if (device == null) {
         throw AppError.notFound('Device not found')
       }
-      return affectedRows
+
+      const updateData: Partial<IDeviceAttributes> = {}
+
+      if (payload.deviceName != null) {
+        updateData.deviceName = payload.deviceName
+      }
+
+      if (payload.deviceStatus != null) {
+        updateData.deviceStatus = payload.deviceStatus
+      }
+
+      if (payload.deviceFirmwareVersion != null) {
+        updateData.deviceFirmwareVersion = payload.deviceFirmwareVersion
+      }
+
+      if (payload.deviceMetadata != null) {
+        updateData.deviceMetadata = payload.deviceMetadata
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        return
+      }
+
+      await device.update(updateData)
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`[DeviceService] update failed: ${String(error)}`)
@@ -152,11 +139,7 @@ export class DeviceService {
     }
   }
 
-  /**
-   * Soft-delete a device.
-   * @throws {AppError} AppError.notFound when device does not exist
-   */
-  static async remove(deviceId: number): Promise<DeviceInstance> {
+  static async remove(deviceId: number) {
     const device = await DeviceModel.findOne({
       where: { deleted: 0, deviceId }
     })
@@ -170,9 +153,6 @@ export class DeviceService {
     return device
   }
 
-  /**
-   * Check if a device exists (non-deleted). Returns false when device not found (does not throw).
-   */
   static async exists(deviceId: number): Promise<boolean> {
     try {
       await this.findById(deviceId)
@@ -182,14 +162,16 @@ export class DeviceService {
     }
   }
 
-  /**
-   * Find a single device by name (non-deleted). First match if multiple.
-   */
-  static async findByName(deviceName: string): Promise<DeviceInstance | null> {
+  static async findByName(deviceName: string) {
     try {
       const device = await DeviceModel.findOne({
         where: { deleted: 0, deviceName }
       })
+
+      if (device == null) {
+        throw AppError.notFound('Device not found')
+      }
+
       return device
     } catch (error) {
       if (error instanceof AppError) throw error

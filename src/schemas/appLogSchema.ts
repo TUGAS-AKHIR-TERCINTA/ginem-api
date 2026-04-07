@@ -2,10 +2,6 @@ import { z } from 'zod'
 
 const logLevelEnum = z.enum(['error', 'warn', 'info'])
 
-/* ============================= */
-/* CREATE LOG (body) */
-/* ============================= */
-
 export const createAppLogSchema = z.object({
   appLogLevel: logLevelEnum,
   appLogMessage: z.string().min(1),
@@ -36,6 +32,6 @@ export const findAllAppLogsSchema = z.object({
     .transform((v) => v === 'true')
 })
 
-export type CreateAppLogInput = z.infer<typeof createAppLogSchema>
+export type ICreateAppLog = z.infer<typeof createAppLogSchema>
 
-export type FindAllAppLogsInput = z.infer<typeof findAllAppLogsSchema>
+export type IFindAllAppLogs = z.infer<typeof findAllAppLogsSchema>

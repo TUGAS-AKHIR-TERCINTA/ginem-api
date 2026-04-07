@@ -1,44 +1,30 @@
 import { Op } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
-import { AppLogModel, type AppLogLevel } from '../models/AppLogModel'
+import { AppLogModel } from '../models/AppLogModel'
 import { AppError } from '../utilities/AppError'
 import { Pagination } from '../utilities/pagination'
 import logger from '../utilities/logger'
-
-export interface CreateLogParams {
-  appLogLevel: AppLogLevel
-  appLogMessage: string
-  appLogSource?: string | null
-  appLogMeta?: string | null
-}
-
-export interface FindAllLogsParams {
-  page: number
-  size: number
-  level?: AppLogLevel | null
-  search?: string | null
-  pagination?: boolean | null
-}
+import { ICreateAppLog, IFindAllAppLogs } from '../schemas/AppLogSchema'
 
 export class AppLogService {
-  static async create(params: CreateLogParams) {
+  static async create(payload: ICreateAppLog) {
     try {
       return await AppLogModel.create({
-        appLogLevel: params.appLogLevel,
-        appLogMessage: params.appLogMessage,
-        appLogSource: params.appLogSource ?? null,
-        appLogMeta: params.appLogMeta ?? null
+        appLogLevel: payload.appLogLevel,
+        appLogMessage: payload.appLogMessage,
+        appLogSource: payload.appLogSource ?? null,
+        appLogMeta: payload.appLogMeta ?? null
       })
     } catch (error) {
-      logger.error(`[LogService] create failed: ${String(error)}`)
+      if (error instanceof AppError) throw error
+      logger.error(`[AppLogService] create failed: ${String(error)}`)
       throw new AppError('Failed to create log', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  static async findAll(params: FindAllLogsParams) {
+  static async findAll(payload: IFindAllAppLogs) {
     try {
-      const { page = 1, size = 10, level, search, pagination } = params
-
+      const { page = 1, size = 10, level, search, pagination } = payload
       const pager = new Pagination(page, size)
 
       const where: Record<string, unknown> = {}

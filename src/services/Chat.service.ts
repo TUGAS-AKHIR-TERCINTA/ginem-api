@@ -63,6 +63,7 @@ export class ChatService {
         )
         return (textPart as { text?: string })?.text ?? JSON.stringify(content)
       }
+
       return content != null ? String(content) : JSON.stringify(result)
     } catch (error) {
       if (error instanceof AppError) throw error

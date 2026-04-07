@@ -15,7 +15,7 @@ export const findAllAdmins = async (
     const query = req.query as unknown as IFindAllAdmin
     const result = await AdminService.findAll(query)
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

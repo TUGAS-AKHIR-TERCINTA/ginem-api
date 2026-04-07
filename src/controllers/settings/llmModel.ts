@@ -16,11 +16,11 @@ export const findAll = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const query = req.query as unknown as IFindAllLLMModel
-    const result = await LLMModelService.findAll(query)
+    const payload = req.query as unknown as IFindAllLLMModel
+    const result = await LLMModelService.findAll(payload)
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }
 
@@ -29,11 +29,11 @@ export const findDetail = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const params = req.params as unknown as ILLMModelIdParam
-    const result = await LLMModelService.findById(params.id)
+    const payload = req.params as unknown as ILLMModelIdParam
+    const result = await LLMModelService.findById(payload.id)
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }
 
@@ -42,14 +42,14 @@ export const selectModel = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const payload = req.body as unknown as ISelectLLMModel
+    const payload = req.body as ISelectLLMModel
     await LLMModelService.selectModel(payload.modelId)
 
     return res
       .status(StatusCodes.OK)
       .json(ResponseData.success({ message: 'Model selected successfully' }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }
 
@@ -60,7 +60,7 @@ export const getSelectedModel = async (
   try {
     const result = await LLMModelService.getSelectedModel()
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

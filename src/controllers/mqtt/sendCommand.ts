@@ -11,20 +11,14 @@ export const sendCommand = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const { deviceId, command } = req.body as MqttSendCommandInput
-
   try {
-    MQTTService.sendCommand(deviceId, command)
-    const response = ResponseData.success({
-      data: {
-        deviceId,
-        topic: `iot/v1/device/${deviceId}/command`,
-        brokerConnected: MQTTService.isConnected()
-      },
-      message: 'Command published to MQTT broker'
-    })
-    return res.status(StatusCodes.OK).json(response)
-  } catch (err) {
-    return handleError(res, err)
+    const payload = req.body as MqttSendCommandInput
+    MQTTService.sendCommand(payload.deviceId, payload.command)
+
+    return res
+      .status(StatusCodes.OK)
+      .json(ResponseData.success({ message: 'Command published to MQTT broker' }))
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

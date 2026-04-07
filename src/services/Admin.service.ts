@@ -9,9 +9,9 @@ import { hashPassword } from '../utilities/scurePassword'
 import { ICreateAdmin, IFindAllAdmin, IUpdateAdmin } from '../schemas/AdminSchema'
 
 export class AdminService {
-  static async findAll(options: IFindAllAdmin) {
+  static async findAll(payload: IFindAllAdmin) {
     try {
-      const { page = 1, size = 10, pagination = true, search } = options
+      const { page = 1, size = 10, pagination = true, search } = payload
       const pager = new Pagination(Number(page) || 1, Number(size) || 10)
 
       let where: WhereOptions<IUserAttributes> = {
@@ -37,19 +37,7 @@ export class AdminService {
         })
       })
 
-      const formatted = pager.formatData(result) as {
-        totalItems: number
-        items: UserInstance[]
-        totalPages: number
-        currentPage: number
-      }
-
-      return {
-        totalItems: formatted.totalItems,
-        totalPages: formatted.totalPages,
-        currentPage: formatted.currentPage,
-        items: formatted.items
-      }
+      return pager.formatData(result)
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`[AdminService] findAll failed: ${String(error)}`)
@@ -103,7 +91,7 @@ export class AdminService {
     }
   }
 
-  static async update(payload: IUpdateAdmin): Promise<void> {
+  static async update(payload: IUpdateAdmin) {
     try {
       const user = await UserModel.findOne({
         where: { userId: payload.userId, deleted: 0, userRole: 'admin' }
@@ -127,6 +115,7 @@ export class AdminService {
       }
 
       const updateData: Partial<IUserAttributes> = {}
+
       if (payload.userName != null) {
         updateData.userName = payload.userName
       }

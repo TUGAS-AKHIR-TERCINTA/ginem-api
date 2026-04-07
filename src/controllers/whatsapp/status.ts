@@ -29,7 +29,7 @@ export const getWhatsappConnectionStatus = async (
     return res
       .status(StatusCodes.OK)
       .json(ResponseData.success({ data, message: 'Status koneksi WhatsApp' }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }
