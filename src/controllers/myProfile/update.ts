@@ -13,11 +13,7 @@ export const updateMyProfile = async (
 ): Promise<Response> => {
   try {
     const payload = req.body as IUpdateMyProfile
-    const userId = req.jwtPayload?.userId
-
-    if (userId == null) {
-      throw AppError.badRequest('User not found')
-    }
+    const userId = req.jwtPayload?.userId as number
 
     await MyProfileService.updateProfile(userId, payload)
 

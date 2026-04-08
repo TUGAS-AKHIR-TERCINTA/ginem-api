@@ -10,5 +10,5 @@ export const verifyOtpSchema = z.object({
   otpCode: z.string().max(100)
 })
 
-export type RequestOtpSchema = z.infer<typeof requestOtpSchema>
-export type VerifyOtpSchema = z.infer<typeof verifyOtpSchema>
+export type IRequestOtp = z.infer<typeof requestOtpSchema>
+export type IVerifyOtp = z.infer<typeof verifyOtpSchema>

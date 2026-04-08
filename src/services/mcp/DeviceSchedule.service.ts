@@ -128,7 +128,7 @@ function runSensorDataJob(job: ScheduledJob): void {
         return
       }
 
-      const items = await DeviceLogService.getLastLogsByDeviceId(device.deviceId, 10)
+      const items = await DeviceLogService.getLastLogByDeviceId(device.deviceId)
 
       job.status = 'completed'
       job.result = {

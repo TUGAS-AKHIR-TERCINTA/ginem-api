@@ -44,10 +44,10 @@ export class AuthService {
         accessToken: token,
         refreshToken: ''
       }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AuthService] loginUser failed: ${String(error)}`)
-      throw new AppError('Failed to login', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AuthService] loginUser failed: ${String(serviceError)}`)
+      throw new AppError('Failed to login user', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
@@ -73,9 +73,9 @@ export class AuthService {
         userRole: payload.userRole,
         userOnboardingStatus: 'waiting'
       })
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AuthService] registerUser failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AuthService] registerUser failed: ${String(serviceError)}`)
       throw new AppError('Failed to register user', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
@@ -108,12 +108,13 @@ export class AuthService {
           userId: { [Op.eq]: user.userId }
         }
       })
-
-      logger.info('Password updated successfully')
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AuthService] updateUserPassword failed: ${String(error)}`)
-      throw new AppError('Failed to update password', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AuthService] updateUserPassword failed: ${String(serviceError)}`)
+      throw new AppError(
+        'Failed to update user password',
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
     }
   }
 }

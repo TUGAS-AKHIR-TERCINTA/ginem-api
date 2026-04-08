@@ -65,11 +65,11 @@ export class ChatService {
       }
 
       return content != null ? String(content) : JSON.stringify(result)
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[ChatService] query failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[ChatService] query failed: ${String(serviceError)}`)
       throw new AppError(
-        'Failed to process chat query',
+        'Failed to process chat query with user message',
         StatusCodes.INTERNAL_SERVER_ERROR
       )
     }

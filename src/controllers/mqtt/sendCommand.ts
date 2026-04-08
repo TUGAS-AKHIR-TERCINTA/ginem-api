@@ -2,7 +2,7 @@ import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { type MqttSendCommandInput } from '../../schemas/MqttSchema'
+import { type IMqttSendCommand } from '../../schemas/MqttSchema'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
 import { MQTTService } from '../../services/mqtt/MQTT.service'
@@ -12,8 +12,8 @@ export const sendCommand = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const payload = req.body as MqttSendCommandInput
-    MQTTService.sendCommand(payload.deviceId, payload.command)
+    const payload = req.body as IMqttSendCommand
+    await MQTTService.sendCommand(payload.deviceId, payload.command)
 
     return res
       .status(StatusCodes.OK)

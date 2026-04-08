@@ -15,11 +15,11 @@ export const indexingTextDocuments = async (
     await new PineconeService().addDocuments(payload)
     await PineconeBackupService.saveIndexingBackup(payload, 'json')
 
-    return res.status(StatusCodes.OK).json(
-      ResponseData.success({
-        message: `document(s) indexed to Pinecone successfully.`
-      })
-    )
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        ResponseData.success({ message: `document(s) indexed to Pinecone successfully.` })
+      )
   } catch (serverError) {
     return handleError(res, serverError)
   }

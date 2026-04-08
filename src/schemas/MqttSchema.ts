@@ -20,6 +20,6 @@ export const mqttDeviceIdParamSchema = z.object({
   deviceId: z.number().int()
 })
 
-export type MqttSendCommandInput = z.infer<typeof mqttSendCommandSchema>
-export type MqttPublishStatusInput = z.infer<typeof mqttPublishStatusSchema>
-export type MqttDeviceIdParam = z.infer<typeof mqttDeviceIdParamSchema>
+export type IMqttSendCommand = z.infer<typeof mqttSendCommandSchema>
+export type IMqttPublishStatus = z.infer<typeof mqttPublishStatusSchema>
+export type IMqttDeviceIdParam = z.infer<typeof mqttDeviceIdParamSchema>

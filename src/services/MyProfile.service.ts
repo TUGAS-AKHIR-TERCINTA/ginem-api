@@ -5,11 +5,12 @@ import { AppError } from '../utilities/AppError'
 import { appConfigs } from '../configs/appConfig'
 import logger from '../utilities/logger'
 import { IUpdateMyProfile, IUpdateOnboarding } from '../schemas/MyProfileSchema'
+import { StatusCodes } from 'http-status-codes'
 
 export class MyProfileService {
   static async findByUserId(userId: number) {
     try {
-      const user = await UserModel.findOne({
+      const result = await UserModel.findOne({
         where: { deleted: 0, userId },
         attributes: [
           'userId',
@@ -21,14 +22,16 @@ export class MyProfileService {
           'updatedAt'
         ]
       })
-      if (user == null) {
+
+      if (result == null) {
         throw AppError.notFound('User not found')
       }
-      return user
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[MyProfileService] findByUserId failed: ${String(error)}`)
-      throw AppError.badRequest('Failed to fetch profile')
+
+      return result
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[MyProfileService] findByUserId failed: ${String(serviceError)}`)
+      throw new AppError('Failed to fetch profile', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
@@ -58,36 +61,42 @@ export class MyProfileService {
       }
 
       if (Object.keys(updateData).length === 0) {
-        return
+        throw new AppError('No fields to update', StatusCodes.BAD_REQUEST)
       }
 
       const [affectedRows] = await UserModel.update(updateData, {
         where: { deleted: 0, userId }
       })
+
       if (affectedRows === 0) {
         throw AppError.notFound('User not found')
       }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[MyProfileService] updateProfile failed: ${String(error)}`)
-      throw AppError.badRequest('Failed to update profile')
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[MyProfileService] updateProfile failed: ${String(serviceError)}`)
+      throw new AppError('Failed to update profile', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
   static async updateOnboardingStatus(userId: number, payload: IUpdateOnboarding) {
     try {
-      const user = await UserModel.findOne({
+      const result = await UserModel.findOne({
         where: { deleted: 0, userId }
       })
-      if (user == null) {
+      if (result == null) {
         throw AppError.notFound('User not found')
       }
-      user.userOnboardingStatus = payload.userOnboardingStatus
-      await user.save()
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[MyProfileService] updateOnboardingStatus failed: ${String(error)}`)
-      throw AppError.badRequest('Failed to update onboarding status')
+      result.userOnboardingStatus = payload.userOnboardingStatus
+      await result.save()
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(
+        `[MyProfileService] updateOnboardingStatus failed: ${String(serviceError)}`
+      )
+      throw new AppError(
+        'Failed to update onboarding status',
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
     }
   }
 }

@@ -9,60 +9,59 @@ import { hashPassword } from '../utilities/scurePassword'
 import { ICreateAdmin, IFindAllAdmin, IUpdateAdmin } from '../schemas/AdminSchema'
 
 export class AdminService {
+  private static buildFindAllWhere(payload: IFindAllAdmin) {
+    let where: WhereOptions<IUserAttributes> = {
+      deleted: 0,
+      userRole: 'admin'
+    }
+
+    if (payload.search != null && payload.search.trim() !== '') {
+      const term = `%${payload.search.trim()}%`
+      where = {
+        ...where,
+        [Op.or]: [{ userName: { [Op.like]: term } }, { userEmail: { [Op.like]: term } }]
+      }
+    }
+    return where
+  }
+
   static async findAll(payload: IFindAllAdmin) {
     try {
-      const { page = 1, size = 10, pagination = true, search } = payload
-      const pager = new Pagination(Number(page) || 1, Number(size) || 10)
-
-      let where: WhereOptions<IUserAttributes> = {
-        deleted: 0,
-        userRole: 'admin'
-      }
-
-      if (search != null && search.trim() !== '') {
-        const term = `%${search.trim()}%`
-        where = {
-          ...where,
-          [Op.or]: [{ userName: { [Op.like]: term } }, { userEmail: { [Op.like]: term } }]
-        }
-      }
+      const pager = new Pagination(payload.page, payload.size)
 
       const result = await UserModel.findAndCountAll({
-        where,
+        where: this.buildFindAllWhere(payload),
         order: [['userId', 'DESC']],
         attributes: { exclude: ['userPassword'] },
-        ...(pagination === true && {
+        ...(payload.pagination === true && {
           limit: pager.limit,
           offset: pager.offset
         })
       })
 
       return pager.formatData(result)
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AdminService] findAll failed: ${String(error)}`)
-      throw new AppError('Failed to fetch admins', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AdminService] findAll failed: ${String(serviceError)}`)
+      throw new AppError('Failed to list admins', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  /**
-   * @throws {AppError} notFound when user is missing or not an admin
-   */
   static async findById(userId: number) {
     try {
-      const user = await UserModel.findOne({
+      const result = await UserModel.findOne({
         where: { userId, deleted: 0, userRole: 'admin' },
         attributes: { exclude: ['userPassword'] }
       })
 
-      if (user == null) {
+      if (result == null) {
         throw AppError.notFound('Admin not found')
       }
 
-      return user
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AdminService] findById failed: ${String(error)}`)
+      return result
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AdminService] findById failed: ${String(serviceError)}`)
       throw new AppError('Failed to fetch admin', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
@@ -84,32 +83,20 @@ export class AdminService {
         userRole: 'admin',
         userOnboardingStatus: payload.userOnboardingStatus ?? 'waiting'
       })
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AdminService] create failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AdminService] create failed: ${String(serviceError)}`)
       throw new AppError('Failed to create admin', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
   static async update(payload: IUpdateAdmin) {
     try {
-      const user = await UserModel.findOne({
-        where: { userId: payload.userId, deleted: 0, userRole: 'admin' }
-      })
-
-      if (user == null) {
-        throw AppError.notFound('Admin not found')
-      }
-
-      if (payload.userEmail != null && payload.userEmail !== user.userEmail) {
-        const taken = await UserModel.findOne({
-          where: {
-            deleted: 0,
-            userEmail: payload.userEmail,
-            userId: { [Op.ne]: payload.userId }
-          }
+      if (payload.userEmail != null && payload.userEmail !== '') {
+        const existing = await UserModel.findOne({
+          where: { deleted: 0, userEmail: payload.userEmail }
         })
-        if (taken != null) {
+        if (existing != null && existing.userId !== payload.userId) {
           throw AppError.conflict('Email already in use')
         }
       }
@@ -130,20 +117,23 @@ export class AdminService {
       }
 
       if (Object.keys(updateData).length === 0) {
-        return
+        throw new AppError('No fields to update', StatusCodes.BAD_REQUEST)
       }
 
-      await user.update(updateData)
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AdminService] update failed: ${String(error)}`)
+      const [affectedRows] = await UserModel.update(updateData, {
+        where: { userId: payload.userId, deleted: 0, userRole: 'admin' }
+      })
+
+      if (affectedRows === 0) {
+        throw AppError.notFound('Admin not found')
+      }
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AdminService] update failed: ${String(serviceError)}`)
       throw new AppError('Failed to update admin', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  /**
-   * Soft-delete an admin. Blocks deleting yourself and deleting the last admin.
-   */
   static async remove(userId: number, requesterUserId: number): Promise<void> {
     try {
       if (userId === requesterUserId) {
@@ -167,10 +157,10 @@ export class AdminService {
       }
 
       await user.destroy()
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AdminService] remove failed: ${String(error)}`)
-      throw new AppError('Failed to delete admin', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AdminService] remove failed: ${String(serviceError)}`)
+      throw new AppError('Failed to remove admin', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 }

@@ -13,9 +13,9 @@ export class LLMService {
         maxTokens: 500,
         apiKey: appConfigs.llm?.openAIApiKey
       })
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[LLMService] create failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[LLMService] create failed: ${String(serviceError)}`)
       throw new AppError('Failed to create LLM client', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }

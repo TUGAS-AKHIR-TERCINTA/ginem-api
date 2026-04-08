@@ -13,13 +13,7 @@ export const removeAdmin = async (
 ): Promise<Response> => {
   try {
     const payload = req.params as unknown as IAdminUserIdParam
-    const requesterId = req.jwtPayload?.userId
-
-    if (requesterId == null) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json(ResponseData.error({ message: 'Unauthorized' }))
-    }
+    const requesterId = req.jwtPayload?.userId as number
 
     await AdminService.remove(payload.userId, requesterId)
 

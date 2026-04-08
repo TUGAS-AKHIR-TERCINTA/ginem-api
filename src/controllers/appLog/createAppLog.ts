@@ -12,14 +12,11 @@ export const createAppLog = async (
 ): Promise<Response> => {
   try {
     const payload = req.body as ICreateAppLog
-    const result = await AppLogService.create(payload)
+    await AppLogService.create(payload)
 
-    return res.status(StatusCodes.CREATED).json(
-      ResponseData.success({
-        data: result,
-        message: 'App log created successfully'
-      })
-    )
+    return res
+      .status(StatusCodes.CREATED)
+      .json(ResponseData.success({ message: 'App log created successfully' }))
   } catch (serverError) {
     return handleError(res, serverError)
   }

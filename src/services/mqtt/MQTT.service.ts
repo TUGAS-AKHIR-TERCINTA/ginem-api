@@ -75,7 +75,7 @@ export class MQTTService {
   }
 
   /** HTTP / API → MQTT: send a command to a device. */
-  static sendCommand(deviceId: number, command: string): void {
+  static async sendCommand(deviceId: number, command: string): Promise<void> {
     publishDeviceCommand(deviceId, command)
   }
 

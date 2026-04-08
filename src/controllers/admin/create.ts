@@ -13,6 +13,7 @@ export const createAdmin = async (
 ): Promise<Response> => {
   try {
     const payload = req.body as unknown as ICreateAdmin
+
     await AdminService.create(payload)
     const response = ResponseData.success({ message: 'Admin created successfully' })
     return res.status(StatusCodes.CREATED).json(response)

@@ -1,12 +1,49 @@
-import { Op } from 'sequelize'
+import { Op, WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
-import { AppLogModel } from '../models/AppLogModel'
+import { AppLogModel, IAppLogAttributes } from '../models/AppLogModel'
 import { AppError } from '../utilities/AppError'
 import { Pagination } from '../utilities/pagination'
 import logger from '../utilities/logger'
 import { ICreateAppLog, IFindAllAppLogs } from '../schemas/AppLogSchema'
 
 export class AppLogService {
+  private static buildFindAllWhere(payload: IFindAllAppLogs) {
+    const where: WhereOptions<IAppLogAttributes> = {
+      deleted: 0
+    }
+
+    if (payload.level != null && ['error', 'warn', 'info'].includes(payload.level)) {
+      where.appLogLevel = payload.level
+    }
+
+    if (payload.search != null && String(payload.search).trim()) {
+      const term = `%${String(payload.search).trim()}%`
+      where.appLogMessage = { [Op.like]: term }
+    }
+    return where
+  }
+
+  static async findAll(payload: IFindAllAppLogs) {
+    try {
+      const pager = new Pagination(payload.page, payload.size)
+
+      const result = await AppLogModel.findAndCountAll({
+        where: this.buildFindAllWhere(payload),
+        order: [['appLogId', 'DESC']],
+        ...(payload.pagination === true && {
+          limit: pager.limit,
+          offset: pager.offset
+        })
+      })
+
+      return pager.formatData(result)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AppLogService] findAll failed: ${String(serviceError)}`)
+      throw new AppError('Failed to fetch logs', StatusCodes.INTERNAL_SERVER_ERROR)
+    }
+  }
+
   static async create(payload: ICreateAppLog) {
     try {
       return await AppLogModel.create({
@@ -15,42 +52,10 @@ export class AppLogService {
         appLogSource: payload.appLogSource ?? null,
         appLogMeta: payload.appLogMeta ?? null
       })
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AppLogService] create failed: ${String(error)}`)
-      throw new AppError('Failed to create log', StatusCodes.INTERNAL_SERVER_ERROR)
-    }
-  }
-
-  static async findAll(payload: IFindAllAppLogs) {
-    try {
-      const { page = 1, size = 10, level, search, pagination } = payload
-      const pager = new Pagination(page, size)
-
-      const where: Record<string, unknown> = {}
-
-      if (level && ['error', 'warn', 'info'].includes(level)) {
-        where.appLogLevel = level
-      }
-
-      if (search && String(search).trim()) {
-        const term = `%${String(search).trim()}%`
-        where.appLogMessage = { [Op.like]: term }
-      }
-
-      const result = await AppLogModel.findAndCountAll({
-        where,
-        order: [['appLogId', 'DESC']],
-        ...(pagination === true && {
-          limit: pager.limit,
-          offset: pager.offset
-        })
-      })
-
-      return pager.formatData(result)
-    } catch (error) {
-      logger.error(`[AppLogService] findAll failed: ${String(error)}`)
-      throw new AppError('Failed to fetch logs', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AppLogService] create failed: ${String(serviceError)}`)
+      throw new AppError('Failed to create app log', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 }

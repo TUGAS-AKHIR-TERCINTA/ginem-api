@@ -1,6 +1,9 @@
-import { Op } from 'sequelize'
+import { Op, WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
-import { SchedulerLogModel } from '../models/SchedulerLogModel'
+import {
+  ISchedulerLogModelAttributes,
+  SchedulerLogModel
+} from '../models/SchedulerLogModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
@@ -10,63 +13,60 @@ export type SchedulerLogType = 'actuator' | 'sensor_data'
 export type SchedulerLogStatus = 'pending' | 'completed' | 'failed'
 
 export class SchedulerLogService {
+  private static buildFindAllWhere(payload: IFindAllSchedulerLog) {
+    const where: WhereOptions<ISchedulerLogModelAttributes> = { deleted: 0 }
+
+    if (payload.type != null && ['actuator', 'sensor_data'].includes(payload.type)) {
+      where.type = payload.type
+    }
+
+    if (
+      payload.status != null &&
+      ['pending', 'completed', 'failed'].includes(payload.status)
+    ) {
+      where.status = payload.status
+    }
+
+    if (payload.deviceName != null && payload.deviceName !== '') {
+      where.deviceName = payload.deviceName
+    }
+
+    if (payload.dateFrom != null || payload.dateTo != null) {
+      const scheduledAtCondition: Record<string | symbol, unknown> = {}
+
+      if (payload.dateFrom != null) {
+        scheduledAtCondition[Op.gte] = new Date(payload.dateFrom)
+      }
+
+      if (payload.dateTo != null) {
+        scheduledAtCondition[Op.lte] = new Date(payload.dateTo)
+      }
+
+      where.scheduledAt = scheduledAtCondition
+    }
+
+    return where
+  }
+
   static async findAll(payload: IFindAllSchedulerLog) {
     try {
-      const {
-        type,
-        status,
-        deviceName,
-        page = 1,
-        size = 20,
-        pagination = true,
-        dateFrom,
-        dateTo
-      } = payload
-      const pager = new Pagination(Number(page) || 1, Number(size) || 20)
-
-      const where: Record<string, unknown> = { deleted: 0 }
-
-      if (type != null && ['actuator', 'sensor_data'].includes(type)) {
-        where.type = type
-      }
-
-      if (status != null && ['pending', 'completed', 'failed'].includes(status)) {
-        where.status = status
-      }
-
-      if (deviceName != null && deviceName !== '') {
-        where.deviceName = deviceName
-      }
-
-      if (dateFrom != null || dateTo != null) {
-        const scheduledAtCondition: Record<string | symbol, unknown> = {}
-
-        if (dateFrom != null) {
-          scheduledAtCondition[Op.gte] = new Date(dateFrom)
-        }
-
-        if (dateTo != null) {
-          scheduledAtCondition[Op.lte] = new Date(dateTo)
-        }
-
-        where.scheduledAt = scheduledAtCondition
-      }
+      const pager = new Pagination(payload.page, payload.size)
 
       const result = await SchedulerLogModel.findAndCountAll({
-        where,
+        where: this.buildFindAllWhere(payload),
         order: [['schedulerLogId', 'desc']],
-        ...(pagination === true && {
+        ...(payload.pagination === true && {
           limit: pager.limit,
           offset: pager.offset
         })
       })
 
       return pager.formatData(result)
-    } catch (serverError) {
-      if (serverError instanceof AppError) throw serverError
-      logger.error(`[SchedulerLogService] findAll failed: ${String(serverError)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[SchedulerLogService] findAll failed: ${String(serviceError)}`)
       throw new AppError(
-        'Failed to fetch scheduler logs',
+        'Failed to list scheduler logs',
         StatusCodes.INTERNAL_SERVER_ERROR
       )
     }
@@ -74,22 +74,20 @@ export class SchedulerLogService {
 
   static async findById(schedulerLogId: number) {
     try {
-      const log = await SchedulerLogModel.findOne({
+      const result = await SchedulerLogModel.findOne({
         where: { deleted: 0, schedulerLogId }
       })
 
-      if (log == null) {
-        const message = 'Scheduler log not found!'
-        logger.info('Attempt to fetch non-existing scheduler log')
-        throw AppError.notFound(message)
+      if (result == null) {
+        throw AppError.notFound('Scheduler log not found')
       }
 
-      return log
-    } catch (serverError) {
-      if (serverError instanceof AppError) throw serverError
-      logger.error(`[SchedulerLogService] findById failed: ${String(serverError)}`)
+      return result
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[SchedulerLogService] findById failed: ${String(serviceError)}`)
       throw new AppError(
-        'Failed to fetch scheduler log',
+        'Failed to get scheduler log by id',
         StatusCodes.INTERNAL_SERVER_ERROR
       )
     }
