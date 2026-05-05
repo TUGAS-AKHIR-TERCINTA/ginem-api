@@ -164,7 +164,7 @@ class PineconeService {
     }
   }
 
-  async addDocuments(documents: ICreateIndexing): Promise<void> {
+  async addDocuments(documents: ICreateIndexing[]): Promise<void> {
     try {
       if (documents.length === 0) return
 
@@ -177,12 +177,12 @@ class PineconeService {
       const batchSize = 50
       for (let i = 0; i < documents.length; i += batchSize) {
         const batch = documents.slice(i, i + batchSize)
-        const texts = batch.map((d) => d.content)
+        const texts = batch.map((d) => d.text)
         const vectors = await this.embedTexts(texts)
 
         const records = batch.map((d, idx) => {
           const source = d.source ?? ''
-          const content = d.content
+          const content = d.text
           const id = PineconeService.sha256(`${source}:${content}`)
           return {
             id,

@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { MiddleWares } from '../middlewares'
+import { MiddleWares } from '../middlewares/index'
 import { chatSchema } from '../schemas/ChatSchema'
-import { ChatController } from '../controllers/chat'
+import { ChatController } from '../controllers/chat/index'
 
 const ChatRoute = Router()
 

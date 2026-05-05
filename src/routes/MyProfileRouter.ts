@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { MiddleWares } from '../middlewares'
-import { MyProfileController } from '../controllers/myProfile'
+import { MiddleWares } from '../middlewares/index'
+import { MyProfileController } from '../controllers/myProfile/index'
 import {
   findMyProfileSchema,
   updateMyProfileSchema,

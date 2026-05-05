@@ -81,7 +81,7 @@ function runActuatorJob(job: ScheduledJob): void {
         deviceLogData: value
       })
 
-      MQTTService.publishActuatorState(device.deviceName, job.state!)
+      MQTTService.publishActuatorState(device.deviceId, job.state!)
 
       job.status = 'completed'
       job.result = {
@@ -117,43 +117,39 @@ function runActuatorJob(job: ScheduledJob): void {
 }
 
 function runSensorDataJob(job: ScheduledJob): void {
-  void (async () => {
-    try {
-      const device = await DeviceService.findByName(job.deviceName)
-
-      if (device == null) {
-        job.status = 'failed'
-        job.error = `Device not found: ${job.deviceName}`
-        await recordSchedulerResult(job.id, 'failed', undefined, job.error)
-        return
-      }
-
-      const items = await DeviceLogService.getLastLogByDeviceId(device.deviceId)
-
-      job.status = 'completed'
-      job.result = {
-        deviceName: job.deviceName,
-        deviceId: device.deviceId,
-        count: items.length,
-        values: items.map((v) => ({
-          deviceLogId: v.deviceLogId,
-          deviceLogData: v.deviceLogData,
-          createdAt: v.createdAt
-        })),
-        executedAt: new Date().toISOString()
-      }
-
-      await recordSchedulerResult(job.id, 'completed', job.result)
-      logger.info(
-        `[DeviceScheduleService] Sensor data job ${job.id} executed: ${job.deviceName}`
-      )
-    } catch (err) {
-      job.status = 'failed'
-      job.error = err instanceof Error ? err.message : String(err)
-      await recordSchedulerResult(job.id, 'failed', undefined, job.error)
-      logger.error(`[DeviceScheduleService] Sensor data job ${job.id} failed:`, err)
-    }
-  })()
+  // void (async () => {
+  //   try {
+  //     const device = await DeviceService.findByName(job.deviceName)
+  //     if (device == null) {
+  //       job.status = 'failed'
+  //       job.error = `Device not found: ${job.deviceName}`
+  //       await recordSchedulerResult(job.id, 'failed', undefined, job.error)
+  //       return
+  //     }
+  //     const items = await DeviceLogService.getLastLogByDeviceId(device.deviceId)
+  //     job.status = 'completed'
+  //     job.result = {
+  //       deviceName: job.deviceName,
+  //       deviceId: device.deviceId,
+  //       count: items.deviceLogData.length,
+  //       values: items.map((v) => ({
+  //         deviceLogId: v.deviceLogId,
+  //         deviceLogData: v.deviceLogData,
+  //         createdAt: v.createdAt
+  //       })),
+  //       executedAt: new Date().toISOString()
+  //     }
+  //     await recordSchedulerResult(job.id, 'completed', job.result)
+  //     logger.info(
+  //       `[DeviceScheduleService] Sensor data job ${job.id} executed: ${job.deviceName}`
+  //     )
+  //   } catch (err) {
+  //     job.status = 'failed'
+  //     job.error = err instanceof Error ? err.message : String(err)
+  //     await recordSchedulerResult(job.id, 'failed', undefined, job.error)
+  //     logger.error(`[DeviceScheduleService] Sensor data job ${job.id} failed:`, err)
+  //   }
+  // })()
 }
 
 /**

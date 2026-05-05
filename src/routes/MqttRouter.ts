@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
-import { MqttController } from '../controllers/mqtt'
-import { MiddleWares } from '../middlewares'
+import { MqttController } from '../controllers/mqtt/index'
+import { MiddleWares } from '../middlewares/index'
 import {
   mqttDeviceIdParamSchema,
   mqttPublishStatusSchema,

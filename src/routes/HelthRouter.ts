@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { appChekController } from '../controllers/appCheck'
+import { appChekController } from '../controllers/appCheck/index'
 
 const HealthRoute = Router()
 

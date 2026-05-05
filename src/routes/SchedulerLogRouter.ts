@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { SchedulerLogController } from '../controllers/schedulerLog'
-import { MiddleWares } from '../middlewares'
+import { SchedulerLogController } from '../controllers/schedulerLog/index'
+import { MiddleWares } from '../middlewares/index'
 import { findDetailSchedulerLogSchema } from '../schemas/SchedulerLogSchema'
 import { findAllAppLogsSchema } from '../schemas/AppLogSchema'
 

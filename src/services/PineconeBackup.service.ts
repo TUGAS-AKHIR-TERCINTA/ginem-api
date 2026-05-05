@@ -18,9 +18,9 @@ export class PineconeBackupService {
       if (documents.length === 0) return
 
       await IndexingModel.bulkCreate(
-        documents.map((d) => ({
-          content: d.text,
-          source: d.source,
+        documents.map((doc) => ({
+          content: doc.text,
+          source: doc.source,
           sourceType
         }))
       )

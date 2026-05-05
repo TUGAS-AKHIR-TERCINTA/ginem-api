@@ -1,7 +1,11 @@
-import { MqttClient } from 'mqtt/*'
 import logger from '../../utilities/logger'
 import { mqttClient } from './client'
-import { ALL_DEVICE_STATE, ALL_DEVICE_TELEMETRY, deviceCommandTopic, deviceTelemetryTopic } from './topics'
+import {
+  ALL_DEVICE_STATE,
+  ALL_DEVICE_TELEMETRY,
+  deviceCommandTopic,
+  deviceTelemetryTopic
+} from './topics'
 
 export function subscribeToAllDeviceStatus() {
   mqttClient.subscribe(ALL_DEVICE_STATE, () => {

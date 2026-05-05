@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { DeviceLogController } from '../controllers/deviceLog'
-import { MiddleWares } from '../middlewares'
+import { DeviceLogController } from '../controllers/deviceLog/index'
+import { MiddleWares } from '../middlewares/index'
 import { findAllDeviceLogSchema } from '../schemas/DeviceLogSchema'
 import { findDetailDeviceLogSchema } from '../schemas/DeviceLogSchema'
 import { findLastLatestDeviceLogByDeviceIdSchema } from '../schemas/DeviceLogSchema'

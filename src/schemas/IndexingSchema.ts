@@ -24,7 +24,8 @@ export const createIndexingItemSchema = z
   })
   .strict()
 
-export const createIndexingBodySchema = { documents: z.array(createIndexingItemSchema) }
+/** Body POST indexing: array of chunks `{ text, source }`. */
+export const createIndexingBodySchema = z.array(createIndexingItemSchema)
 
 export const deleteIndexingParamsSchema = z.object({
   indexingId: z
@@ -34,4 +35,5 @@ export const deleteIndexingParamsSchema = z.object({
 
 export type IFindAllIndexing = z.infer<typeof findAllIndexingsSchema>
 export type IDeleteIndexing = z.infer<typeof deleteIndexingParamsSchema>
-export type ICreateIndexing = z.infer<typeof createIndexingBodySchema>
+/** Single indexing chunk (API array element). */
+export type ICreateIndexing = z.infer<typeof createIndexingItemSchema>

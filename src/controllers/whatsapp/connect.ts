@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { type WhatsappConnectQueryInput } from '../../schemas/WhatsAppSchema'
-import { WhatsappService } from '../../services/whatsapp'
+import { WhatsappService } from '../../services/whatsapp/index'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
 

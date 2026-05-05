@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { DeviceController } from '../controllers/device'
-import { MiddleWares } from '../middlewares'
+import { DeviceController } from '../controllers/device/index'
+import { MiddleWares } from '../middlewares/index'
 import {
   createDeviceSchema,
   findAllDeviceSchema,
