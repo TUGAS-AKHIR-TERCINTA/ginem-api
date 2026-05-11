@@ -20,6 +20,7 @@ export class TelemetryService {
   static initialize() {
     MQTTService.onDeviceTelemetry(async (deviceId: number, payload: unknown) => {
       try {
+        console.log('payload', payload)
         const existingDevice = await DeviceModel.findOne({
           where: { deviceId, deleted: 0 }
         })

@@ -2,7 +2,8 @@ import { mqttClient } from './client'
 import {
   publishDeviceCommand,
   publishDeviceState,
-  publishDeviceTelemetry
+  publishDeviceTelemetry,
+  toMqttValueEnvelope
 } from './publisher'
 import {
   subscribeToAllDeviceStatus,
@@ -80,7 +81,7 @@ export class MQTTService {
   }
 
   /**
-   * Publish actuator on/off to `device/{deviceId}/command` as `{ command: "1" | "0" }`.
+   * Publish actuator on/off to `iot/v1/device/{deviceId}/command` as `{ "value": "1" | "0" }`.
    * Uses the numeric DB `deviceId` as the MQTT topic segment (same as REST MQTT API).
    */
   static publishActuatorState(deviceId: number, state: 'on' | 'off'): void {
@@ -94,10 +95,10 @@ export class MQTTService {
     MQTTService.recordDeviceState(deviceId, { state })
   }
 
-  /** Publish telemetry to `device/{deviceId}/telemetry` as JSON. */
+  /** Publish telemetry to `iot/v1/device/{deviceId}/telemetry` as `{ "value": string }`. */
   static publishTelemetry(deviceId: number, telemetry: unknown): void {
     publishDeviceTelemetry(deviceId, telemetry)
-    MQTTService.recordDeviceTelemetry(deviceId, { telemetry })
+    MQTTService.recordDeviceTelemetry(deviceId, toMqttValueEnvelope(telemetry))
   }
   /**
    * Last status received from MQTT (`device/{id}/status`) or recorded after API publish.

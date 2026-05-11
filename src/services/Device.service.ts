@@ -7,7 +7,7 @@ import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
 import { ICreateDevice, IFindAllDevice, IUpdateDevice } from '../schemas/DeviceSchema'
 import { v4 as uuidv4 } from 'uuid'
-import { Op, WhereOptions } from 'sequelize'
+import { Op, WhereOptions, type Order } from 'sequelize'
 
 export class DeviceService {
   private static buildFindAllWhere(payload: IFindAllDevice) {
@@ -34,8 +34,11 @@ export class DeviceService {
         include: [
           {
             model: DeviceLogModel,
-            as: 'deviceLogs',
-            attributes: ['deviceLogId', 'deviceLogData', 'createdAt']
+            as: 'deviceLogs' as const,
+            attributes: ['deviceLogId', 'deviceLogData', 'createdAt'],
+            separate: true,
+            limit: 10,
+            order: [['createdAt', 'DESC']] satisfies Order
           }
         ],
         distinct: true,
@@ -61,8 +64,11 @@ export class DeviceService {
         include: [
           {
             model: DeviceLogModel,
-            as: 'deviceLogs',
-            attributes: ['deviceLogId', 'deviceLogData', 'createdAt']
+            as: 'deviceLogs' as const,
+            attributes: ['deviceLogId', 'deviceLogData', 'createdAt'],
+            separate: true,
+            limit: 10,
+            order: [['createdAt', 'DESC']] satisfies Order
           }
         ]
       })

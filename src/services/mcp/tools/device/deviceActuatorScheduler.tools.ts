@@ -50,7 +50,7 @@ export const setActuatorStateByDeviceNameTool = tool(
         createdAt: deviceLog.createdAt,
         mqtt: {
           topic: `iot/v1/device/${device.deviceId}/command`,
-          command: deviceLogData,
+          value: deviceLogData,
           brokerConnected: MQTTService.isConnected()
         }
       },

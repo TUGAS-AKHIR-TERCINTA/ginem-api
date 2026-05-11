@@ -96,8 +96,8 @@ function runActuatorJob(job: ScheduledJob): void {
         deviceLogData: deviceValue.deviceLogData,
         executedAt: new Date().toISOString(),
         mqtt: {
-          topic: `device/${device.deviceName}/command`,
-          command: value,
+          topic: `iot/v1/device/${device.deviceId}/command`,
+          value,
           brokerConnected: MQTTService.isConnected()
         }
       }
