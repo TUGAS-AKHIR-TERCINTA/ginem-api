@@ -6,8 +6,8 @@ import {
 } from './device/deviceLogs.tools'
 import {
   setActuatorStateByDeviceNameTool,
-  scheduleActuatorStateAfterMinutesTool,
-  scheduleSensorDataAfterMinutesTool,
+  scheduleActuatorStateAtDatetimeTool,
+  scheduleSensorDataAtDatetimeTool,
   getScheduledJobResultTool,
   listScheduledJobsTool
 } from './device/deviceActuatorScheduler.tools'
@@ -20,8 +20,8 @@ export const deviceTools = [
   getLast10LogsByDeviceNameTool,
   createDeviceLogByDeviceNameTool,
   setActuatorStateByDeviceNameTool,
-  scheduleActuatorStateAfterMinutesTool,
-  scheduleSensorDataAfterMinutesTool,
+  scheduleActuatorStateAtDatetimeTool,
+  scheduleSensorDataAtDatetimeTool,
   getScheduledJobResultTool,
   listScheduledJobsTool
 ]
@@ -33,8 +33,8 @@ export {
   getLast10LogsByDeviceNameTool,
   createDeviceLogByDeviceNameTool,
   setActuatorStateByDeviceNameTool,
-  scheduleActuatorStateAfterMinutesTool,
-  scheduleSensorDataAfterMinutesTool,
+  scheduleActuatorStateAtDatetimeTool,
+  scheduleSensorDataAtDatetimeTool,
   getScheduledJobResultTool,
   listScheduledJobsTool
 }

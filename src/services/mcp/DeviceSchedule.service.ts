@@ -1,11 +1,16 @@
-import { DeviceService } from '../Device.service'
+import { Op } from 'sequelize'
 import {
   SchedulerLogModel,
-  ISchedulerLogCreationModelAttributes
+  ISchedulerLogCreationModelAttributes,
+  type SchedulerLogInstance
 } from '../../models/SchedulerLogModel'
 import logger from '../../utilities/logger'
-import { DeviceLogService } from '../DeviceLog.service'
-import { MQTTService } from '../mqtt/MQTT.service'
+import {
+  enqueueDeviceScheduleJob,
+  type DeviceScheduleJobData
+} from '../scheduler/deviceSchedule.queue'
+import { minutesUntilRun } from '../scheduler/deviceSchedule.datetime'
+import { startDeviceScheduleWorker } from '../scheduler/deviceSchedule.worker'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'
 export type ScheduledJobStatus = 'pending' | 'completed' | 'failed'
@@ -15,7 +20,6 @@ export interface ScheduledJob {
   type: ScheduledJobType
   deviceName: string
   state?: 'on' | 'off'
-  delayMinutes: number
   scheduledAt: Date
   runAt: Date
   status: ScheduledJobStatus
@@ -23,7 +27,6 @@ export interface ScheduledJob {
   error?: string
 }
 
-const jobs = new Map<string, ScheduledJob>()
 let jobIdCounter = 0
 
 function nextJobId(): string {
@@ -31,224 +34,157 @@ function nextJobId(): string {
   return `schedule-${Date.now()}-${jobIdCounter}`
 }
 
-async function recordSchedulerResult(
-  jobId: string,
-  status: ScheduledJobStatus,
-  result?: unknown,
-  error?: string
-): Promise<void> {
-  try {
-    await SchedulerLogModel.update(
-      {
-        status,
-        result: result != null ? (result as object) : null,
-        error: error ?? null,
-        executedAt: new Date()
-      },
-      { where: { jobId, deleted: 0 } }
-    )
-  } catch (e) {
-    logger.error(
-      `[DeviceScheduleService] Failed to record scheduler result for ${jobId}:`,
-      e
-    )
+function toScheduledJob(row: SchedulerLogInstance): ScheduledJob {
+  return {
+    id: row.jobId,
+    type: row.type as ScheduledJobType,
+    deviceName: row.deviceName,
+    state: (row.state as 'on' | 'off' | null) ?? undefined,
+    scheduledAt: row.scheduledAt,
+    runAt: row.runAt,
+    status: row.status as ScheduledJobStatus,
+    result: row.result ?? undefined,
+    error: row.error ?? undefined
   }
 }
 
-function runActuatorJob(job: ScheduledJob): void {
-  void (async () => {
-    try {
-      const device = await DeviceService.findByName(job.deviceName)
+async function persistAndEnqueueJob(
+  job: ScheduledJob,
+  queueData: DeviceScheduleJobData
+): Promise<void> {
+  const delayMinutes = minutesUntilRun(job.scheduledAt, job.runAt)
 
-      if (device == null) {
-        job.status = 'failed'
-        job.error = `Device not found: ${job.deviceName}`
-        await recordSchedulerResult(job.id, 'failed', undefined, job.error)
-        return
-      }
+  const createPayload: ISchedulerLogCreationModelAttributes = {
+    jobId: job.id,
+    type: job.type,
+    deviceName: job.deviceName,
+    state: job.state ?? null,
+    delayMinutes,
+    scheduledAt: job.scheduledAt,
+    runAt: job.runAt,
+    status: 'pending'
+  }
 
-      if (device.deviceType !== 'actuator') {
-        job.status = 'failed'
-        job.error = `Device "${job.deviceName}" is not an actuator (type: ${device.deviceType})`
-        await recordSchedulerResult(job.id, 'failed', undefined, job.error)
-        return
-      }
-
-      const value = job.state === 'on' ? '1' : '0'
-
-      const deviceValue = await DeviceLogService.create({
-        deviceLogDeviceId: device.deviceId,
-        deviceLogData: value
-      })
-
-      MQTTService.publishActuatorState(device.deviceId, job.state!)
-
-      job.status = 'completed'
-      job.result = {
-        success: true,
-        message:
-          job.state === 'on'
-            ? 'Device turned on (value 1)'
-            : 'Device turned off (value 0)',
-        deviceName: job.deviceName,
-        deviceId: device.deviceId,
-        deviceLogId: deviceValue.deviceLogId,
-        deviceLogData: deviceValue.deviceLogData,
-        executedAt: new Date().toISOString(),
-        mqtt: {
-          topic: `iot/v1/device/${device.deviceId}/command`,
-          value,
-          brokerConnected: MQTTService.isConnected()
-        }
-      }
-
-      await recordSchedulerResult(job.id, 'completed', job.result)
-
-      logger.info(
-        `[DeviceScheduleService] Actuator job ${job.id} executed: ${job.deviceName} -> ${job.state}`
-      )
-    } catch (err) {
-      job.status = 'failed'
-      job.error = err instanceof Error ? err.message : String(err)
-      await recordSchedulerResult(job.id, 'failed', undefined, job.error)
-      logger.error(`[DeviceScheduleService] Actuator job ${job.id} failed:`, err)
-    }
-  })()
-}
-
-function runSensorDataJob(job: ScheduledJob): void {
-  // void (async () => {
-  //   try {
-  //     const device = await DeviceService.findByName(job.deviceName)
-  //     if (device == null) {
-  //       job.status = 'failed'
-  //       job.error = `Device not found: ${job.deviceName}`
-  //       await recordSchedulerResult(job.id, 'failed', undefined, job.error)
-  //       return
-  //     }
-  //     const items = await DeviceLogService.getLastLogByDeviceId(device.deviceId)
-  //     job.status = 'completed'
-  //     job.result = {
-  //       deviceName: job.deviceName,
-  //       deviceId: device.deviceId,
-  //       count: items.deviceLogData.length,
-  //       values: items.map((v) => ({
-  //         deviceLogId: v.deviceLogId,
-  //         deviceLogData: v.deviceLogData,
-  //         createdAt: v.createdAt
-  //       })),
-  //       executedAt: new Date().toISOString()
-  //     }
-  //     await recordSchedulerResult(job.id, 'completed', job.result)
-  //     logger.info(
-  //       `[DeviceScheduleService] Sensor data job ${job.id} executed: ${job.deviceName}`
-  //     )
-  //   } catch (err) {
-  //     job.status = 'failed'
-  //     job.error = err instanceof Error ? err.message : String(err)
-  //     await recordSchedulerResult(job.id, 'failed', undefined, job.error)
-  //     logger.error(`[DeviceScheduleService] Sensor data job ${job.id} failed:`, err)
-  //   }
-  // })()
+  await SchedulerLogModel.create(createPayload)
+  await enqueueDeviceScheduleJob(queueData, job.runAt)
 }
 
 /**
- * Schedule turning on/off an actuator after a delay (minutes).
- * Returns job id. The action runs in the background after delayMinutes.
+ * Schedule turning on/off an actuator at an absolute datetime (WIB).
  */
-export function scheduleActuatorState(
+export async function scheduleActuatorState(
   deviceName: string,
   state: 'on' | 'off',
-  delayMinutes: number
-): ScheduledJob {
+  runAt: Date
+): Promise<ScheduledJob> {
   const id = nextJobId()
   const scheduledAt = new Date()
-  const runAt = new Date(scheduledAt.getTime() + delayMinutes * 60 * 1000)
 
   const job: ScheduledJob = {
     id,
     type: 'actuator',
     deviceName,
     state,
-    delayMinutes,
     scheduledAt,
     runAt,
     status: 'pending'
   }
 
-  jobs.set(id, job)
-
-  const createPayload: ISchedulerLogCreationModelAttributes = {
+  await persistAndEnqueueJob(job, {
     jobId: id,
     type: 'actuator',
     deviceName,
-    state,
-    delayMinutes,
-    scheduledAt,
-    runAt,
-    status: 'pending'
-  }
-
-  void SchedulerLogModel.create(createPayload).then(() => {
-    setTimeout(() => runActuatorJob(job), delayMinutes * 60 * 1000)
+    state
   })
 
   return job
 }
 
 /**
- * Schedule fetching sensor/device data after a delay (minutes).
- * Returns job id. After the delay, the job runs and stores the result; use getScheduledJob(id) to get it.
+ * Schedule fetching sensor/device data at an absolute datetime (WIB).
  */
-export function scheduleSensorData(
+export async function scheduleSensorData(
   deviceName: string,
-  delayMinutes: number
-): ScheduledJob {
+  runAt: Date
+): Promise<ScheduledJob> {
   const id = nextJobId()
   const scheduledAt = new Date()
-  const runAt = new Date(scheduledAt.getTime() + delayMinutes * 60 * 1000)
 
   const job: ScheduledJob = {
     id,
     type: 'sensor_data',
     deviceName,
-    delayMinutes,
     scheduledAt,
     runAt,
     status: 'pending'
   }
 
-  jobs.set(id, job)
-
-  const createPayload: ISchedulerLogCreationModelAttributes = {
+  await persistAndEnqueueJob(job, {
     jobId: id,
     type: 'sensor_data',
-    deviceName,
-    delayMinutes,
-    scheduledAt,
-    runAt,
-    status: 'pending'
-  }
-
-  void SchedulerLogModel.create(createPayload).then(() => {
-    setTimeout(() => runSensorDataJob(job), delayMinutes * 60 * 1000)
+    deviceName
   })
 
   return job
 }
 
 /**
- * Get a scheduled job by id (from memory).
+ * Get a scheduled job by id (from database).
  */
-export function getScheduledJob(jobId: string): ScheduledJob | null {
-  return jobs.get(jobId) ?? null
+export async function getScheduledJob(jobId: string): Promise<ScheduledJob | null> {
+  const row = await SchedulerLogModel.findOne({
+    where: { jobId, deleted: 0 }
+  })
+
+  return row == null ? null : toScheduledJob(row)
 }
 
 /**
  * List recent scheduled jobs (pending, completed, or failed).
  */
-export function listScheduledJobs(limit: number = 20): ScheduledJob[] {
-  const list = Array.from(jobs.values())
-  list.sort((a, b) => b.scheduledAt.getTime() - a.scheduledAt.getTime())
-  return list.slice(0, limit)
+export async function listScheduledJobs(limit: number = 20): Promise<ScheduledJob[]> {
+  const rows = await SchedulerLogModel.findAll({
+    where: { deleted: 0 },
+    order: [['scheduledAt', 'DESC']],
+    limit
+  })
+
+  return rows.map(toScheduledJob)
+}
+
+/**
+ * Re-enqueue pending jobs from DB (e.g. after Redis flush or first deploy).
+ */
+async function recoverPendingJobs(): Promise<void> {
+  const pending = await SchedulerLogModel.findAll({
+    where: {
+      deleted: 0,
+      status: 'pending',
+      runAt: { [Op.gt]: new Date() }
+    }
+  })
+
+  for (const row of pending) {
+    const queueData: DeviceScheduleJobData = {
+      jobId: row.jobId,
+      type: row.type as ScheduledJobType,
+      deviceName: row.deviceName,
+      state: (row.state as 'on' | 'off' | null) ?? undefined
+    }
+
+    await enqueueDeviceScheduleJob(queueData, row.runAt)
+  }
+
+  if (pending.length > 0) {
+    logger.info(`[DeviceScheduleService] Recovered ${pending.length} pending job(s)`)
+  }
+}
+
+/**
+ * Start BullMQ worker and recover pending jobs. Call once at app startup.
+ */
+export async function initializeDeviceSchedule(): Promise<void> {
+  startDeviceScheduleWorker()
+  await recoverPendingJobs()
+  logger.info('[DeviceScheduleService] Initialized')
 }

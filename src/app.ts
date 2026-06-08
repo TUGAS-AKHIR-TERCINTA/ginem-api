@@ -7,12 +7,14 @@ import routers from './routes/index'
 import { MiddleWares } from './middlewares/index'
 import { MQTTService } from './services/mqtt/MQTT.service'
 import { TelemetryService } from './services/mqtt/Telemetry.service'
+import { initializeDeviceSchedule } from './services/mcp/DeviceSchedule.service'
 
 const app: Express = express()
 
 MQTTService.registerMessageHandlers()
 MQTTService.initialize()
 TelemetryService.initialize()
+void initializeDeviceSchedule()
 
 app.use(helmet())
 app.use(MiddleWares.corsOrigin())

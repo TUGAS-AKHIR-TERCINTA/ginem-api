@@ -9,6 +9,16 @@ import {
   listScheduledJobs
 } from '../../DeviceSchedule.service'
 import { MQTTService } from '../../../mqtt/MQTT.service'
+import { parseScheduleDateTime } from '../../../scheduler/deviceSchedule.datetime'
+import { AppError } from '../../../../utilities/AppError'
+
+const scheduleDateTimeSchema = z.object({
+  year: z.number().int().min(2024).max(2100).describe('Year, e.g. 2026'),
+  month: z.number().int().min(1).max(12).describe('Month 1–12'),
+  day: z.number().int().min(1).max(31).describe('Day of month 1–31'),
+  hour: z.number().int().min(0).max(23).describe('Hour 0–23 (24h, WIB)'),
+  minute: z.number().int().min(0).max(59).describe('Minute 0–59')
+})
 
 export const setActuatorStateByDeviceNameTool = tool(
   async ({ deviceName, state }) => {
@@ -75,100 +85,108 @@ export const setActuatorStateByDeviceNameTool = tool(
 )
 
 /**
- * Schedule turning on/off an actuator after a delay (minutes).
- * Use when user says "hidupkan Smart Lamp 1 menit lagi", "matikan AC 5 menit lagi", etc.
+ * Schedule turning on/off an actuator at a specific date and time (WIB).
  */
-export const scheduleActuatorStateAfterMinutesTool = tool(
-  async ({ deviceName, state, delayMinutes }) => {
-    const device = await DeviceService.findByName(deviceName)
+export const scheduleActuatorStateAtDatetimeTool = tool(
+  async ({ deviceName, state, year, month, day, hour, minute }) => {
+    try {
+      const device = await DeviceService.findByName(deviceName)
 
-    if (device == null) {
-      return JSON.stringify({ error: 'Device not found', deviceName })
+      if (device == null) {
+        return JSON.stringify({ error: 'Device not found', deviceName })
+      }
+
+      if (device.deviceType !== 'actuator') {
+        return JSON.stringify({
+          error: 'Device is not an actuator',
+          deviceName,
+          deviceType: device.deviceType,
+          message: 'Only actuators can be scheduled to turn on/off.'
+        })
+      }
+
+      const runAt = parseScheduleDateTime({ year, month, day, hour, minute })
+      const job = await scheduleActuatorState(deviceName, state, runAt)
+
+      return JSON.stringify(
+        {
+          success: true,
+          message: `Scheduled: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" at ${runAt.toISOString()} (WIB)`,
+          jobId: job.id,
+          deviceName: job.deviceName,
+          state: job.state,
+          runAt: job.runAt.toISOString(),
+          schedule: { year, month, day, hour, minute, timezone: 'WIB (UTC+7)' }
+        },
+        null,
+        2
+      )
+    } catch (err) {
+      if (err instanceof AppError) {
+        return JSON.stringify({ error: err.message })
+      }
+      throw err
     }
-
-    if (device.deviceType !== 'actuator') {
-      return JSON.stringify({
-        error: 'Device is not an actuator',
-        deviceName,
-        deviceType: device.deviceType,
-        message: 'Only actuators can be scheduled to turn on/off.'
-      })
-    }
-
-    const job = scheduleActuatorState(deviceName, state, delayMinutes)
-    return JSON.stringify(
-      {
-        success: true,
-        message: `Scheduled: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" in ${delayMinutes} minute(s)`,
-        jobId: job.id,
-        deviceName: job.deviceName,
-        state: job.state,
-        delayMinutes: job.delayMinutes,
-        runAt: job.runAt.toISOString()
-      },
-      null,
-      2
-    )
   },
   {
-    name: 'schedule_actuator_state_after_minutes',
+    name: 'schedule_actuator_state_at',
     description:
-      'Schedule turning ON or OFF an actuator device after a delay in minutes. Use when the user says "hidupkan (device name) 1 menit lagi", "matikan (device name) 5 menit lagi", "turn on Smart Lamp in 1 minute", "tolong hidupin device X di Y menit lagi", etc. Only works for devices with deviceType "actuator".',
-    schema: z.object({
-      deviceName: z
-        .string()
-        .min(1)
-        .describe('The exact device name (must be an actuator)'),
-      state: z.enum(['on', 'off']).describe('on = hidupkan, off = matikan'),
-      delayMinutes: z
-        .number()
-        .int()
-        .min(1)
-        .max(1440)
-        .describe('Delay in minutes (1–1440) before executing')
-    })
+      'Schedule turning ON or OFF an actuator at a specific date and time (WIB / UTC+7). Use when the user says "hidupkan lampu jam 8 malam besok", "matikan AC tanggal 10 Juni 2026 jam 14:30", "turn on Smart Lamp on 2026-06-08 at 20:00", etc. Provide year, month, day, hour (0–23), and minute (0–59).',
+    schema: z
+      .object({
+        deviceName: z
+          .string()
+          .min(1)
+          .describe('The exact device name (must be an actuator)'),
+        state: z.enum(['on', 'off']).describe('on = hidupkan, off = matikan')
+      })
+      .merge(scheduleDateTimeSchema)
   }
 )
 
 /**
- * Schedule fetching sensor/device data after a delay (minutes).
- * Use when user says "kasih data sensor A 5 menit lagi", "tolong kasih data sensor X Y menit lagi", etc.
+ * Schedule fetching sensor/device data at a specific date and time (WIB).
  */
-export const scheduleSensorDataAfterMinutesTool = tool(
-  async ({ deviceName, delayMinutes }) => {
-    const device = await DeviceService.findByName(deviceName)
+export const scheduleSensorDataAtDatetimeTool = tool(
+  async ({ deviceName, year, month, day, hour, minute }) => {
+    try {
+      const device = await DeviceService.findByName(deviceName)
 
-    if (device == null) {
-      return JSON.stringify({ error: 'Device not found', deviceName })
+      if (device == null) {
+        return JSON.stringify({ error: 'Device not found', deviceName })
+      }
+
+      const runAt = parseScheduleDateTime({ year, month, day, hour, minute })
+      const job = await scheduleSensorData(deviceName, runAt)
+
+      return JSON.stringify(
+        {
+          success: true,
+          message: `Scheduled: fetch data for "${deviceName}" at ${runAt.toISOString()} (WIB). Use get_scheduled_job_result with jobId to get the result after it runs.`,
+          jobId: job.id,
+          deviceName: job.deviceName,
+          runAt: job.runAt.toISOString(),
+          schedule: { year, month, day, hour, minute, timezone: 'WIB (UTC+7)' }
+        },
+        null,
+        2
+      )
+    } catch (err) {
+      if (err instanceof AppError) {
+        return JSON.stringify({ error: err.message })
+      }
+      throw err
     }
-
-    const job = scheduleSensorData(deviceName, delayMinutes)
-    return JSON.stringify(
-      {
-        success: true,
-        message: `Scheduled: fetch data for "${deviceName}" in ${delayMinutes} minute(s). Use get_scheduled_job_result with jobId to get the result after it runs.`,
-        jobId: job.id,
-        deviceName: job.deviceName,
-        delayMinutes: job.delayMinutes,
-        runAt: job.runAt.toISOString()
-      },
-      null,
-      2
-    )
   },
   {
-    name: 'schedule_sensor_data_after_minutes',
+    name: 'schedule_sensor_data_at',
     description:
-      'Schedule fetching sensor/device data (last 10 values) after a delay in minutes. Use when the user says "kasih data sensor A 5 menit lagi", "tolong kasih data sensor X Y menit lagi", "give me sensor data in 5 minutes", etc. After the delay, the job runs and stores the result; user can get it with get_scheduled_job_result(jobId).',
-    schema: z.object({
-      deviceName: z.string().min(1).describe('The exact device name to fetch data from'),
-      delayMinutes: z
-        .number()
-        .int()
-        .min(1)
-        .max(1440)
-        .describe('Delay in minutes (1–1440) before fetching data')
-    })
+      'Schedule fetching sensor/device data (last 10 values) at a specific date and time (WIB / UTC+7). Use when the user says "kasih data sensor A besok jam 9 pagi", "tolong kasih data sensor X tanggal 10 Juni jam 14:00", etc. After the scheduled time, use get_scheduled_job_result(jobId) to retrieve the data.',
+    schema: z
+      .object({
+        deviceName: z.string().min(1).describe('The exact device name to fetch data from')
+      })
+      .merge(scheduleDateTimeSchema)
   }
 )
 
@@ -177,7 +195,7 @@ export const scheduleSensorDataAfterMinutesTool = tool(
  */
 export const getScheduledJobResultTool = tool(
   async ({ jobId }) => {
-    const job = getScheduledJob(jobId)
+    const job = await getScheduledJob(jobId)
 
     if (job == null) {
       return JSON.stringify({ error: 'Scheduled job not found', jobId })
@@ -189,7 +207,6 @@ export const getScheduledJobResultTool = tool(
         type: job.type,
         deviceName: job.deviceName,
         state: job.state,
-        delayMinutes: job.delayMinutes,
         scheduledAt: job.scheduledAt.toISOString(),
         runAt: job.runAt.toISOString(),
         status: job.status,
@@ -203,7 +220,7 @@ export const getScheduledJobResultTool = tool(
   {
     name: 'get_scheduled_job_result',
     description:
-      'Get the status and result of a scheduled job by its jobId. Use when the user asks for the result of a scheduled task, or "apa hasil job X", or after waiting for a scheduled sensor data job to complete (e.g. after "kasih data sensor A 5 menit lagi" — wait 5 minutes then call this with the jobId to get the data).',
+      'Get the status and result of a scheduled job by its jobId. Use when the user asks for the result of a scheduled task, or "apa hasil job X", or after a scheduled sensor data job has run.',
     schema: z.object({
       jobId: z.string().min(1).describe('The job ID returned when the task was scheduled')
     })
@@ -215,7 +232,7 @@ export const getScheduledJobResultTool = tool(
  */
 export const listScheduledJobsTool = tool(
   async ({ limit }) => {
-    const list = listScheduledJobs(limit ?? 20)
+    const list = await listScheduledJobs(limit ?? 20)
     return JSON.stringify(
       {
         count: list.length,
@@ -224,7 +241,6 @@ export const listScheduledJobsTool = tool(
           type: j.type,
           deviceName: j.deviceName,
           state: j.state,
-          delayMinutes: j.delayMinutes,
           scheduledAt: j.scheduledAt.toISOString(),
           runAt: j.runAt.toISOString(),
           status: j.status,

@@ -5,8 +5,8 @@ export {
   getLast10LogsByDeviceNameTool,
   createDeviceLogByDeviceNameTool,
   setActuatorStateByDeviceNameTool,
-  scheduleActuatorStateAfterMinutesTool,
-  scheduleSensorDataAfterMinutesTool,
+  scheduleActuatorStateAtDatetimeTool,
+  scheduleSensorDataAtDatetimeTool,
   getScheduledJobResultTool,
   listScheduledJobsTool,
   deviceTools
