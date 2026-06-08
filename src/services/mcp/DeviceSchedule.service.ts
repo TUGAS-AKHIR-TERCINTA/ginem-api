@@ -1,4 +1,3 @@
-import { Op } from 'sequelize'
 import {
   SchedulerLogModel,
   ISchedulerLogCreationModelAttributes,
@@ -153,16 +152,17 @@ export async function listScheduledJobs(limit: number = 20): Promise<ScheduledJo
 }
 
 /**
- * Re-enqueue pending jobs from DB (e.g. after Redis flush or first deploy).
+ * Re-enqueue pending jobs from DB (e.g. after Redis flush, restart, or missed run time).
  */
 async function recoverPendingJobs(): Promise<void> {
   const pending = await SchedulerLogModel.findAll({
     where: {
       deleted: 0,
-      status: 'pending',
-      runAt: { [Op.gt]: new Date() }
+      status: 'pending'
     }
   })
+
+  const now = Date.now()
 
   for (const row of pending) {
     const queueData: DeviceScheduleJobData = {
@@ -172,7 +172,8 @@ async function recoverPendingJobs(): Promise<void> {
       state: (row.state as 'on' | 'off' | null) ?? undefined
     }
 
-    await enqueueDeviceScheduleJob(queueData, row.runAt)
+    const runAt = row.runAt.getTime() <= now ? new Date() : row.runAt
+    await enqueueDeviceScheduleJob(queueData, runAt)
   }
 
   if (pending.length > 0) {

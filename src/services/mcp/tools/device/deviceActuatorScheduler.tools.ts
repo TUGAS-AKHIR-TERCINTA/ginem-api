@@ -9,16 +9,73 @@ import {
   listScheduledJobs
 } from '../../DeviceSchedule.service'
 import { MQTTService } from '../../../mqtt/MQTT.service'
-import { parseScheduleDateTime } from '../../../scheduler/deviceSchedule.datetime'
+import {
+  formatScheduleWib,
+  resolveScheduleDateTime
+} from '../../../scheduler/deviceSchedule.datetime'
 import { AppError } from '../../../../utilities/AppError'
 
 const scheduleDateTimeSchema = z.object({
-  year: z.number().int().min(2024).max(2100).describe('Year, e.g. 2026'),
-  month: z.number().int().min(1).max(12).describe('Month 1–12'),
-  day: z.number().int().min(1).max(31).describe('Day of month 1–31'),
-  hour: z.number().int().min(0).max(23).describe('Hour 0–23 (24h, WIB)'),
-  minute: z.number().int().min(0).max(59).describe('Minute 0–59')
+  hour: z
+    .number()
+    .int()
+    .min(0)
+    .max(23)
+    .describe('Hour 0–23 (24h, WIB). Required. e.g. "jam 10:11" → hour=10'),
+  minute: z
+    .number()
+    .int()
+    .min(0)
+    .max(59)
+    .describe('Minute 0–59. Required. e.g. "jam 10:11" → minute=11'),
+  date: z
+    .string()
+    .optional()
+    .describe(
+      'Optional specific date DD-MM-YYYY (e.g. "09-06-2026") or YYYY-MM-DD. Omit when user only says a time (defaults to today WIB).'
+    ),
+  year: z
+    .number()
+    .int()
+    .min(2024)
+    .max(2100)
+    .optional()
+    .describe(
+      'Optional year. Omit for today. Use with month+day if not using date string.'
+    ),
+  month: z
+    .number()
+    .int()
+    .min(1)
+    .max(12)
+    .optional()
+    .describe('Optional month 1–12. Omit for today.'),
+  day: z
+    .number()
+    .int()
+    .min(1)
+    .max(31)
+    .optional()
+    .describe('Optional day 1–31. Omit for today.')
 })
+
+function buildScheduleResponse(parts: {
+  year: number
+  month: number
+  day: number
+  hour: number
+  minute: number
+  timeOnly: boolean
+}) {
+  return {
+    ...parts,
+    timezone: 'WIB (UTC+7)',
+    label: formatScheduleWib(parts),
+    inferredDate: parts.timeOnly
+      ? 'today (or tomorrow if time already passed)'
+      : 'explicit'
+  }
+}
 
 export const setActuatorStateByDeviceNameTool = tool(
   async ({ deviceName, state }) => {
@@ -88,7 +145,7 @@ export const setActuatorStateByDeviceNameTool = tool(
  * Schedule turning on/off an actuator at a specific date and time (WIB).
  */
 export const scheduleActuatorStateAtDatetimeTool = tool(
-  async ({ deviceName, state, year, month, day, hour, minute }) => {
+  async ({ deviceName, state, hour, minute, date, year, month, day }) => {
     try {
       const device = await DeviceService.findByName(deviceName)
 
@@ -105,18 +162,18 @@ export const scheduleActuatorStateAtDatetimeTool = tool(
         })
       }
 
-      const runAt = parseScheduleDateTime({ year, month, day, hour, minute })
-      const job = await scheduleActuatorState(deviceName, state, runAt)
+      const resolved = resolveScheduleDateTime({ hour, minute, date, year, month, day })
+      const job = await scheduleActuatorState(deviceName, state, resolved.runAt)
 
       return JSON.stringify(
         {
           success: true,
-          message: `Scheduled: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" at ${runAt.toISOString()} (WIB)`,
+          message: `Scheduled: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" at ${formatScheduleWib(resolved)}`,
           jobId: job.id,
           deviceName: job.deviceName,
           state: job.state,
           runAt: job.runAt.toISOString(),
-          schedule: { year, month, day, hour, minute, timezone: 'WIB (UTC+7)' }
+          schedule: buildScheduleResponse(resolved)
         },
         null,
         2
@@ -131,7 +188,7 @@ export const scheduleActuatorStateAtDatetimeTool = tool(
   {
     name: 'schedule_actuator_state_at',
     description:
-      'Schedule turning ON or OFF an actuator at a specific date and time (WIB / UTC+7). Use when the user says "hidupkan lampu jam 8 malam besok", "matikan AC tanggal 10 Juni 2026 jam 14:30", "turn on Smart Lamp on 2026-06-08 at 20:00", etc. Provide year, month, day, hour (0–23), and minute (0–59).',
+      'Schedule turning ON or OFF an actuator at a time (WIB). TWO modes: (1) TIME ONLY — user says "hidupkan lampu depan di jam 10:11 WIB" → set hour=10, minute=11, leave date/year/month/day empty (schedules TODAY at 10:11 WIB; if that time already passed, schedules TOMORROW). (2) SPECIFIC DATE — user says "hidupkan lampu depan di 09-06-2026 jam 10:11" → set date="09-06-2026", hour=10, minute=11. Also works for "besok jam 8" (compute tomorrow date), "10 Juni 2026 jam 14:30", etc.',
     schema: z
       .object({
         deviceName: z
@@ -148,7 +205,7 @@ export const scheduleActuatorStateAtDatetimeTool = tool(
  * Schedule fetching sensor/device data at a specific date and time (WIB).
  */
 export const scheduleSensorDataAtDatetimeTool = tool(
-  async ({ deviceName, year, month, day, hour, minute }) => {
+  async ({ deviceName, hour, minute, date, year, month, day }) => {
     try {
       const device = await DeviceService.findByName(deviceName)
 
@@ -156,17 +213,17 @@ export const scheduleSensorDataAtDatetimeTool = tool(
         return JSON.stringify({ error: 'Device not found', deviceName })
       }
 
-      const runAt = parseScheduleDateTime({ year, month, day, hour, minute })
-      const job = await scheduleSensorData(deviceName, runAt)
+      const resolved = resolveScheduleDateTime({ hour, minute, date, year, month, day })
+      const job = await scheduleSensorData(deviceName, resolved.runAt)
 
       return JSON.stringify(
         {
           success: true,
-          message: `Scheduled: fetch data for "${deviceName}" at ${runAt.toISOString()} (WIB). Use get_scheduled_job_result with jobId to get the result after it runs.`,
+          message: `Scheduled: fetch data for "${deviceName}" at ${formatScheduleWib(resolved)}. Use get_scheduled_job_result with jobId after it runs.`,
           jobId: job.id,
           deviceName: job.deviceName,
           runAt: job.runAt.toISOString(),
-          schedule: { year, month, day, hour, minute, timezone: 'WIB (UTC+7)' }
+          schedule: buildScheduleResponse(resolved)
         },
         null,
         2
@@ -181,7 +238,7 @@ export const scheduleSensorDataAtDatetimeTool = tool(
   {
     name: 'schedule_sensor_data_at',
     description:
-      'Schedule fetching sensor/device data (last 10 values) at a specific date and time (WIB / UTC+7). Use when the user says "kasih data sensor A besok jam 9 pagi", "tolong kasih data sensor X tanggal 10 Juni jam 14:00", etc. After the scheduled time, use get_scheduled_job_result(jobId) to retrieve the data.',
+      'Schedule fetching sensor/device data (last 10 values) at a time (WIB). TIME ONLY: "kasih data sensor jam 9:00" → hour=9, minute=0, no date (today WIB). SPECIFIC DATE: "kasih data sensor 09-06-2026 jam 10:11" → date="09-06-2026", hour=10, minute=11. After the scheduled time, use get_scheduled_job_result(jobId).',
     schema: z
       .object({
         deviceName: z.string().min(1).describe('The exact device name to fetch data from')

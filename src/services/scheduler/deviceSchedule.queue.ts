@@ -32,8 +32,20 @@ export async function enqueueDeviceScheduleJob(
 
   const existing = await q.getJob(data.jobId)
   if (existing != null) {
-    logger.warn(`[DeviceScheduleQueue] Job ${data.jobId} already enqueued, skipping`)
-    return
+    const state = await existing.getState()
+    const isOverdue = delayMs === 0 && (state === 'delayed' || state === 'waiting')
+
+    if (isOverdue) {
+      await existing.remove()
+      logger.warn(
+        `[DeviceScheduleQueue] Removed overdue job ${data.jobId} (was ${state}), re-enqueueing`
+      )
+    } else {
+      logger.warn(
+        `[DeviceScheduleQueue] Job ${data.jobId} already enqueued (${state}), skipping`
+      )
+      return
+    }
   }
 
   await q.add(data.type, data, {
