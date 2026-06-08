@@ -2,16 +2,22 @@ import { DataTypes, Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
 import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
 
+export type SchedulerCategory = 'once' | 'repeat'
+export type SchedulerLogStatus = 'pending' | 'active' | 'completed' | 'failed'
+
 export interface ISchedulerLogModelAttributes extends IBaseModelFields {
   schedulerLogId: number
   jobId: string
   type: string
+  category: SchedulerCategory
   deviceName: string
   state?: string | null
   delayMinutes: number
   scheduledAt: Date
   runAt: Date
-  status: string
+  cronPattern?: string | null
+  timezone: string
+  status: SchedulerLogStatus
   result?: object | null
   error?: string | null
   executedAt?: Date | null
@@ -43,6 +49,11 @@ export const SchedulerLogModel = sequelizeInit.define<SchedulerLogInstance>(
       type: DataTypes.STRING(30),
       allowNull: false
     },
+    category: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      defaultValue: 'once'
+    },
     deviceName: {
       type: DataTypes.STRING(100),
       allowNull: false
@@ -62,6 +73,15 @@ export const SchedulerLogModel = sequelizeInit.define<SchedulerLogInstance>(
     runAt: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    cronPattern: {
+      type: DataTypes.STRING(50),
+      allowNull: true
+    },
+    timezone: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      defaultValue: 'Asia/Jakarta'
     },
     status: {
       type: DataTypes.STRING(20),

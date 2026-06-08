@@ -1,26 +1,37 @@
 import {
   SchedulerLogModel,
   ISchedulerLogCreationModelAttributes,
+  type SchedulerCategory,
   type SchedulerLogInstance
 } from '../../models/SchedulerLogModel'
 import logger from '../../utilities/logger'
 import {
   enqueueDeviceScheduleJob,
+  enqueueRepeatDeviceScheduleJob,
+  listRepeatableDeviceScheduleJobs,
   type DeviceScheduleJobData
 } from '../scheduler/deviceSchedule.queue'
-import { minutesUntilRun } from '../scheduler/deviceSchedule.datetime'
+import {
+  buildDailyCronPattern,
+  minutesUntilRun,
+  resolveNextDailyRun,
+  WIB_SCHEDULE_TIMEZONE
+} from '../scheduler/deviceSchedule.datetime'
 import { startDeviceScheduleWorker } from '../scheduler/deviceSchedule.worker'
 
 export type ScheduledJobType = 'actuator' | 'sensor_data'
-export type ScheduledJobStatus = 'pending' | 'completed' | 'failed'
+export type ScheduledJobStatus = 'pending' | 'active' | 'completed' | 'failed'
 
 export interface ScheduledJob {
   id: string
   type: ScheduledJobType
+  category: SchedulerCategory
   deviceName: string
   state?: 'on' | 'off'
   scheduledAt: Date
   runAt: Date
+  cronPattern?: string
+  timezone: string
   status: ScheduledJobStatus
   result?: unknown
   error?: string
@@ -37,17 +48,20 @@ function toScheduledJob(row: SchedulerLogInstance): ScheduledJob {
   return {
     id: row.jobId,
     type: row.type as ScheduledJobType,
+    category: row.category,
     deviceName: row.deviceName,
     state: (row.state as 'on' | 'off' | null) ?? undefined,
     scheduledAt: row.scheduledAt,
     runAt: row.runAt,
+    cronPattern: row.cronPattern ?? undefined,
+    timezone: row.timezone,
     status: row.status as ScheduledJobStatus,
     result: row.result ?? undefined,
     error: row.error ?? undefined
   }
 }
 
-async function persistAndEnqueueJob(
+async function persistOnceJob(
   job: ScheduledJob,
   queueData: DeviceScheduleJobData
 ): Promise<void> {
@@ -56,11 +70,14 @@ async function persistAndEnqueueJob(
   const createPayload: ISchedulerLogCreationModelAttributes = {
     jobId: job.id,
     type: job.type,
+    category: 'once',
     deviceName: job.deviceName,
     state: job.state ?? null,
     delayMinutes,
     scheduledAt: job.scheduledAt,
     runAt: job.runAt,
+    cronPattern: null,
+    timezone: WIB_SCHEDULE_TIMEZONE,
     status: 'pending'
   }
 
@@ -68,13 +85,38 @@ async function persistAndEnqueueJob(
   await enqueueDeviceScheduleJob(queueData, job.runAt)
 }
 
+async function persistRepeatJob(
+  job: ScheduledJob,
+  queueData: DeviceScheduleJobData,
+  cronPattern: string
+): Promise<void> {
+  const createPayload: ISchedulerLogCreationModelAttributes = {
+    jobId: job.id,
+    type: job.type,
+    category: 'repeat',
+    deviceName: job.deviceName,
+    state: job.state ?? null,
+    delayMinutes: 0,
+    scheduledAt: job.scheduledAt,
+    runAt: job.runAt,
+    cronPattern,
+    timezone: WIB_SCHEDULE_TIMEZONE,
+    status: 'active'
+  }
+
+  await SchedulerLogModel.create(createPayload)
+  await enqueueRepeatDeviceScheduleJob(queueData, cronPattern, WIB_SCHEDULE_TIMEZONE)
+}
+
 /**
- * Schedule turning on/off an actuator at an absolute datetime (WIB).
+ * Schedule turning on/off an actuator (once or daily repeat).
  */
 export async function scheduleActuatorState(
   deviceName: string,
   state: 'on' | 'off',
-  runAt: Date
+  category: SchedulerCategory,
+  runAt: Date,
+  cronPattern?: string
 ): Promise<ScheduledJob> {
   const id = nextJobId()
   const scheduledAt = new Date()
@@ -82,29 +124,58 @@ export async function scheduleActuatorState(
   const job: ScheduledJob = {
     id,
     type: 'actuator',
+    category,
     deviceName,
     state,
     scheduledAt,
     runAt,
-    status: 'pending'
+    cronPattern,
+    timezone: WIB_SCHEDULE_TIMEZONE,
+    status: category === 'repeat' ? 'active' : 'pending'
   }
 
-  await persistAndEnqueueJob(job, {
+  const queueData: DeviceScheduleJobData = {
     jobId: id,
     type: 'actuator',
+    category,
     deviceName,
     state
-  })
+  }
+
+  if (category === 'repeat') {
+    if (cronPattern == null) {
+      throw new Error('cronPattern is required for repeat schedules')
+    }
+    await persistRepeatJob(job, queueData, cronPattern)
+  } else {
+    await persistOnceJob(job, queueData)
+  }
 
   return job
 }
 
 /**
- * Schedule fetching sensor/device data at an absolute datetime (WIB).
+ * Schedule daily repeat for actuator on/off at hour:minute WIB.
+ */
+export async function scheduleActuatorStateRepeat(
+  deviceName: string,
+  state: 'on' | 'off',
+  hour: number,
+  minute: number
+): Promise<ScheduledJob> {
+  const next = resolveNextDailyRun(hour, minute)
+  const cronPattern = buildDailyCronPattern(hour, minute)
+  return scheduleActuatorState(deviceName, state, 'repeat', next.runAt, cronPattern)
+}
+
+/**
+ * Schedule fetching sensor/device data (once or daily repeat).
  */
 export async function scheduleSensorData(
   deviceName: string,
-  runAt: Date
+  category: SchedulerCategory,
+  runAt: Date,
+  cronPattern?: string
 ): Promise<ScheduledJob> {
   const id = nextJobId()
   const scheduledAt = new Date()
@@ -112,24 +183,47 @@ export async function scheduleSensorData(
   const job: ScheduledJob = {
     id,
     type: 'sensor_data',
+    category,
     deviceName,
     scheduledAt,
     runAt,
-    status: 'pending'
+    cronPattern,
+    timezone: WIB_SCHEDULE_TIMEZONE,
+    status: category === 'repeat' ? 'active' : 'pending'
   }
 
-  await persistAndEnqueueJob(job, {
+  const queueData: DeviceScheduleJobData = {
     jobId: id,
     type: 'sensor_data',
+    category,
     deviceName
-  })
+  }
+
+  if (category === 'repeat') {
+    if (cronPattern == null) {
+      throw new Error('cronPattern is required for repeat schedules')
+    }
+    await persistRepeatJob(job, queueData, cronPattern)
+  } else {
+    await persistOnceJob(job, queueData)
+  }
 
   return job
 }
 
 /**
- * Get a scheduled job by id (from database).
+ * Schedule daily repeat for sensor data at hour:minute WIB.
  */
+export async function scheduleSensorDataRepeat(
+  deviceName: string,
+  hour: number,
+  minute: number
+): Promise<ScheduledJob> {
+  const next = resolveNextDailyRun(hour, minute)
+  const cronPattern = buildDailyCronPattern(hour, minute)
+  return scheduleSensorData(deviceName, 'repeat', next.runAt, cronPattern)
+}
+
 export async function getScheduledJob(jobId: string): Promise<ScheduledJob | null> {
   const row = await SchedulerLogModel.findOne({
     where: { jobId, deleted: 0 }
@@ -138,9 +232,6 @@ export async function getScheduledJob(jobId: string): Promise<ScheduledJob | nul
   return row == null ? null : toScheduledJob(row)
 }
 
-/**
- * List recent scheduled jobs (pending, completed, or failed).
- */
 export async function listScheduledJobs(limit: number = 20): Promise<ScheduledJob[]> {
   const rows = await SchedulerLogModel.findAll({
     where: { deleted: 0 },
@@ -151,13 +242,11 @@ export async function listScheduledJobs(limit: number = 20): Promise<ScheduledJo
   return rows.map(toScheduledJob)
 }
 
-/**
- * Re-enqueue pending jobs from DB (e.g. after Redis flush, restart, or missed run time).
- */
-async function recoverPendingJobs(): Promise<void> {
+async function recoverPendingOnceJobs(): Promise<void> {
   const pending = await SchedulerLogModel.findAll({
     where: {
       deleted: 0,
+      category: 'once',
       status: 'pending'
     }
   })
@@ -168,6 +257,7 @@ async function recoverPendingJobs(): Promise<void> {
     const queueData: DeviceScheduleJobData = {
       jobId: row.jobId,
       type: row.type as ScheduledJobType,
+      category: 'once',
       deviceName: row.deviceName,
       state: (row.state as 'on' | 'off' | null) ?? undefined
     }
@@ -177,15 +267,55 @@ async function recoverPendingJobs(): Promise<void> {
   }
 
   if (pending.length > 0) {
-    logger.info(`[DeviceScheduleService] Recovered ${pending.length} pending job(s)`)
+    logger.info(`[DeviceScheduleService] Recovered ${pending.length} once job(s)`)
   }
 }
 
-/**
- * Start BullMQ worker and recover pending jobs. Call once at app startup.
- */
+async function recoverActiveRepeatJobs(): Promise<void> {
+  const activeRepeats = await SchedulerLogModel.findAll({
+    where: {
+      deleted: 0,
+      category: 'repeat',
+      status: 'active'
+    }
+  })
+
+  if (activeRepeats.length === 0) {
+    return
+  }
+
+  const repeatables = await listRepeatableDeviceScheduleJobs()
+
+  for (const row of activeRepeats) {
+    const alreadyRegistered = repeatables.some(
+      (entry) => entry.id === row.jobId || entry.key.includes(row.jobId)
+    )
+
+    if (alreadyRegistered || row.cronPattern == null) {
+      continue
+    }
+
+    const queueData: DeviceScheduleJobData = {
+      jobId: row.jobId,
+      type: row.type as ScheduledJobType,
+      category: 'repeat',
+      deviceName: row.deviceName,
+      state: (row.state as 'on' | 'off' | null) ?? undefined
+    }
+
+    await enqueueRepeatDeviceScheduleJob(
+      queueData,
+      row.cronPattern,
+      row.timezone ?? WIB_SCHEDULE_TIMEZONE
+    )
+  }
+
+  logger.info(`[DeviceScheduleService] Recovered repeat job(s) from DB`)
+}
+
 export async function initializeDeviceSchedule(): Promise<void> {
   startDeviceScheduleWorker()
-  await recoverPendingJobs()
+  await recoverPendingOnceJobs()
+  await recoverActiveRepeatJobs()
   logger.info('[DeviceScheduleService] Initialized')
 }

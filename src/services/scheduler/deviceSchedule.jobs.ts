@@ -1,22 +1,25 @@
 import { DeviceService } from '../Device.service'
-import { SchedulerLogModel } from '../../models/SchedulerLogModel'
+import { SchedulerLogModel, type SchedulerCategory } from '../../models/SchedulerLogModel'
 import logger from '../../utilities/logger'
 import { DeviceLogService } from '../DeviceLog.service'
 import { MQTTService } from '../mqtt/MQTT.service'
 import type { DeviceScheduleJobData } from './deviceSchedule.queue'
 
-export type ScheduledJobStatus = 'pending' | 'completed' | 'failed'
+export type ScheduledJobStatus = 'pending' | 'active' | 'completed' | 'failed'
 
 async function recordSchedulerResult(
   jobId: string,
   status: ScheduledJobStatus,
+  category: SchedulerCategory,
   result?: unknown,
   error?: string
 ): Promise<void> {
+  const finalStatus = category === 'repeat' && status === 'completed' ? 'active' : status
+
   try {
     await SchedulerLogModel.update(
       {
-        status,
+        status: finalStatus,
         result: result != null ? (result as object) : null,
         error: error ?? null,
         executedAt: new Date()
@@ -32,14 +35,14 @@ async function recordSchedulerResult(
 }
 
 export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<void> {
-  const { jobId, deviceName, state } = data
+  const { jobId, deviceName, state, category } = data
 
   try {
     const device = await DeviceService.findByName(deviceName)
 
     if (device.deviceType !== 'actuator') {
       const error = `Device "${deviceName}" is not an actuator (type: ${device.deviceType})`
-      await recordSchedulerResult(jobId, 'failed', undefined, error)
+      await recordSchedulerResult(jobId, 'failed', category, undefined, error)
       return
     }
 
@@ -54,6 +57,7 @@ export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<v
 
     const result = {
       success: true,
+      category,
       message:
         state === 'on' ? 'Device turned on (value 1)' : 'Device turned off (value 0)',
       deviceName,
@@ -68,27 +72,28 @@ export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<v
       }
     }
 
-    await recordSchedulerResult(jobId, 'completed', result)
+    await recordSchedulerResult(jobId, 'completed', category, result)
 
     logger.info(
-      `[DeviceScheduleJobs] Actuator job ${jobId} executed: ${deviceName} -> ${state}`
+      `[DeviceScheduleJobs] Actuator job ${jobId} (${category}) executed: ${deviceName} -> ${state}`
     )
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err)
-    await recordSchedulerResult(jobId, 'failed', undefined, error)
+    await recordSchedulerResult(jobId, 'failed', category, undefined, error)
     logger.error(`[DeviceScheduleJobs] Actuator job ${jobId} failed:`, err)
     throw err
   }
 }
 
 export async function executeSensorDataJob(data: DeviceScheduleJobData): Promise<void> {
-  const { jobId, deviceName } = data
+  const { jobId, deviceName, category } = data
 
   try {
     const device = await DeviceService.findByName(deviceName)
     const items = await DeviceLogService.findLastLogsByDeviceId(device.deviceId, 10)
 
     const result = {
+      category,
       deviceName,
       deviceId: device.deviceId,
       count: items.length,
@@ -100,12 +105,14 @@ export async function executeSensorDataJob(data: DeviceScheduleJobData): Promise
       executedAt: new Date().toISOString()
     }
 
-    await recordSchedulerResult(jobId, 'completed', result)
+    await recordSchedulerResult(jobId, 'completed', category, result)
 
-    logger.info(`[DeviceScheduleJobs] Sensor data job ${jobId} executed: ${deviceName}`)
+    logger.info(
+      `[DeviceScheduleJobs] Sensor data job ${jobId} (${category}) executed: ${deviceName}`
+    )
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err)
-    await recordSchedulerResult(jobId, 'failed', undefined, error)
+    await recordSchedulerResult(jobId, 'failed', category, undefined, error)
     logger.error(`[DeviceScheduleJobs] Sensor data job ${jobId} failed:`, err)
     throw err
   }

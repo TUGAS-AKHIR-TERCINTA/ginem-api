@@ -4,16 +4,29 @@ import { DeviceService } from '../../../Device.service'
 import { DeviceLogService } from '../../../DeviceLog.service'
 import {
   scheduleActuatorState,
+  scheduleActuatorStateRepeat,
   scheduleSensorData,
+  scheduleSensorDataRepeat,
   getScheduledJob,
   listScheduledJobs
 } from '../../DeviceSchedule.service'
 import { MQTTService } from '../../../mqtt/MQTT.service'
 import {
+  buildDailyCronPattern,
+  formatRepeatScheduleWib,
   formatScheduleWib,
+  resolveNextDailyRun,
   resolveScheduleDateTime
 } from '../../../scheduler/deviceSchedule.datetime'
 import { AppError } from '../../../../utilities/AppError'
+
+const scheduleCategorySchema = z.object({
+  category: z
+    .enum(['once', 'repeat'])
+    .describe(
+      'once = run ONE time only (e.g. "hidupkan lampu jam 18:00" today, or "20-06-2026 jam 18:00"). repeat = EVERY DAY at hour:minute WIB (e.g. "setiap hari jam 18:00", "setiap jam 06:00 matikan").'
+    )
+})
 
 const scheduleDateTimeSchema = z.object({
   hour: z
@@ -32,34 +45,14 @@ const scheduleDateTimeSchema = z.object({
     .string()
     .optional()
     .describe(
-      'Optional specific date DD-MM-YYYY (e.g. "09-06-2026") or YYYY-MM-DD. Omit when user only says a time (defaults to today WIB).'
+      'For category=once only. Specific date DD-MM-YYYY (e.g. "20-06-2026") or YYYY-MM-DD. Omit for time-only (defaults to today WIB).'
     ),
-  year: z
-    .number()
-    .int()
-    .min(2024)
-    .max(2100)
-    .optional()
-    .describe(
-      'Optional year. Omit for today. Use with month+day if not using date string.'
-    ),
-  month: z
-    .number()
-    .int()
-    .min(1)
-    .max(12)
-    .optional()
-    .describe('Optional month 1–12. Omit for today.'),
-  day: z
-    .number()
-    .int()
-    .min(1)
-    .max(31)
-    .optional()
-    .describe('Optional day 1–31. Omit for today.')
+  year: z.number().int().min(2024).max(2100).optional(),
+  month: z.number().int().min(1).max(12).optional(),
+  day: z.number().int().min(1).max(31).optional()
 })
 
-function buildScheduleResponse(parts: {
+function buildOnceScheduleResponse(parts: {
   year: number
   month: number
   day: number
@@ -68,12 +61,27 @@ function buildScheduleResponse(parts: {
   timeOnly: boolean
 }) {
   return {
+    category: 'once' as const,
     ...parts,
     timezone: 'WIB (UTC+7)',
     label: formatScheduleWib(parts),
     inferredDate: parts.timeOnly
       ? 'today (or tomorrow if time already passed)'
       : 'explicit'
+  }
+}
+
+function buildRepeatScheduleResponse(hour: number, minute: number) {
+  const next = resolveNextDailyRun(hour, minute)
+  return {
+    category: 'repeat' as const,
+    hour,
+    minute,
+    cronPattern: buildDailyCronPattern(hour, minute),
+    timezone: 'WIB (UTC+7)',
+    label: formatRepeatScheduleWib(hour, minute),
+    nextRunAt: next.runAt.toISOString(),
+    nextRunLabel: formatScheduleWib(next)
   }
 }
 
@@ -128,24 +136,19 @@ export const setActuatorStateByDeviceNameTool = tool(
   {
     name: 'set_actuator_state_by_device_name',
     description:
-      'Turn ON or OFF an actuator device by its name. First checks that the device exists and has deviceType "actuator". "Hidupkan" / turn on / nyalakan → creates device value with value "1". "Matikan" / turn off / padamkan → creates device value with value "0". Use this when the user says hidupkan (device name), matikan (device name), turn on, turn off, nyalakan, padamkan, or similar instructions to control an actuator.',
+      'Turn ON or OFF an actuator device immediately by its name. Use for instant control without scheduling.',
     schema: z.object({
       deviceName: z
         .string()
         .min(1)
         .describe('The exact device name (must be an actuator)'),
-      state: z
-        .enum(['on', 'off'])
-        .describe('on = hidupkan / value 1, off = matikan / value 0')
+      state: z.enum(['on', 'off']).describe('on = hidupkan, off = matikan')
     })
   }
 )
 
-/**
- * Schedule turning on/off an actuator at a specific date and time (WIB).
- */
 export const scheduleActuatorStateAtDatetimeTool = tool(
-  async ({ deviceName, state, hour, minute, date, year, month, day }) => {
+  async ({ deviceName, state, category, hour, minute, date, year, month, day }) => {
     try {
       const device = await DeviceService.findByName(deviceName)
 
@@ -162,18 +165,46 @@ export const scheduleActuatorStateAtDatetimeTool = tool(
         })
       }
 
+      if (category === 'repeat') {
+        if (date != null || year != null || month != null || day != null) {
+          return JSON.stringify({
+            error: 'Repeat schedule uses daily time only. Omit date/year/month/day.'
+          })
+        }
+
+        const job = await scheduleActuatorStateRepeat(deviceName, state, hour, minute)
+        const schedule = buildRepeatScheduleResponse(hour, minute)
+
+        return JSON.stringify(
+          {
+            success: true,
+            message: `Scheduled daily: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" ${schedule.label}`,
+            jobId: job.id,
+            deviceName: job.deviceName,
+            state: job.state,
+            category: job.category,
+            status: job.status,
+            schedule
+          },
+          null,
+          2
+        )
+      }
+
       const resolved = resolveScheduleDateTime({ hour, minute, date, year, month, day })
-      const job = await scheduleActuatorState(deviceName, state, resolved.runAt)
+      const job = await scheduleActuatorState(deviceName, state, 'once', resolved.runAt)
 
       return JSON.stringify(
         {
           success: true,
-          message: `Scheduled: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" at ${formatScheduleWib(resolved)}`,
+          message: `Scheduled once: ${state === 'on' ? 'Turn on' : 'Turn off'} "${deviceName}" at ${formatScheduleWib(resolved)}`,
           jobId: job.id,
           deviceName: job.deviceName,
           state: job.state,
+          category: job.category,
+          status: job.status,
           runAt: job.runAt.toISOString(),
-          schedule: buildScheduleResponse(resolved)
+          schedule: buildOnceScheduleResponse(resolved)
         },
         null,
         2
@@ -188,7 +219,7 @@ export const scheduleActuatorStateAtDatetimeTool = tool(
   {
     name: 'schedule_actuator_state_at',
     description:
-      'Schedule turning ON or OFF an actuator at a time (WIB). TWO modes: (1) TIME ONLY — user says "hidupkan lampu depan di jam 10:11 WIB" → set hour=10, minute=11, leave date/year/month/day empty (schedules TODAY at 10:11 WIB; if that time already passed, schedules TOMORROW). (2) SPECIFIC DATE — user says "hidupkan lampu depan di 09-06-2026 jam 10:11" → set date="09-06-2026", hour=10, minute=11. Also works for "besok jam 8" (compute tomorrow date), "10 Juni 2026 jam 14:30", etc.',
+      'Schedule actuator ON/OFF with category once or repeat (WIB). ONCE examples: "hidupkan lampu depan di jam 18:00 WIB" → category=once, hour=18, minute=0 (no date). "hidupkan lampu depan di 20-06-2026 jam 18:00" → category=once, date="20-06-2026", hour=18, minute=0. REPEAT examples: "hidupkan lampu depan setiap hari jam 18:00 WIB" → category=repeat, hour=18, minute=0. "matikan lampu depan setiap jam 06:00" → category=repeat, hour=6, minute=0. User may request TWO separate jobs for daily on and daily off.',
     schema: z
       .object({
         deviceName: z
@@ -197,15 +228,13 @@ export const scheduleActuatorStateAtDatetimeTool = tool(
           .describe('The exact device name (must be an actuator)'),
         state: z.enum(['on', 'off']).describe('on = hidupkan, off = matikan')
       })
+      .merge(scheduleCategorySchema)
       .merge(scheduleDateTimeSchema)
   }
 )
 
-/**
- * Schedule fetching sensor/device data at a specific date and time (WIB).
- */
 export const scheduleSensorDataAtDatetimeTool = tool(
-  async ({ deviceName, hour, minute, date, year, month, day }) => {
+  async ({ deviceName, category, hour, minute, date, year, month, day }) => {
     try {
       const device = await DeviceService.findByName(deviceName)
 
@@ -213,17 +242,44 @@ export const scheduleSensorDataAtDatetimeTool = tool(
         return JSON.stringify({ error: 'Device not found', deviceName })
       }
 
+      if (category === 'repeat') {
+        if (date != null || year != null || month != null || day != null) {
+          return JSON.stringify({
+            error: 'Repeat schedule uses daily time only. Omit date/year/month/day.'
+          })
+        }
+
+        const job = await scheduleSensorDataRepeat(deviceName, hour, minute)
+        const schedule = buildRepeatScheduleResponse(hour, minute)
+
+        return JSON.stringify(
+          {
+            success: true,
+            message: `Scheduled daily: fetch data for "${deviceName}" ${schedule.label}`,
+            jobId: job.id,
+            deviceName: job.deviceName,
+            category: job.category,
+            status: job.status,
+            schedule
+          },
+          null,
+          2
+        )
+      }
+
       const resolved = resolveScheduleDateTime({ hour, minute, date, year, month, day })
-      const job = await scheduleSensorData(deviceName, resolved.runAt)
+      const job = await scheduleSensorData(deviceName, 'once', resolved.runAt)
 
       return JSON.stringify(
         {
           success: true,
-          message: `Scheduled: fetch data for "${deviceName}" at ${formatScheduleWib(resolved)}. Use get_scheduled_job_result with jobId after it runs.`,
+          message: `Scheduled once: fetch data for "${deviceName}" at ${formatScheduleWib(resolved)}`,
           jobId: job.id,
           deviceName: job.deviceName,
+          category: job.category,
+          status: job.status,
           runAt: job.runAt.toISOString(),
-          schedule: buildScheduleResponse(resolved)
+          schedule: buildOnceScheduleResponse(resolved)
         },
         null,
         2
@@ -238,18 +294,16 @@ export const scheduleSensorDataAtDatetimeTool = tool(
   {
     name: 'schedule_sensor_data_at',
     description:
-      'Schedule fetching sensor/device data (last 10 values) at a time (WIB). TIME ONLY: "kasih data sensor jam 9:00" → hour=9, minute=0, no date (today WIB). SPECIFIC DATE: "kasih data sensor 09-06-2026 jam 10:11" → date="09-06-2026", hour=10, minute=11. After the scheduled time, use get_scheduled_job_result(jobId).',
+      'Schedule sensor data fetch with category once or repeat (WIB). ONCE: specific time or date+time. REPEAT: every day at hour:minute (omit date).',
     schema: z
       .object({
         deviceName: z.string().min(1).describe('The exact device name to fetch data from')
       })
+      .merge(scheduleCategorySchema)
       .merge(scheduleDateTimeSchema)
   }
 )
 
-/**
- * Get the result of a scheduled job by jobId (returned when scheduling).
- */
 export const getScheduledJobResultTool = tool(
   async ({ jobId }) => {
     const job = await getScheduledJob(jobId)
@@ -262,10 +316,13 @@ export const getScheduledJobResultTool = tool(
       {
         jobId: job.id,
         type: job.type,
+        category: job.category,
         deviceName: job.deviceName,
         state: job.state,
         scheduledAt: job.scheduledAt.toISOString(),
         runAt: job.runAt.toISOString(),
+        cronPattern: job.cronPattern,
+        timezone: job.timezone,
         status: job.status,
         result: job.result,
         error: job.error
@@ -277,16 +334,13 @@ export const getScheduledJobResultTool = tool(
   {
     name: 'get_scheduled_job_result',
     description:
-      'Get the status and result of a scheduled job by its jobId. Use when the user asks for the result of a scheduled task, or "apa hasil job X", or after a scheduled sensor data job has run.',
+      'Get status/result of a scheduled job. Repeat jobs stay status=active and result shows last execution.',
     schema: z.object({
       jobId: z.string().min(1).describe('The job ID returned when the task was scheduled')
     })
   }
 )
 
-/**
- * List recent scheduled jobs (pending, completed, or failed).
- */
 export const listScheduledJobsTool = tool(
   async ({ limit }) => {
     const list = await listScheduledJobs(limit ?? 20)
@@ -296,10 +350,13 @@ export const listScheduledJobsTool = tool(
         jobs: list.map((j) => ({
           jobId: j.id,
           type: j.type,
+          category: j.category,
           deviceName: j.deviceName,
           state: j.state,
           scheduledAt: j.scheduledAt.toISOString(),
           runAt: j.runAt.toISOString(),
+          cronPattern: j.cronPattern,
+          timezone: j.timezone,
           status: j.status,
           result: j.result,
           error: j.error
@@ -311,16 +368,9 @@ export const listScheduledJobsTool = tool(
   },
   {
     name: 'list_scheduled_jobs',
-    description:
-      'List recent scheduled jobs (actuator on/off or sensor data). Use when the user asks "apa saja jadwal yang ada", "list scheduled tasks", or to see status of scheduled jobs.',
+    description: 'List recent scheduled jobs (once and repeat).',
     schema: z.object({
-      limit: z
-        .number()
-        .int()
-        .min(1)
-        .max(100)
-        .optional()
-        .describe('Max number of jobs to return (default 20)')
+      limit: z.number().int().min(1).max(100).optional()
     })
   }
 )

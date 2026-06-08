@@ -10,7 +10,7 @@ import logger from '../utilities/logger'
 import { IFindAllSchedulerLog } from '../schemas/SchedulerLogSchema'
 
 export type SchedulerLogType = 'actuator' | 'sensor_data'
-export type SchedulerLogStatus = 'pending' | 'completed' | 'failed'
+export type SchedulerLogStatus = 'pending' | 'active' | 'completed' | 'failed'
 
 export class SchedulerLogService {
   private static buildFindAllWhere(payload: IFindAllSchedulerLog) {
@@ -20,9 +20,13 @@ export class SchedulerLogService {
       where.type = payload.type
     }
 
+    if (payload.category != null && ['once', 'repeat'].includes(payload.category)) {
+      where.category = payload.category
+    }
+
     if (
       payload.status != null &&
-      ['pending', 'completed', 'failed'].includes(payload.status)
+      ['pending', 'active', 'completed', 'failed'].includes(payload.status)
     ) {
       where.status = payload.status
     }

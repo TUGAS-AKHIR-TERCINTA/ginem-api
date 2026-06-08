@@ -221,3 +221,48 @@ export function formatScheduleWib(parts: {
 export function minutesUntilRun(scheduledAt: Date, runAt: Date): number {
   return Math.max(1, Math.round((runAt.getTime() - scheduledAt.getTime()) / 60_000))
 }
+
+/** Daily cron in WIB: runs every day at hour:minute. */
+export function buildDailyCronPattern(hour: number, minute: number): string {
+  validateTimeParts(hour, minute)
+  return `${minute} ${hour} * * *`
+}
+
+/** Next daily occurrence from now in WIB (today or tomorrow). */
+export function resolveNextDailyRun(
+  hour: number,
+  minute: number
+): ResolvedScheduleDateTime {
+  validateTimeParts(hour, minute)
+
+  const today = getWibDateParts()
+  let runYear = today.year
+  let runMonth = today.month
+  let runDay = today.day
+
+  let runAt = buildRunAt(runYear, runMonth, runDay, hour, minute)
+
+  if (runAt.getTime() <= Date.now()) {
+    const tomorrow = addDaysWib(today, 1)
+    runYear = tomorrow.year
+    runMonth = tomorrow.month
+    runDay = tomorrow.day
+    runAt = buildRunAt(runYear, runMonth, runDay, hour, minute)
+  }
+
+  return {
+    runAt,
+    year: runYear,
+    month: runMonth,
+    day: runDay,
+    hour,
+    minute,
+    timeOnly: false
+  }
+}
+
+export function formatRepeatScheduleWib(hour: number, minute: number): string {
+  return `Every day at ${pad2(hour)}:${pad2(minute)} WIB`
+}
+
+export const WIB_SCHEDULE_TIMEZONE = WIB_TIMEZONE

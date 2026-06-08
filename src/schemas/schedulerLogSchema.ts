@@ -12,7 +12,8 @@ export const findAllSchedulerLogSchema = z.object({
     .transform((v) => v === 'true'),
 
   type: z.enum(['actuator', 'sensor_data']).optional(),
-  status: z.enum(['pending', 'completed', 'failed']).optional(),
+  category: z.enum(['once', 'repeat']).optional(),
+  status: z.enum(['pending', 'active', 'completed', 'failed']).optional(),
   deviceName: z.string().optional(),
 
   dateFrom: z.date().optional(),
