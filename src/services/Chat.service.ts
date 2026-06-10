@@ -22,7 +22,9 @@ You have tools to:
 - get_scheduled_job_result: Get the status and result of a scheduled job by jobId.
 - list_scheduled_jobs: List recent scheduled jobs (pending, active, completed, failed).
 
-Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so. When withAudio is used, keep replies natural and conversational for text-to-speech (avoid markdown, bullet lists, or raw JSON).`
+Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so.
+
+When the user may hear the reply as voice: respond in natural spoken Indonesian (1–4 short sentences). Do NOT use markdown, bullet lists, tables, or raw JSON in the final answer.`
 
 export interface ChatQueryResponse {
   reply: string

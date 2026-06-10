@@ -23,7 +23,20 @@ app.use(MiddleWares.loggerMidleWare())
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 app.use(bodyParser.json({ limit: '10mb' }))
 app.use(cookieParser())
-app.use(compression())
+app.use(
+  compression({
+    filter: (req, res) => {
+      if (res.locals.skipCompression === true) {
+        return false
+      }
+      const contentType = res.getHeader('Content-Type')
+      if (contentType != null && String(contentType).startsWith('audio/')) {
+        return false
+      }
+      return compression.filter(req, res)
+    }
+  })
+)
 
 app.use(routers)
 

@@ -17,7 +17,14 @@
  *           example: audio/mpeg
  *         base64:
  *           type: string
- *           description: MP3 audio encoded as base64 (play via data URL on web client)
+ *           description: MP3 audio encoded as base64
+ *         byteLength:
+ *           type: number
+ *           description: Raw audio size in bytes (verify > 1000 for playable clip)
+ *           example: 48000
+ *         speakText:
+ *           type: string
+ *           description: Text actually sent to TTS after cleanup
  *     ChatRequest:
  *       type: object
  *       required:
@@ -27,18 +34,22 @@
  *           type: string
  *           minLength: 1
  *           maxLength: 2000
- *           description: Natural language question about devices or knowledge base
  *           example: "Hidupkan lampu depan"
  *         withAudio:
  *           type: boolean
  *           default: false
- *           description: When true, includes OpenAI TTS audio of the reply in the response
+ *         audioFormat:
+ *           type: string
+ *           enum: [json, binary]
+ *           default: json
+ *           description: |
+ *             `json` — reply + audio.base64 (web frontend).
+ *             `binary` — raw WAV file (Swagger download). Requires withAudio=true.
  *     ChatResponseData:
  *       type: object
  *       properties:
  *         reply:
  *           type: string
- *           description: Agent text reply
  *         audio:
  *           $ref: '#/components/schemas/ChatAudio'
  *     ChatResponse:
@@ -46,10 +57,8 @@
  *       properties:
  *         success:
  *           type: boolean
- *           example: true
  *         message:
  *           type: string
- *           example: Chat completed successfully
  *         data:
  *           $ref: '#/components/schemas/ChatResponseData'
  *         meta:
@@ -58,13 +67,49 @@
 
 /**
  * @swagger
+ * /api/v1/chat/tts-preview:
+ *   get:
+ *     summary: TTS preview (playable WAV in browser)
+ *     description: |
+ *       Synthesizes sample text to WAV. Easiest way to verify audio in Swagger/browser:
+ *       after Execute, open the response URL in a new tab or use Download file.
+ *     tags: [Chat]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: text
+ *         required: true
+ *         schema:
+ *           type: string
+ *           maxLength: 500
+ *         example: "Halo, lampu depan sudah saya hidupkan."
+ *     responses:
+ *       200:
+ *         description: WAV audio
+ *         content:
+ *           audio/wav:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: TTS error
+ */
+
+/**
+ * @swagger
  * /api/v1/chat:
  *   post:
  *     summary: Send message to chat agent
  *     description: |
- *       Sends a natural language message to the chat agent.
- *       Set `withAudio: true` for web voice mode — response includes `data.audio` (MP3 base64)
- *       synthesized with OpenAI TTS. STT (speech-to-text) remains on the web client.
+ *       **Web voice (JSON):** `withAudio: true`, `audioFormat: json` → play `data.audio.base64` as MP3.
+ *
+ *       **Swagger test (binary WAV):** use `voiceBinarySwagger` example → Download file → open `.wav`.
+ *       Check `data.audio.byteLength` in JSON mode (should be thousands of bytes, not near zero).
+ *
+ *       **Quick TTS test:** use GET `/api/v1/chat/tts-preview?text=...` first.
  *     tags: [Chat]
  *     security:
  *       - BearerAuth: []
@@ -76,22 +121,30 @@
  *             $ref: '#/components/schemas/ChatRequest'
  *           examples:
  *             textOnly:
- *               summary: Text chat
  *               value:
  *                 message: "List all devices"
  *                 withAudio: false
- *             withVoice:
- *               summary: Voice reply (web)
+ *             withVoiceJson:
  *               value:
  *                 message: "Hidupkan lampu depan jam 18:00"
  *                 withAudio: true
+ *                 audioFormat: json
+ *             voiceBinarySwagger:
+ *               value:
+ *                 message: "Hidupkan lampu depan jam 18:00"
+ *                 withAudio: true
+ *                 audioFormat: binary
  *     responses:
  *       200:
- *         description: Chat completed successfully
+ *         description: JSON reply or WAV binary
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ChatResponse'
+ *           audio/wav:
+ *             schema:
+ *               type: string
+ *               format: binary
  *       400:
  *         description: Bad request
  *       401:
