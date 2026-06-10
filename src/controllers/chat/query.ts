@@ -13,12 +13,16 @@ export const queryChat = async (
 ): Promise<Response> => {
   try {
     const payload = req.body as IChatSchema
-    const result = await ChatService.query(payload.message)
+    const result = await ChatService.query(payload.message, {
+      withAudio: payload.withAudio
+    })
 
     return res.status(StatusCodes.OK).json(
       ResponseData.success({
-        data: { reply: result },
-        message: 'Chat completed successfully'
+        data: result,
+        message: payload.withAudio
+          ? 'Chat completed successfully with voice audio'
+          : 'Chat completed successfully'
       })
     )
   } catch (serverError) {

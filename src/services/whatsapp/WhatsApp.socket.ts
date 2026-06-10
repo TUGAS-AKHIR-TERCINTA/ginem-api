@@ -225,9 +225,9 @@ export class WhatsappBaileysSocket {
 
       // if (msg.key.senderPn !== '6281379574223@s.whatsapp.net') return
 
-      const answer = await ChatService.query(incoming)
+      const { reply } = await ChatService.query(incoming)
 
-      await sock.sendMessage(chat, { text: answer }, { quoted: msg })
+      await sock.sendMessage(chat, { text: reply }, { quoted: msg })
       logger.info(`${LOG_PREFIX} auto-reply pong → ${chat} (${this.bind.userLabel()})`)
     } catch (error) {
       if (error instanceof AppError) throw error
