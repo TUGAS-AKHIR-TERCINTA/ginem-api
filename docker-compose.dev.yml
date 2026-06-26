@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: ta-backend-dev
+    environment:
+      APP_MODE: development
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./logs:/app/logs
+      - ./settings:/app/settings
+      - whatsapp_sessions:/resources/whatsapp/sessions
+    command: ['npm', 'run', 'dev']

@@ -1,0 +1,84 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ta-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-ta_project}
+      TZ: Asia/Jakarta
+    ports:
+      - '${DB_PORT:-3306}:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          '127.0.0.1',
+          '-uroot',
+          '-p${DB_PASSWORD:-root}'
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - ta-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: ta-redis
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ta-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ta-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+    ports:
+      - '${APP_PORT:-8000}:8000'
+    volumes:
+      - ./logs:/app/logs
+      - ./settings:/app/settings
+      - whatsapp_sessions:/resources/whatsapp/sessions
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ta-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  whatsapp_sessions:
+
+networks:
+  ta-network:
+    driver: bridge
