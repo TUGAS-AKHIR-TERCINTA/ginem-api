@@ -11,7 +11,7 @@ export const getLastLogByDeviceNameTool = tool(
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
 
-    const items = await DeviceLogService.getLastLogsByDeviceId(device.deviceId, 1)
+    const items = await DeviceLogService.findLastLogsByDeviceId(device.deviceId, 1)
 
     const last = items[0]
     if (last == null) {
@@ -53,7 +53,7 @@ export const getLast10LogsByDeviceNameTool = tool(
       return JSON.stringify({ error: 'Device not found', deviceName })
     }
 
-    const items = await DeviceLogService.getLastLogsByDeviceId(device.deviceId, 10)
+    const items = await DeviceLogService.findLastLogsByDeviceId(device.deviceId, 10)
 
     return JSON.stringify(
       {

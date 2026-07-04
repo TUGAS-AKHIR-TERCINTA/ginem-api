@@ -2,11 +2,7 @@ import path from 'path'
 import { rm } from 'fs/promises'
 
 import { StatusCodes } from 'http-status-codes'
-import {
-  fetchLatestBaileysVersion,
-  useMultiFileAuthState,
-  type WASocket
-} from '@whiskeysockets/baileys'
+import type { WASocket } from '@whiskeysockets/baileys'
 
 import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
@@ -18,9 +14,12 @@ import {
 import { pairingQrToPngBuffer, sleep } from './helpers'
 import type { WhatsappConnectionStatus, WhatsappPairingConnectResult } from './types'
 import { WhatsappBaileysSocket, type WhatsappSocketBindings } from './WhatsApp.socket'
+import { loadBaileys, type BaileysModule } from './baileys-loader'
 
-type AuthBundle = Awaited<ReturnType<typeof useMultiFileAuthState>>
-type WaVersion = Awaited<ReturnType<typeof fetchLatestBaileysVersion>>['version']
+type AuthBundle = Awaited<ReturnType<BaileysModule['useMultiFileAuthState']>>
+type WaVersion = Awaited<
+  ReturnType<BaileysModule['fetchLatestBaileysVersion']>
+>['version']
 
 const LOG_PREFIX = '[WhatsappService]'
 
@@ -97,7 +96,13 @@ export class WhatsappService {
       setReconnectScheduled: (v) => {
         this.reconnectScheduled = v
       },
-      requestAttachSocket: () => this.baileysSocket.attach()
+      requestAttachSocket: () => {
+        void this.baileysSocket
+          .attach()
+          .catch((err) =>
+            logger.error(`${LOG_PREFIX} requestAttachSocket: ${String(err)}`)
+          )
+      }
     }
   }
 
@@ -126,7 +131,9 @@ export class WhatsappService {
     return this.connectPromise
   }
 
-  async connectAwaitingPairingQr(timeoutMs?: number): Promise<WhatsappPairingConnectResult> {
+  async connectAwaitingPairingQr(
+    timeoutMs?: number
+  ): Promise<WhatsappPairingConnectResult> {
     const waitMs = timeoutMs ?? WHATSAPP_PAIRING_QR_WAIT_DEFAULT_MS
     try {
       await this.connect()
@@ -158,10 +165,7 @@ export class WhatsappService {
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`${LOG_PREFIX} connectAwaitingPairingQr failed: ${String(error)}`)
-      throw new AppError(
-        'Failed to connect WhatsApp',
-        StatusCodes.INTERNAL_SERVER_ERROR
-      )
+      throw new AppError('Failed to connect WhatsApp', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
@@ -210,7 +214,9 @@ export class WhatsappService {
 
       try {
         await rm(this.authDir, { recursive: true, force: true })
-        logger.info(`${LOG_PREFIX} session dir removed (${this.userLabel()}): ${this.authDir}`)
+        logger.info(
+          `${LOG_PREFIX} session dir removed (${this.userLabel()}): ${this.authDir}`
+        )
       } catch (error) {
         if (error instanceof AppError) throw error
         logger.error(`${LOG_PREFIX} remove session dir failed: ${String(error)}`)
@@ -236,6 +242,8 @@ export class WhatsappService {
 
   async sendMessage(jid: string, text: string): Promise<void> {
     try {
+      console.log('=============sendMessage: ', jid, text)
+
       const to = jid.trim()
       const body = text.trim()
       if (!to) {
@@ -246,9 +254,7 @@ export class WhatsappService {
       }
 
       if (this.socket == null || this.state !== 'connected') {
-        throw AppError.conflict(
-          `WhatsApp is not connected (status: ${this.state})`
-        )
+        throw AppError.conflict(`WhatsApp is not connected (status: ${this.state})`)
       }
 
       await this.socket.sendMessage(to, { text: body })
@@ -271,18 +277,21 @@ export class WhatsappService {
 
     this.state = 'connecting'
     this.lastDisconnectReason = undefined
-    this.baileysSocket.attach()
+    await this.baileysSocket.attach()
   }
 
   private async loadCredentialsOnce(): Promise<void> {
     if (this.credentialsReady) return
     try {
-      const bundle = await useMultiFileAuthState(this.authDir)
+      const b = await loadBaileys()
+      const bundle = await b.useMultiFileAuthState(this.authDir)
       this.auth = bundle.state
       this.saveCreds = bundle.saveCreds
-      this.waVersion = (await fetchLatestBaileysVersion()).version
+      this.waVersion = (await b.fetchLatestBaileysVersion()).version
       this.credentialsReady = true
-      logger.info(`${LOG_PREFIX} session dir ready (${this.userLabel()}): ${this.authDir}`)
+      logger.info(
+        `${LOG_PREFIX} session dir ready (${this.userLabel()}): ${this.authDir}`
+      )
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`${LOG_PREFIX} loadCredentials failed: ${String(error)}`)

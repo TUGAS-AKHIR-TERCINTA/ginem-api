@@ -1,8 +1,32 @@
 import { z } from 'zod'
 
-/** Schema for chat endpoint: user message to the chat agent */
-export const chatSchema = z.object({
-  message: z.string().min(1).max(2000)
+export const chatSchema = z
+  .object({
+    message: z.string().min(1).max(2000),
+    withAudio: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe('When true, synthesizes OpenAI TTS audio for the agent reply'),
+    audioFormat: z
+      .enum(['json', 'binary'])
+      .optional()
+      .default('json')
+      .describe(
+        'json = reply + audio.base64 in JSON (for web app). binary = raw WAV body (for Swagger download/play). Requires withAudio=true.'
+      )
+  })
+  .refine((data) => data.audioFormat !== 'binary' || data.withAudio === true, {
+    message: 'audioFormat "binary" requires withAudio to be true'
+  })
+
+export const ttsPreviewSchema = z.object({
+  text: z
+    .string()
+    .min(1)
+    .max(500)
+    .describe('Sample text to synthesize as WAV for browser playback test')
 })
 
-export type ChatSchema = z.infer<typeof chatSchema>
+export type IChatSchema = z.infer<typeof chatSchema>
+export type ITtsPreviewSchema = z.infer<typeof ttsPreviewSchema>

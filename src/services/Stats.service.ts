@@ -15,14 +15,7 @@ export interface StatsCounts {
   appLogs: number
 }
 
-/**
- * Stats service: aggregate counts from devices, users, vector_indexes, scheduler_logs, app_logs.
- */
 export class StatsService {
-  /**
-   * Get total counts for devices, users, vector indexes, scheduler logs, and app logs.
-   * Uses Model.count() (paranoid models exclude soft-deleted rows).
-   */
   static async getCounts(): Promise<StatsCounts> {
     try {
       const [devices, users, vectorIndexes, schedulerLogs, appLogs] = await Promise.all([
@@ -40,13 +33,10 @@ export class StatsService {
         schedulerLogs,
         appLogs
       }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[StatsService] getCounts failed: ${String(error)}`)
-      throw new AppError(
-        'Failed to fetch stats counts',
-        StatusCodes.INTERNAL_SERVER_ERROR
-      )
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[StatsService] getCounts failed: ${String(serviceError)}`)
+      throw new AppError('Failed to get stats counts', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 }

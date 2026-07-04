@@ -24,8 +24,8 @@ export const userUpdatePasswordSchema = z.object({
   userEmail: z.string().min(1)
 })
 
-export type UserUpdatePasswordInput = z.infer<typeof userUpdatePasswordSchema>
+export type IUpdateUserPassword = z.infer<typeof userUpdatePasswordSchema>
 
-export type UserRegistrationInput = z.infer<typeof userRegistrationSchema>
+export type IUserRegistration = z.infer<typeof userRegistrationSchema>
 
-export type UserLoginInput = z.infer<typeof userLoginSchema>
+export type IUserLogin = z.infer<typeof userLoginSchema>

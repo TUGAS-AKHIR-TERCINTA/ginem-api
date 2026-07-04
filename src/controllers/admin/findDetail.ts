@@ -12,10 +12,11 @@ export const findDetailAdmin = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const { userId } = req.params as unknown as IAdminUserIdParam
-    const data = await AdminService.findById(userId)
-    return res.status(StatusCodes.OK).json(ResponseData.success({ data }))
-  } catch (err) {
-    return handleError(res, err)
+    const payload = req.params as unknown as IAdminUserIdParam
+    const result = await AdminService.findById(payload.userId)
+
+    return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

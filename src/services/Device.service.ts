@@ -1,203 +1,195 @@
 import { StatusCodes } from 'http-status-codes'
 import { DeviceLogModel } from '../models/DeviceLogModel'
 import { DeviceModel } from '../models/DeviceModel'
-import type { DeviceInstance, IDeviceCreationAttributes } from '../models/DeviceModel'
+import type { IDeviceAttributes } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
+import { ICreateDevice, IFindAllDevice, IUpdateDevice } from '../schemas/DeviceSchema'
+import { v4 as uuidv4 } from 'uuid'
+import { Op, WhereOptions, type Order } from 'sequelize'
 
-/** Options for listing devices with optional pagination */
-export interface FindAllDeviceOptions {
-  page?: number
-  size?: number
-  pagination?: boolean
-  search?: string
-}
-
-/** Result shape for paginated list (matches Pagination.formatData) */
-export interface PaginatedDeviceResult {
-  totalItems: number
-  items: DeviceInstance[]
-  totalPages: number
-  currentPage: number
-}
-
-/** Payload for creating a device (aligned with schema, excluding jwtPayload). deviceStatus is optional (defaults to 'offline'). */
-export type CreateDevicePayload = Omit<IDeviceCreationAttributes, 'deviceStatus'> & {
-  deviceStatus?: IDeviceCreationAttributes['deviceStatus']
-}
-
-/** Payload for updating a device (partial, with deviceId) */
-export interface UpdateDevicePayload {
-  deviceId: number
-  deviceToken?: string
-  deviceName?: string
-  deviceType?: IDeviceCreationAttributes['deviceType']
-  deviceStatus?: IDeviceCreationAttributes['deviceStatus']
-  deviceFirmwareVersion?: string
-  deviceMetadata?: object
-}
-
-/**
- * Device service: business logic for device CRUD.
- * Controllers handle HTTP (validation, status codes, response shape); this layer handles data.
- */
 export class DeviceService {
-  /**
-   * Create a new device.
-   */
-  static async create(payload: CreateDevicePayload): Promise<DeviceInstance> {
-    try {
-      const createData: IDeviceCreationAttributes = {
-        ...payload,
-        deviceStatus: payload.deviceStatus ?? 'offline'
-      }
-
-      const existingDevice = await DeviceModel.findOne({
-        where: { deviceName: createData.deviceName.toLocaleUpperCase() }
-      })
-
-      if (existingDevice) {
-        throw AppError.conflict('Device already exists')
-      }
-
-      const device = await DeviceModel.create(createData)
-      return device
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[DeviceService] create failed: ${String(error)}`)
-      throw new AppError('Failed to create device', StatusCodes.INTERNAL_SERVER_ERROR)
+  private static buildFindAllWhere(payload: IFindAllDevice) {
+    let where: WhereOptions<IDeviceAttributes> = {
+      deleted: 0
     }
+
+    if (payload.search != null) {
+      const term = `%${payload.search.trim()}%`
+      where = {
+        ...where,
+        [Op.or]: [{ deviceName: { [Op.like]: term } }]
+      }
+    }
+    return where
   }
 
-  /**
-   * List devices with optional pagination. Page is 1-based (page 1 = first page).
-   */
-  static async findAll(
-    options: FindAllDeviceOptions = {}
-  ): Promise<PaginatedDeviceResult> {
+  static async findAll(payload: IFindAllDevice) {
     try {
-      const { page = 1, size = 10, pagination = true } = options
-      const pager = new Pagination(Number(page) || 1, Number(size) || 10)
+      const pager = new Pagination(payload.page, payload.size)
 
       const result = await DeviceModel.findAndCountAll({
-        where: { deleted: 0 },
+        where: this.buildFindAllWhere(payload),
         include: [
           {
             model: DeviceLogModel,
-            as: 'deviceLogs',
-            attributes: ['deviceLogId', 'deviceLogData', 'createdAt']
+            as: 'deviceLogs' as const,
+            attributes: ['deviceLogId', 'deviceLogData', 'createdAt'],
+            separate: true,
+            limit: 10,
+            order: [['createdAt', 'DESC']] satisfies Order
           }
         ],
         distinct: true,
         order: [['deviceId', 'desc']],
-        ...(pagination === true && {
+        ...(payload.pagination === true && {
           limit: pager.limit,
           offset: pager.offset
         })
       })
 
       return pager.formatData(result)
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[DeviceService] findAll failed: ${String(error)}`)
-      throw new AppError('Failed to fetch devices', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[DeviceService] findAll failed: ${String(serviceError)}`)
+      throw new AppError('Failed to list devices', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  /**
-   * Find a single device by id (non-deleted).
-   * @throws {AppError} AppError.notFound when device does not exist
-   */
-  static async findById(deviceId: number): Promise<DeviceInstance> {
+  static async findById(deviceId: number) {
     try {
-      const device = await DeviceModel.findOne({
+      const result = await DeviceModel.findOne({
         where: { deleted: 0, deviceId },
         include: [
           {
             model: DeviceLogModel,
-            as: 'deviceLogs',
-            attributes: ['deviceLogId', 'deviceLogData', 'createdAt']
+            as: 'deviceLogs' as const,
+            attributes: ['deviceLogId', 'deviceLogData', 'createdAt'],
+            separate: true,
+            limit: 10,
+            order: [['createdAt', 'DESC']] satisfies Order
           }
         ]
       })
-      if (device == null) {
+
+      if (result == null) {
         throw AppError.notFound('Device not found')
       }
-      return device
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[DeviceService] findById failed: ${String(error)}`)
-      throw new AppError('Failed to fetch device', StatusCodes.INTERNAL_SERVER_ERROR)
+
+      return result
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[DeviceService] findById failed: ${String(serviceError)}`)
+      throw new AppError('Failed to get device by id', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  /**
-   * Update an existing device.
-   * @throws {AppError} AppError.notFound when device does not exist
-   */
-  static async update(payload: UpdateDevicePayload): Promise<number> {
+  static async findByName(deviceName: string) {
     try {
-      const [affectedRows] = await DeviceModel.update(payload, {
+      const result = await DeviceModel.findOne({
+        where: { deleted: 0, deviceName }
+      })
+
+      if (result == null) {
+        throw AppError.notFound('Device not found')
+      }
+
+      return result
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[DeviceService] findByName failed: ${String(serviceError)}`)
+      throw new AppError(
+        'Failed to get device by name',
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
+    }
+  }
+
+  static async create(payload: ICreateDevice) {
+    try {
+      const existingDevice = await DeviceModel.findOne({
+        where: { deviceName: payload.deviceName.toLocaleUpperCase() }
+      })
+
+      if (existingDevice) {
+        throw AppError.conflict('Device already exists')
+      }
+
+      await DeviceModel.create({
+        ...payload,
+        deviceStatus: payload.deviceStatus ?? 'offline',
+        deviceToken: `fck_${uuidv4()}`
+      })
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[DeviceService] create failed: ${String(serviceError)}`)
+      throw new AppError('Failed to create new device', StatusCodes.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  static async update(payload: IUpdateDevice) {
+    try {
+      const updateData: Partial<IDeviceAttributes> = {}
+
+      if (payload.deviceName != null) {
+        updateData.deviceName = payload.deviceName
+      }
+
+      if (payload.deviceStatus != null) {
+        updateData.deviceStatus = payload.deviceStatus
+      }
+
+      if (payload.deviceFirmwareVersion != null) {
+        updateData.deviceFirmwareVersion = payload.deviceFirmwareVersion
+      }
+
+      if (payload.deviceMetadata != null) {
+        updateData.deviceMetadata = payload.deviceMetadata
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        throw new AppError('No fields to update', StatusCodes.BAD_REQUEST)
+      }
+
+      const [affectedRows] = await DeviceModel.update(updateData, {
         where: { deleted: 0, deviceId: payload.deviceId }
       })
+
       if (affectedRows === 0) {
         throw AppError.notFound('Device not found')
       }
-      return affectedRows
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[DeviceService] update failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[DeviceService] update failed: ${String(serviceError)}`)
       throw new AppError('Failed to update device', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  /**
-   * Soft-delete a device.
-   * @throws {AppError} AppError.notFound when device does not exist
-   */
-  static async remove(deviceId: number): Promise<DeviceInstance> {
-    const device = await DeviceModel.findOne({
-      where: { deleted: 0, deviceId }
-    })
+  static async remove(deviceId: number) {
+    try {
+      const result = await DeviceModel.findOne({
+        where: { deleted: 0, deviceId }
+      })
 
-    if (device == null) {
-      throw AppError.notFound('Device not found')
+      if (result == null) {
+        throw AppError.notFound('Device not found')
+      }
+
+      await result.destroy()
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[DeviceService] remove failed: ${String(serviceError)}`)
+      throw new AppError('Failed to remove device', StatusCodes.INTERNAL_SERVER_ERROR)
     }
-
-    device.deleted = true
-    await device.save()
-    return device
   }
 
-  /**
-   * Check if a device exists (non-deleted). Returns false when device not found (does not throw).
-   */
   static async exists(deviceId: number): Promise<boolean> {
     try {
       await this.findById(deviceId)
       return true
     } catch {
       return false
-    }
-  }
-
-  /**
-   * Find a single device by name (non-deleted). First match if multiple.
-   */
-  static async findByName(deviceName: string): Promise<DeviceInstance | null> {
-    try {
-      const device = await DeviceModel.findOne({
-        where: { deleted: 0, deviceName }
-      })
-      return device
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[DeviceService] findByName failed: ${String(error)}`)
-      throw new AppError(
-        'Failed to fetch device by name',
-        StatusCodes.INTERNAL_SERVER_ERROR
-      )
     }
   }
 }

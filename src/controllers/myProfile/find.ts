@@ -4,18 +4,18 @@ import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { MyProfileService } from '../../services/MyProfile.service'
-import { JwtPayload } from 'jsonwebtoken'
+import { IJwtPayload } from '../../interfaces/shared/jwt.interface'
 
 export const findMyProfile = async (
   req: IAuthenticatedRequest,
   res: Response
 ): Promise<Response> => {
-  const payload = req.jwtPayload as JwtPayload
-
   try {
-    const result = await MyProfileService.findByUserId(payload!.userId!)
+    const payload = req.jwtPayload as IJwtPayload
+    const result = await MyProfileService.findByUserId(payload.userId)
+
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

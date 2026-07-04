@@ -1,34 +1,16 @@
 import { createHash } from 'crypto'
 import { UserModel } from '../models/UserModel'
-import type { UserInstance, IUserAttributes } from '../models/UserModel'
+import type { IUserAttributes } from '../models/UserModel'
 import { AppError } from '../utilities/AppError'
 import { appConfigs } from '../configs/appConfig'
 import logger from '../utilities/logger'
+import { IUpdateMyProfile, IUpdateOnboarding } from '../schemas/MyProfileSchema'
+import { StatusCodes } from 'http-status-codes'
 
-/** Payload for updating profile (optional fields; password will be hashed in service) */
-export interface UpdateMyProfilePayload {
-  userName?: string
-  userPassword?: string
-  userEmail?: string
-}
-
-/** Payload for updating onboarding status */
-export interface UpdateOnboardingPayload {
-  userOnboardingStatus: 'waiting' | 'completed'
-}
-
-/**
- * My profile service: business logic for current user profile.
- * Controllers handle HTTP (validation, status codes, response shape); this layer handles data.
- */
 export class MyProfileService {
-  /**
-   * Find profile by user id (non-deleted).
-   * @throws {AppError} AppError.notFound when user does not exist
-   */
-  static async findByUserId(userId: number): Promise<UserInstance> {
+  static async findByUserId(userId: number) {
     try {
-      const user = await UserModel.findOne({
+      const result = await UserModel.findOne({
         where: { deleted: 0, userId },
         attributes: [
           'userId',
@@ -40,25 +22,20 @@ export class MyProfileService {
           'updatedAt'
         ]
       })
-      if (user == null) {
+
+      if (result == null) {
         throw AppError.notFound('User not found')
       }
-      return user
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[MyProfileService] findByUserId failed: ${String(error)}`)
-      throw AppError.badRequest('Failed to fetch profile')
+
+      return result
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[MyProfileService] findByUserId failed: ${String(serviceError)}`)
+      throw new AppError('Failed to fetch profile', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  /**
-   * Update profile. Validates email uniqueness when userEmail is provided; hashes password when userPassword is provided.
-   * @throws {AppError} AppError.conflict when email already in use, AppError.notFound when user does not exist
-   */
-  static async updateProfile(
-    userId: number,
-    payload: UpdateMyProfilePayload
-  ): Promise<void> {
+  static async updateProfile(userId: number, payload: IUpdateMyProfile): Promise<void> {
     try {
       if (payload.userEmail != null && payload.userEmail !== '') {
         const existing = await UserModel.findOne({
@@ -84,42 +61,42 @@ export class MyProfileService {
       }
 
       if (Object.keys(updateData).length === 0) {
-        return
+        throw new AppError('No fields to update', StatusCodes.BAD_REQUEST)
       }
 
       const [affectedRows] = await UserModel.update(updateData, {
         where: { deleted: 0, userId }
       })
+
       if (affectedRows === 0) {
         throw AppError.notFound('User not found')
       }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[MyProfileService] updateProfile failed: ${String(error)}`)
-      throw AppError.badRequest('Failed to update profile')
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[MyProfileService] updateProfile failed: ${String(serviceError)}`)
+      throw new AppError('Failed to update profile', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  /**
-   * Update onboarding status for the user.
-   * @throws {AppError} AppError.notFound when user does not exist
-   */
-  static async updateOnboardingStatus(
-    userId: number,
-    payload: UpdateOnboardingPayload
-  ): Promise<void> {
+  static async updateOnboardingStatus(userId: number, payload: IUpdateOnboarding) {
     try {
-      const [affectedRows] = await UserModel.update(
-        { userOnboardingStatus: payload.userOnboardingStatus },
-        { where: { deleted: 0, userId } }
-      )
-      if (affectedRows === 0) {
+      const result = await UserModel.findOne({
+        where: { deleted: 0, userId }
+      })
+      if (result == null) {
         throw AppError.notFound('User not found')
       }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[MyProfileService] updateOnboardingStatus failed: ${String(error)}`)
-      throw AppError.badRequest('Failed to update onboarding status')
+      result.userOnboardingStatus = payload.userOnboardingStatus
+      await result.save()
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(
+        `[MyProfileService] updateOnboardingStatus failed: ${String(serviceError)}`
+      )
+      throw new AppError(
+        'Failed to update onboarding status',
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
     }
   }
 }

@@ -12,10 +12,11 @@ export const findAllAdmins = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const query = req.query as unknown as IFindAllAdmin
-    const result = await AdminService.findAll(query)
+    const payload = req.query as unknown as IFindAllAdmin
+
+    const result = await AdminService.findAll(payload)
     return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

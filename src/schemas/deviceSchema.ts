@@ -39,12 +39,12 @@ export const findAllDeviceSchema = z.object({
     .transform((v) => v === 'true')
 })
 
-export type UpdateDeviceSchema = z.infer<typeof updateDeviceSchema>
+export type IUpdateDevice = z.infer<typeof updateDeviceSchema>
 
-export type CreateDeviceSchema = z.infer<typeof createDeviceSchema>
+export type ICreateDevice = z.infer<typeof createDeviceSchema>
 
-export type FindAllDeviceSchema = z.infer<typeof findAllDeviceSchema>
+export type IFindAllDevice = z.infer<typeof findAllDeviceSchema>
 
-export type FindDetailDeviceSchema = z.infer<typeof findDetailDeviceSchema>
+export type IFindDetailDevice = z.infer<typeof findDetailDeviceSchema>
 
-export type RemoveDeviceSchema = z.infer<typeof removeDeviceSchema>
+export type IRemoveDevice = z.infer<typeof removeDeviceSchema>

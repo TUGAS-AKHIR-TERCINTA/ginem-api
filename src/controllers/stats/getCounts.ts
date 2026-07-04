@@ -10,13 +10,9 @@ export const getCounts = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const counts = await StatsService.getCounts()
-    const response = ResponseData.success({
-      data: counts,
-      message: 'Stats counts retrieved successfully'
-    })
-    return res.status(StatusCodes.OK).json(response)
-  } catch (err) {
-    return handleError(res, err)
+    const result = await StatsService.getCounts()
+    return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

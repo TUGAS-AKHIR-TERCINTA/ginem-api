@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { AppLogController } from '../controllers/appLog'
-import { MiddleWares } from '../middlewares'
+import { AppLogController } from '../controllers/appLog/index'
+import { MiddleWares } from '../middlewares/index'
 import { createAppLogSchema, findAllAppLogsSchema } from '../schemas/AppLogSchema'
 
 const AppLogRoute = Router()

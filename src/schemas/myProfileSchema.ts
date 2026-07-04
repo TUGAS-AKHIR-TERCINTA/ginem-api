@@ -21,7 +21,7 @@ export const updateOnboardingSchema = z.object({
   userOnboardingStatus: z.enum(['waiting', 'completed'])
 })
 
-export type FindMyProfileSchema = z.infer<typeof findMyProfileSchema>
-export type FindDetailMyProfileSchema = z.infer<typeof findDetailMyProfileSchema>
-export type UpdateMyProfileSchema = z.infer<typeof updateMyProfileSchema>
-export type UpdateOnboardingSchema = z.infer<typeof updateOnboardingSchema>
+export type IFindMyProfile = z.infer<typeof findMyProfileSchema>
+export type IFindDetailMyProfile = z.infer<typeof findDetailMyProfileSchema>
+export type IUpdateMyProfile = z.infer<typeof updateMyProfileSchema>
+export type IUpdateOnboarding = z.infer<typeof updateOnboardingSchema>

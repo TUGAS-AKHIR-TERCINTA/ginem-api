@@ -2,7 +2,7 @@ import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { WhatsappService } from '../../services/whatsapp'
+import { WhatsappService } from '../../services/whatsapp/index'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
 
@@ -29,7 +29,7 @@ export const getWhatsappConnectionStatus = async (
     return res
       .status(StatusCodes.OK)
       .json(ResponseData.success({ data, message: 'Status koneksi WhatsApp' }))
-  } catch (err) {
-    return handleError(res, err)
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

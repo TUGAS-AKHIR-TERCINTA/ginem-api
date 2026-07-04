@@ -4,16 +4,11 @@ import logger from '../utilities/logger'
 import { AppError } from '../utilities/AppError'
 import { generateAccessToken } from '../utilities/jwt'
 import { hashPassword } from '../utilities/scurePassword'
-import { sequelizeInit } from '../configs/database'
-import {
-  type UserRegistrationInput,
-  type UserLoginInput,
-  type UserUpdatePasswordInput
-} from '../schemas/AuthSchema'
-import { IUserAttributes, IUserCreationAttributes, UserModel } from '../models/UserModel'
+import { IUserAttributes, UserModel } from '../models/UserModel'
+import { IUserLogin, IUserRegistration, IUpdateUserPassword } from '../schemas/AuthSchema'
 
 export class AuthService {
-  static async loginUser(payload: UserLoginInput) {
+  static async loginUser(payload: IUserLogin) {
     try {
       const { userEmail, userPassword } = payload
 
@@ -49,53 +44,43 @@ export class AuthService {
         accessToken: token,
         refreshToken: ''
       }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AuthService] loginUser failed: ${String(error)}`)
-      throw new AppError('Failed to login', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AuthService] loginUser failed: ${String(serviceError)}`)
+      throw new AppError('Failed to login user', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  static async registerUser(payload: UserRegistrationInput) {
-    const validatedData: Partial<IUserCreationAttributes> | any = {
-      userName: payload.userName ?? '',
-      userEmail: payload.userEmail,
-      userPassword: payload.userPassword,
-      userRole: payload.userRole,
-      userOnboardingStatus: 'waiting'
-    }
-
-    const transaction = await sequelizeInit.transaction()
-
+  static async registerUser(payload: IUserRegistration) {
     try {
       const existingUser = await UserModel.findOne({
         where: {
           deleted: { [Op.eq]: 0 },
-          userEmail: { [Op.eq]: validatedData.userEmail }
-        },
-        transaction
+          userEmail: { [Op.eq]: payload.userEmail }
+        }
       })
 
       if (existingUser != null) {
         const message = `E-mail ${existingUser.userEmail} sudah terdaftar, gunakan yang lain`
         logger.info(`Registration attempt failed: ${message}`)
-        await transaction.rollback()
         throw AppError.badRequest(message)
       }
 
-      validatedData.userPassword = hashPassword(validatedData.userPassword)
-
-      await UserModel.create(validatedData, { transaction })
-      await transaction.commit()
-    } catch (error) {
-      await transaction.rollback()
-      if (error instanceof AppError) throw error
-      logger.error(`[AuthService] registerUser failed: ${String(error)}`)
+      await UserModel.create({
+        userName: payload.userName ?? '',
+        userEmail: payload.userEmail,
+        userPassword: hashPassword(payload.userPassword),
+        userRole: payload.userRole,
+        userOnboardingStatus: 'waiting'
+      })
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AuthService] registerUser failed: ${String(serviceError)}`)
       throw new AppError('Failed to register user', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
 
-  static async updateUserPassword(payload: UserUpdatePasswordInput) {
+  static async updateUserPassword(payload: IUpdateUserPassword) {
     try {
       const { userPassword, userEmail } = payload
 
@@ -123,12 +108,13 @@ export class AuthService {
           userId: { [Op.eq]: user.userId }
         }
       })
-
-      logger.info('Password updated successfully')
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[AuthService] updateUserPassword failed: ${String(error)}`)
-      throw new AppError('Failed to update password', StatusCodes.INTERNAL_SERVER_ERROR)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[AuthService] updateUserPassword failed: ${String(serviceError)}`)
+      throw new AppError(
+        'Failed to update user password',
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { StatsController } from '../controllers/stats'
-import { MiddleWares } from '../middlewares'
+import { StatsController } from '../controllers/stats/index'
+import { MiddleWares } from '../middlewares/index'
 
 const StatsRoute = Router()
 

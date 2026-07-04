@@ -1,4 +1,3 @@
-import { DisconnectReason } from '@whiskeysockets/baileys'
 import type { BaileysEventMap, WAMessage } from '@whiskeysockets/baileys'
 import * as QRCode from 'qrcode'
 
@@ -18,7 +17,9 @@ type LastDisconnect = BaileysEventMap['connection.update']['lastDisconnect']
 
 type BoomLike = Error & { output?: { statusCode?: number } }
 
-export function disconnectStatusCode(last: LastDisconnect | undefined): number | undefined {
+export function disconnectStatusCode(
+  last: LastDisconnect | undefined
+): number | undefined {
   const err = last?.error as BoomLike | undefined
   return err?.output?.statusCode
 }
@@ -29,13 +30,22 @@ export function disconnectErrorMessage(last: LastDisconnect | undefined): string
   return err?.message ?? String(code ?? 'unknown')
 }
 
-export function isTransientDisconnect(code: number | undefined): boolean {
+/** Pass `DisconnectReason` from the dynamically loaded Baileys module (see baileys-loader). */
+export function isTransientDisconnect(
+  code: number | undefined,
+  DR: {
+    restartRequired: number
+    connectionClosed: number
+    connectionLost: number
+    timedOut: number
+  }
+): boolean {
   if (code == null) return false
   return (
-    code === DisconnectReason.restartRequired ||
-    code === DisconnectReason.connectionClosed ||
-    code === DisconnectReason.connectionLost ||
-    code === DisconnectReason.timedOut
+    code === DR.restartRequired ||
+    code === DR.connectionClosed ||
+    code === DR.connectionLost ||
+    code === DR.timedOut
   )
 }
 

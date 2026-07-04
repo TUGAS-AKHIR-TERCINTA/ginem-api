@@ -9,11 +9,11 @@ export const findAllIndexings = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const params = req.query as unknown as IFindAllIndexing
   try {
-    const result = await PineconeBackupService.findAllIndexings(params)
-    const response = ResponseData.success({ data: result })
-    return res.status(StatusCodes.OK).json(response)
+    const payload = req.query as unknown as IFindAllIndexing
+    const result = await PineconeBackupService.findAllIndexings(payload)
+
+    return res.status(StatusCodes.OK).json(ResponseData.success({ data: result }))
   } catch (serverError) {
     return handleError(res, serverError)
   }

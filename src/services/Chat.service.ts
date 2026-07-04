@@ -4,6 +4,7 @@ import { createAgent } from 'langchain'
 import logger from '../utilities/logger'
 import { AppError } from '../utilities/AppError'
 import { LLMService } from './LLM.service'
+import { TTSService, type ChatAudioPayload } from './TTS.service'
 import { deviceTools } from './mcp/tools/index'
 import { pineconeService, RagDocument } from './Pinecone.service'
 
@@ -16,16 +17,26 @@ You have tools to:
 - get_last_10_logs_by_device_name: Get the last 10 logs (most recent first) for a device by its name (deviceName).
 - create_device_log: Create a new device log for a device; use deviceName and deviceLogData. Do NOT use for turn on/off — use set_actuator_state_by_device_name.
 - set_actuator_state_by_device_name: Turn ON or OFF an actuator by device name. Use when the user says "hidupkan (nama device)", "matikan (nama device)", turn on, turn off, nyalakan, padamkan. Only works for devices with deviceType "actuator". On → value 1, off → value 0.
-- schedule_actuator_state_after_minutes: Schedule turning ON or OFF an actuator after a delay in minutes. Use when the user says "hidupkan Smart Lamp 1 menit lagi", "matikan AC 5 menit lagi", "tolong hidupin device X di Y menit lagi", "turn on (device) in N minutes". Returns a jobId.
-- schedule_sensor_data_after_minutes: Schedule fetching sensor/device data after a delay in minutes. Use when the user says "kasih data sensor A 5 menit lagi", "tolong kasih data sensor X Y menit lagi", "give me sensor data in 5 minutes". Returns a jobId; after the delay the user can get the result with get_scheduled_job_result(jobId).
-- get_scheduled_job_result: Get the status and result of a scheduled job by jobId. Use when the user asks for the result of a scheduled task, or after a scheduled sensor data job has run (user can call this with the jobId to get the data).
-- list_scheduled_jobs: List recent scheduled jobs (pending, completed, failed).
+- schedule_actuator_state_at: Schedule actuator ON/OFF once or daily repeat (WIB). Use category once for one-time, repeat for every day at hour:minute.
+- schedule_sensor_data_at: Schedule sensor data fetch once or daily repeat (WIB).
+- get_scheduled_job_result: Get the status and result of a scheduled job by jobId.
+- list_scheduled_jobs: List recent scheduled jobs (pending, active, completed, failed).
 
-For "X menit lagi" / "in N minutes" instructions: use schedule_actuator_state_after_minutes for turn on/off, or schedule_sensor_data_after_minutes for "kasih data". Tell the user the jobId so they can get the result later with get_scheduled_job_result if needed.
-Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so.`
+Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so.
+
+When the user may hear the reply as voice: respond in natural spoken Indonesian (1–4 short sentences). Do NOT use markdown, bullet lists, tables, or raw JSON in the final answer.`
+
+export interface ChatQueryResponse {
+  reply: string
+  audio?: ChatAudioPayload
+}
+
+export interface ChatQueryOptions {
+  withAudio?: boolean
+}
 
 /**
- * Chat layer: LLM + device MCP tools + optional Pinecone RAG context.
+ * Chat layer: LLM + device MCP tools + optional Pinecone RAG context + optional OpenAI TTS.
  */
 export class ChatService {
   private static agent = createAgent({
@@ -35,42 +46,54 @@ export class ChatService {
   })
 
   /**
-   * Run a chat turn with a user message. Injects Pinecone knowledge chunks when available.
-   *
-   * @param userMessage - Natural language question (devices or knowledge base)
-   * @returns Final assistant message content (string)
+   * Run a chat turn. When `withAudio` is true, synthesizes reply audio via OpenAI TTS.
    */
-  static async query(userMessage: string): Promise<string> {
+  static async query(
+    userMessage: string,
+    options?: ChatQueryOptions
+  ): Promise<ChatQueryResponse> {
     try {
-      let messageToSend = userMessage
+      const reply = await ChatService.generateReply(userMessage)
 
-      const ragHits = await pineconeService.search(userMessage, 5)
-      if (ragHits.length > 0) {
-        const contextBlock = ragHits.map((h: RagDocument) => h.content).join('\n\n')
-        messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
+      if (options?.withAudio !== true) {
+        return { reply }
       }
 
-      const result = await ChatService.agent.invoke({
-        messages: [{ role: 'human', content: messageToSend }]
-      })
-
-      const lastMessage = result.messages?.at(-1)
-      const content = lastMessage?.content
-      if (typeof content === 'string') return content
-      if (Array.isArray(content)) {
-        const textPart = content.find(
-          (c: { type?: string; text?: string }) => c.type === 'text'
-        )
-        return (textPart as { text?: string })?.text ?? JSON.stringify(content)
-      }
-      return content != null ? String(content) : JSON.stringify(result)
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[ChatService] query failed: ${String(error)}`)
+      const audio = await TTSService.synthesizeSpeech(reply)
+      return { reply, audio }
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[ChatService] query failed: ${String(serviceError)}`)
       throw new AppError(
-        'Failed to process chat query',
+        'Failed to process chat query with user message',
         StatusCodes.INTERNAL_SERVER_ERROR
       )
     }
+  }
+
+  private static async generateReply(userMessage: string): Promise<string> {
+    let messageToSend = userMessage
+
+    const ragHits = await pineconeService.search(userMessage, 5)
+    if (ragHits.length > 0) {
+      const contextBlock = ragHits.map((h: RagDocument) => h.content).join('\n\n')
+      messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
+    }
+
+    const result = await ChatService.agent.invoke({
+      messages: [{ role: 'human', content: messageToSend }]
+    })
+
+    const lastMessage = result.messages?.at(-1)
+    const content = lastMessage?.content
+    if (typeof content === 'string') return content
+    if (Array.isArray(content)) {
+      const textPart = content.find(
+        (c: { type?: string; text?: string }) => c.type === 'text'
+      )
+      return (textPart as { text?: string })?.text ?? JSON.stringify(content)
+    }
+
+    return content != null ? String(content) : JSON.stringify(result)
   }
 }

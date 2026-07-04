@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
-import { SettingsController } from '../controllers/settings'
-import { MiddleWares } from '../middlewares'
+import { SettingsController } from '../controllers/settings/index'
+import { MiddleWares } from '../middlewares/index'
 import {
   findAllLLMModelQuerySchema,
   llmModelIdParamSchema,

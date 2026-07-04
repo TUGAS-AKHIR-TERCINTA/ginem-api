@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { authController } from '../controllers/auth'
+import { authController } from '../controllers/auth/index'
 import {
   updatePasswordSchema,
   userLoginSchema,
   userRegistrationSchema
 } from '../schemas/AuthSchema'
-import { MiddleWares } from '../middlewares'
+import { MiddleWares } from '../middlewares/index'
 
 const AuthRoute = Router()
 

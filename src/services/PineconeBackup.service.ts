@@ -5,22 +5,22 @@ import { StatusCodes } from 'http-status-codes'
 import { Pagination } from '../utilities/pagination'
 import { IndexingModel, IndexingSourceType } from '../models/IndexingModel'
 import { AppError } from '../utilities/AppError'
-import { IFindAllIndexing } from '../schemas/IndexingSchema'
+import { ICreateIndexing, IFindAllIndexing } from '../schemas/IndexingSchema'
 
 export type IndexingDocument = { content: string; source?: string }
 
 export class PineconeBackupService {
   static async saveIndexingBackup(
-    documents: IndexingDocument[],
+    documents: ICreateIndexing[],
     sourceType: IndexingSourceType = 'json'
   ): Promise<void> {
     try {
       if (documents.length === 0) return
 
       await IndexingModel.bulkCreate(
-        documents.map((d) => ({
-          content: d.content,
-          source: d.source ?? null,
+        documents.map((doc) => ({
+          content: doc.text,
+          source: doc.source,
           sourceType
         }))
       )

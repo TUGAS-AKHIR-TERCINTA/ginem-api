@@ -12,7 +12,8 @@ export const findAllSchedulerLogSchema = z.object({
     .transform((v) => v === 'true'),
 
   type: z.enum(['actuator', 'sensor_data']).optional(),
-  status: z.enum(['pending', 'completed', 'failed']).optional(),
+  category: z.enum(['once', 'repeat']).optional(),
+  status: z.enum(['pending', 'active', 'completed', 'failed']).optional(),
   deviceName: z.string().optional(),
 
   dateFrom: z.date().optional(),
@@ -24,5 +25,5 @@ export const findDetailSchedulerLogSchema = z.object({
   schedulerLogId: z.number().int().positive()
 })
 
-export type FindAllSchedulerLogSchema = z.infer<typeof findAllSchedulerLogSchema>
-export type FindDetailSchedulerLogSchema = z.infer<typeof findDetailSchedulerLogSchema>
+export type IFindAllSchedulerLog = z.infer<typeof findAllSchedulerLogSchema>
+export type IFindDetailSchedulerLog = z.infer<typeof findDetailSchedulerLogSchema>

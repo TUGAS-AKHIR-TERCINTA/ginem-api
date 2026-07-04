@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
-import { WhatsappController } from '../controllers/whatsapp'
-import { MiddleWares } from '../middlewares'
+import { WhatsappController } from '../controllers/whatsapp/index'
+import { MiddleWares } from '../middlewares/index'
 import {
   whatsappConnectBodySchema,
   whatsappConnectQuerySchema,

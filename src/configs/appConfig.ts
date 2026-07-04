@@ -30,6 +30,10 @@ export const appConfigs = {
     deepSeekApiKey: process.env.DEEPSEEK_API_KEY,
     openAIApiKey: process.env.OPENAI_API_KEY
   },
+  tts: {
+    model: process.env.OPENAI_TTS_MODEL ?? 'tts-1-hd',
+    voice: process.env.OPENAI_TTS_VOICE ?? 'nova'
+  },
   pinecone: {
     apiKey: process.env.PINECONE_API_KEY,
     indexName: process.env.PINECONE_INDEX_NAME,

@@ -41,11 +41,11 @@ export const findLastLatestDeviceLogByDeviceIdSchema = z.object({
   deviceId: z.coerce.number().int().positive()
 })
 
-export type CreateDeviceLogSchema = z.infer<typeof createDeviceLogSchema>
-export type UpdateDeviceLogSchema = z.infer<typeof updateDeviceLogSchema>
-export type FindDetailDeviceLogSchema = z.infer<typeof findDetailDeviceLogSchema>
-export type RemoveDeviceLogSchema = z.infer<typeof removeDeviceLogSchema>
-export type FindAllDeviceLogSchema = z.infer<typeof findAllDeviceLogSchema>
-export type FindLastLatestDeviceLogByDeviceIdSchema = z.infer<
+export type ICreateDeviceLog = z.infer<typeof createDeviceLogSchema>
+export type IUpdateDeviceLog = z.infer<typeof updateDeviceLogSchema>
+export type IFindDetailDeviceLog = z.infer<typeof findDetailDeviceLogSchema>
+export type IRemoveDeviceLog = z.infer<typeof removeDeviceLogSchema>
+export type IFindAllDeviceLog = z.infer<typeof findAllDeviceLogSchema>
+export type IFindLastLatestDeviceLogByDeviceId = z.infer<
   typeof findLastLatestDeviceLogByDeviceIdSchema
 >

@@ -39,8 +39,9 @@ export class LLMModelService {
         totalItems: data.length,
         items: data
       }
-    } catch (error) {
-      logger.error(`[LLMModelService] findAll failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[LLMModelService] findAll failed: ${String(serviceError)}`)
       throw new AppError('Failed to fetch LLM models', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
@@ -57,9 +58,9 @@ export class LLMModelService {
       }
 
       return model
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[LLMModelService] findById failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[LLMModelService] findById failed: ${String(serviceError)}`)
       throw new AppError('Failed to fetch LLM model', StatusCodes.INTERNAL_SERVER_ERROR)
     }
   }
@@ -98,11 +99,11 @@ export class LLMModelService {
       }
 
       return model
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      logger.error(`[LLMModelService] getSelectedModel failed: ${String(error)}`)
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[LLMModelService] getSelectedModel failed: ${String(serviceError)}`)
       throw new AppError(
-        'Failed to fetch selected model',
+        'Failed to get selected model',
         StatusCodes.INTERNAL_SERVER_ERROR
       )
     }

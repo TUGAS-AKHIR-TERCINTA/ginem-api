@@ -1,14 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-import {
-  Browsers,
-  DisconnectReason,
-  fetchLatestBaileysVersion,
-  makeWASocket,
-  type BaileysEventMap,
-  type WAMessage,
-  type WASocket,
-  useMultiFileAuthState
-} from '@whiskeysockets/baileys'
+import type { BaileysEventMap, WAMessage, WASocket } from '@whiskeysockets/baileys'
 
 import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
@@ -23,11 +14,15 @@ import {
 import type { WhatsappConnectionStatus } from './types'
 import { ChatService } from '../Chat.service'
 import pino from 'pino'
+import { loadBaileys, type BaileysModule } from './baileys-loader'
 
-type AuthBundle = Awaited<ReturnType<typeof useMultiFileAuthState>>
-type WaVersion = Awaited<ReturnType<typeof fetchLatestBaileysVersion>>['version']
+type AuthBundle = Awaited<ReturnType<BaileysModule['useMultiFileAuthState']>>
+type WaVersion = Awaited<
+  ReturnType<BaileysModule['fetchLatestBaileysVersion']>
+>['version']
 
 const LOG_PREFIX = '[WhatsappService]'
+const ALLOWED_SENDER_NUMBER = '6281379574223'
 
 export type WhatsappSocketBindings = {
   userLabel: () => string
@@ -44,11 +39,14 @@ export type WhatsappSocketBindings = {
   getIntentionalDisconnect: () => boolean
   getReconnectScheduled: () => boolean
   setReconnectScheduled: (v: boolean) => void
-  requestAttachSocket: () => void
+  requestAttachSocket: () => void | Promise<void>
 }
 
 /** Socket Baileys + event `connection.update` / `messages.upsert` (dipakai oleh `WhatsappService`). */
 export class WhatsappBaileysSocket {
+  /** Set after first successful `attach()`; used for disconnect reason codes. */
+  private baileys: BaileysModule | undefined
+
   constructor(private readonly bind: WhatsappSocketBindings) {}
 
   /**
@@ -75,16 +73,19 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  attach(): void {
+  async attach(): Promise<void> {
     try {
       this.bind.getSocket()?.end(undefined)
       this.bind.setReconnectScheduled(false)
       this.bind.setLastPairingQr(undefined)
 
-      const sock = makeWASocket({
+      const b = await loadBaileys()
+      this.baileys = b
+
+      const sock = b.makeWASocket({
         version: this.bind.getWaVersion(),
         auth: this.bind.getAuth(),
-        browser: Browsers.macOS('Chrome'),
+        browser: b.Browsers.macOS('Chrome'),
         syncFullHistory: false,
         logger: pino({ level: 'silent' })
       })
@@ -147,13 +148,18 @@ export class WhatsappBaileysSocket {
       return
     }
 
-    if (code === DisconnectReason.loggedOut) {
+    const DR = this.baileys?.DisconnectReason
+    if (DR != null && code === DR.loggedOut) {
       this.bind.setConnectionState('disconnected')
       this.bind.setLastDisconnectReason('Logged out — scan QR again')
       return
     }
 
-    if (!isTransientDisconnect(code) || this.bind.getReconnectScheduled()) {
+    if (
+      DR == null ||
+      !isTransientDisconnect(code, DR) ||
+      this.bind.getReconnectScheduled()
+    ) {
       this.bind.setConnectionState('error')
       return
     }
@@ -190,24 +196,38 @@ export class WhatsappBaileysSocket {
   private async maybePingPong(msg: WAMessage): Promise<void> {
     try {
       const sock = this.bind.getSocket()
-      if (sock == null || msg.message == null || msg.key.fromMe) return
+      if (sock == null || msg.key.fromMe) return
 
       const chat = msg.key.remoteJid
       if (chat == null || chat === 'status@broadcast') return
 
-      console.log('chat: ', chat)
-      console.log('userLabel: ', this.bind.userLabel())
+      const sender = msg.key.senderPn ?? chat
+      const normalizedSender = sender.replace(/[^0-9]/g, '')
+      if (normalizedSender !== ALLOWED_SENDER_NUMBER) return
+
+      // Ignore non-chat/system events (e.g. messageStubType: "Bad MAC").
+      if (msg.messageStubType != null) {
+        logger.debug(
+          `${LOG_PREFIX} skip stub event (${this.bind.userLabel()}): chat=${chat}, stubType=${msg.messageStubType}`
+        )
+        return
+      }
+
+      if (msg.message == null) return
 
       const incoming = plainTextFromMessage(msg.message)
-      // if (incoming?.trim().toLowerCase() !== 'ping') return
+      if (incoming == null || incoming.trim().length === 0) {
+        logger.debug(
+          `${LOG_PREFIX} skip non-text message (${this.bind.userLabel()}): chat=${chat}`
+        )
+        return
+      }
 
-      if (chat !== '6281379574223@s.whatsapp.net') return
+      // if (msg.key.senderPn !== '6281379574223@s.whatsapp.net') return
 
-      console.log('incoming: ', incoming)
+      const { reply } = await ChatService.query(incoming)
 
-      const answer = await ChatService.query(incoming ?? '')
-
-      await sock.sendMessage(chat, { text: answer }, { quoted: msg })
+      await sock.sendMessage(chat, { text: reply }, { quoted: msg })
       logger.info(`${LOG_PREFIX} auto-reply pong → ${chat} (${this.bind.userLabel()})`)
     } catch (error) {
       if (error instanceof AppError) throw error

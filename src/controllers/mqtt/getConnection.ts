@@ -11,12 +11,13 @@ export const getConnection = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const response = ResponseData.success({
-      data: { connected: MQTTService.isConnected() },
-      message: 'MQTT broker connection state'
-    })
-    return res.status(StatusCodes.OK).json(response)
-  } catch (err) {
-    return handleError(res, err)
+    return res.status(StatusCodes.OK).json(
+      ResponseData.success({
+        data: { connected: MQTTService.isConnected() },
+        message: 'MQTT broker connection state'
+      })
+    )
+  } catch (serverError) {
+    return handleError(res, serverError)
   }
 }

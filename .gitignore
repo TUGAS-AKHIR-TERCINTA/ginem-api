@@ -7,3 +7,5 @@ tmp
 public/*
 whatsapp-sessions/*
 logs/*
+.cursorignore
+.cursorrules

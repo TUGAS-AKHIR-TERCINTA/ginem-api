@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
-import { AdminController } from '../controllers/admin'
-import { MiddleWares } from '../middlewares'
+import { AdminController } from '../controllers/admin/index'
+import { MiddleWares } from '../middlewares/index'
 import {
   adminUserIdParamSchema,
   createAdminBodySchema,

@@ -69,6 +69,20 @@ module.exports = {
       executed_at: {
         type: DataTypes.DATE,
         allowNull: true
+      },
+      category: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+        defaultValue: 'once'
+      },
+      cron_pattern: {
+        type: DataTypes.STRING(50),
+        allowNull: true
+      },
+      timezone: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        defaultValue: 'Asia/Jakarta'
       }
     })
   },

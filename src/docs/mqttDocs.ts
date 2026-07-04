@@ -23,7 +23,7 @@
  *           type: string
  *           minLength: 1
  *           maxLength: 2000
- *           description: Command string published as JSON { "command": "0" | "1" } to the broker
+ *           description: Request field name; broker payload is JSON { "value": "0" | "1" } (same shape as telemetry)
  *           example: "1"
  *     MqttPublishStatusRequest:
  *       type: object
@@ -148,7 +148,7 @@
  *   post:
  *     summary: Publish a device command to MQTT
  *     description: |
- *       Publishes to topic `iot/{deviceId}/command` with body `{"command":"<your command>"}`.
+ *       Publishes to topic `iot/v1/device/{deviceId}/command` with body `{"value":"0"|"1"}` (same envelope as telemetry).
  *       Requires a valid JWT (Bearer or cookie per app configuration).
  *     tags: [MQTT]
  *     security:
@@ -163,8 +163,8 @@
  *             turnOn:
  *               summary: Turn device on
  *               value:
- *                 deviceId: lamp-01
- *                 command: "on"
+ *                 deviceId: 1
+ *                 command: "1"
  *     responses:
  *       200:
  *         description: Command accepted and published (or queued by the MQTT client)
