@@ -23,7 +23,7 @@ jest.mock('../../models/IndexingModel', () => ({
   }
 }))
 
-const mockedIndexingModel = IndexingModel as jest.Mocked<typeof IndexingModel>
+const mockedIndexingModel = jest.mocked(IndexingModel)
 const mockedPinecone = pineconeService as jest.Mocked<typeof pineconeService>
 
 describe('PineconeBackupService', () => {

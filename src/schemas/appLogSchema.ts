@@ -29,7 +29,7 @@ export const findAllAppLogsSchema = z.object({
   pagination: z
     .string()
     .optional()
-    .transform((v) => v === 'true')
+    .transform((v): boolean => v === 'true')
 })
 
 export type ICreateAppLog = z.infer<typeof createAppLogSchema>

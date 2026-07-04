@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Op, type WhereOptions, type Order } from 'sequelize'
 
 export class DeviceService {
-  private static buildFindAllWhere (payload: IFindAllDevice) {
+  private static buildFindAllWhere(payload: IFindAllDevice) {
     let where: WhereOptions<IDeviceAttributes> = {
       deleted: 0
     }
@@ -29,7 +29,7 @@ export class DeviceService {
     return where
   }
 
-  static async findAll (payload: IFindAllDevice) {
+  static async findAll(payload: IFindAllDevice) {
     try {
       const pager = new Pagination(payload.page, payload.size)
 
@@ -61,7 +61,7 @@ export class DeviceService {
     }
   }
 
-  static async findById (deviceId: number) {
+  static async findById(deviceId: number) {
     try {
       const result = await DeviceModel.findOne({
         where: { deleted: 0, deviceId },
@@ -89,7 +89,7 @@ export class DeviceService {
     }
   }
 
-  static async findByName (deviceName: string) {
+  static async findByName(deviceName: string) {
     try {
       const result = await DeviceModel.findOne({
         where: { deleted: 0, deviceName }
@@ -110,7 +110,7 @@ export class DeviceService {
     }
   }
 
-  static async create (payload: ICreateDevice) {
+  static async create(payload: ICreateDevice) {
     try {
       const existingDevice = await DeviceModel.findOne({
         where: { deviceName: payload.deviceName.toLocaleUpperCase() }
@@ -132,7 +132,7 @@ export class DeviceService {
     }
   }
 
-  static async update (payload: IUpdateDevice) {
+  static async update(payload: IUpdateDevice) {
     try {
       const updateData: Partial<IDeviceAttributes> = {}
 
@@ -170,7 +170,7 @@ export class DeviceService {
     }
   }
 
-  static async remove (deviceId: number) {
+  static async remove(deviceId: number) {
     try {
       const result = await DeviceModel.findOne({
         where: { deleted: 0, deviceId }
@@ -188,7 +188,7 @@ export class DeviceService {
     }
   }
 
-  static async exists (deviceId: number): Promise<boolean> {
+  static async exists(deviceId: number): Promise<boolean> {
     try {
       await this.findById(deviceId)
       return true

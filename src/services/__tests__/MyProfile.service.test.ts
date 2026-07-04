@@ -20,7 +20,7 @@ jest.mock('../../models/UserModel', () => ({
   }
 }))
 
-const mockedUserModel = UserModel as jest.Mocked<typeof UserModel>
+const mockedUserModel = jest.mocked(UserModel)
 
 describe('MyProfileService', () => {
   beforeEach(() => {

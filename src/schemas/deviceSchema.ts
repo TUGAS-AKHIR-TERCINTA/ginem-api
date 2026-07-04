@@ -36,7 +36,7 @@ export const findAllDeviceSchema = z.object({
   pagination: z
     .string()
     .optional()
-    .transform((v) => v === 'true')
+    .transform((v): boolean => v === 'true')
 })
 
 export type IUpdateDevice = z.infer<typeof updateDeviceSchema>
