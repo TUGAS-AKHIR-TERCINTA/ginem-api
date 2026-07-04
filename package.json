@@ -11,10 +11,9 @@
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "seed": "npx sequelize-cli db:seed:all",
     "lint:fix": "eslint --fix ./*.ts",
-    "test": "jest"
-  },
-  "jest": {
-    "testEnvironment": "node"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "express js"
