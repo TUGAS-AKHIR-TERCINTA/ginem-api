@@ -7,7 +7,7 @@ import type { DeviceScheduleJobData } from './deviceSchedule.queue'
 
 export type ScheduledJobStatus = 'pending' | 'active' | 'completed' | 'failed'
 
-async function recordSchedulerResult(
+async function recordSchedulerResult (
   jobId: string,
   status: ScheduledJobStatus,
   category: SchedulerCategory,
@@ -34,7 +34,7 @@ async function recordSchedulerResult(
   }
 }
 
-export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<void> {
+export async function executeActuatorJob (data: DeviceScheduleJobData): Promise<void> {
   const { jobId, deviceName, state, category } = data
 
   try {
@@ -46,6 +46,12 @@ export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<v
       return
     }
 
+    if (state !== 'on' && state !== 'off') {
+      const error = `Invalid actuator state for job ${jobId}`
+      await recordSchedulerResult(jobId, 'failed', category, undefined, error)
+      return
+    }
+
     const value = state === 'on' ? '1' : '0'
 
     const deviceValue = await DeviceLogService.create({
@@ -53,7 +59,7 @@ export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<v
       deviceLogData: value
     })
 
-    MQTTService.publishActuatorState(device.deviceId, state!)
+    MQTTService.publishActuatorState(device.deviceId, state)
 
     const result = {
       success: true,
@@ -85,7 +91,7 @@ export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<v
   }
 }
 
-export async function executeSensorDataJob(data: DeviceScheduleJobData): Promise<void> {
+export async function executeSensorDataJob (data: DeviceScheduleJobData): Promise<void> {
   const { jobId, deviceName, category } = data
 
   try {

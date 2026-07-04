@@ -6,9 +6,9 @@ import { LLMModelService } from '../../services/LLMModel.service'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
 import {
-  IFindAllLLMModel,
-  ILLMModelIdParam,
-  ISelectLLMModel
+  type IFindAllLLMModel,
+  type ILLMModelIdParam,
+  type ISelectLLMModel
 } from '../../schemas/LLMModelSchema'
 
 export const findAll = async (

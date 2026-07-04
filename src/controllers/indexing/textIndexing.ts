@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 import { PineconeService } from '../../services/Pinecone.service'
 import { PineconeBackupService } from '../../services/PineconeBackup.service'
 import { handleError } from '../../utilities/requestHandler'
-import { ICreateIndexing } from '../../schemas/IndexingSchema'
+import { type ICreateIndexing } from '../../schemas/IndexingSchema'
 
 export const indexingTextDocuments = async (
   req: Request,
@@ -18,7 +18,7 @@ export const indexingTextDocuments = async (
     return res
       .status(StatusCodes.OK)
       .json(
-        ResponseData.success({ message: `document(s) indexed to Pinecone successfully.` })
+        ResponseData.success({ message: 'document(s) indexed to Pinecone successfully.' })
       )
   } catch (serverError) {
     return handleError(res, serverError)

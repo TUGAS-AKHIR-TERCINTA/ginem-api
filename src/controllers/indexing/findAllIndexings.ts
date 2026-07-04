@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { PineconeBackupService } from '../../services/PineconeBackup.service'
 import { handleError } from '../../utilities/requestHandler'
-import { IFindAllIndexing } from '../../schemas/IndexingSchema'
+import { type IFindAllIndexing } from '../../schemas/IndexingSchema'
 
 export const findAllIndexings = async (
   req: Request,

@@ -1,15 +1,15 @@
 import { StatusCodes } from 'http-status-codes'
-import { Response } from 'express'
+import { type Response } from 'express'
 import { ResponseData } from './response'
 import logger from './logger'
 import { AppError } from './AppError'
 import { AppLogService } from '../services/AppLog.service'
 
-export function handleServerError(res: Response, err: unknown) {
+export function handleServerError (res: Response, err: unknown) {
   if (err instanceof Error) {
     const message = `Unable to process request!: ${err.message}`
     logger.error(message, { stack: err.stack })
-    AppLogService.create({
+    void AppLogService.create({
       appLogLevel: 'error',
       appLogMessage: message,
       appLogSource: 'handleServerError',
@@ -23,7 +23,7 @@ export function handleServerError(res: Response, err: unknown) {
 
   const message = 'Unable to process request! Unknown error'
   logger.error(message)
-  AppLogService.create({
+  void AppLogService.create({
     appLogLevel: 'error',
     appLogMessage: message,
     appLogSource: 'handleServerError',
@@ -33,7 +33,7 @@ export function handleServerError(res: Response, err: unknown) {
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response)
 }
 
-export function handleError(res: Response, err: unknown): Response {
+export function handleError (res: Response, err: unknown): Response {
   if (err instanceof AppError) {
     logger.warn(`[AppError] ${err.statusCode}: ${err.message}`)
     return res.status(err.statusCode).json(ResponseData.error({ message: err.message }))

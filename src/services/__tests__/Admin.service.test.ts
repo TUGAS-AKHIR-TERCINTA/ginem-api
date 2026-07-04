@@ -1,3 +1,8 @@
+import { StatusCodes } from 'http-status-codes'
+import { UserModel } from '../../models/UserModel'
+import { AdminService } from '../Admin.service'
+import { hashPassword } from '../../utilities/scurePassword'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -16,12 +21,6 @@ jest.mock('../../models/UserModel', () => ({
     count: jest.fn()
   }
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { UserModel } from '../../models/UserModel'
-import { AdminService } from '../Admin.service'
-import { AppError } from '../../utilities/AppError'
-import { hashPassword } from '../../utilities/scurePassword'
 
 const mockedUserModel = UserModel as jest.Mocked<typeof UserModel>
 

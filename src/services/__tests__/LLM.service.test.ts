@@ -9,13 +9,14 @@ jest.mock('../../utilities/logger', () => ({
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-const ChatOpenAIMock = jest.fn()
-
 jest.mock('@langchain/openai', () => ({
-  ChatOpenAI: ChatOpenAIMock
+  ChatOpenAI: jest.fn()
 }))
 
+import { ChatOpenAI } from '@langchain/openai'
 import { LLMService } from '../LLM.service'
+
+const ChatOpenAIMock = jest.mocked(ChatOpenAI)
 
 describe('LLMService', () => {
   beforeEach(() => {

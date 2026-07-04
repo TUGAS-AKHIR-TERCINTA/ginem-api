@@ -1,3 +1,7 @@
+import { StatusCodes } from 'http-status-codes'
+import { UserModel } from '../../models/UserModel'
+import { MyProfileService } from '../MyProfile.service'
+
 jest.mock('../../configs/appConfig', () => ({
   appConfigs: {
     secret: { passwordEncryption: 'test-password-salt' }
@@ -15,10 +19,6 @@ jest.mock('../../models/UserModel', () => ({
     update: jest.fn()
   }
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { UserModel } from '../../models/UserModel'
-import { MyProfileService } from '../MyProfile.service'
 
 const mockedUserModel = UserModel as jest.Mocked<typeof UserModel>
 

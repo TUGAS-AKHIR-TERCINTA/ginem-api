@@ -5,7 +5,7 @@ import { ResponseData } from '../../utilities/response'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { DeviceService } from '../../services/Device.service'
 import { handleError } from '../../utilities/requestHandler'
-import { IUpdateDevice } from '../../schemas/DeviceSchema'
+import { type IUpdateDevice } from '../../schemas/DeviceSchema'
 
 export const updateDevice = async (
   req: IAuthenticatedRequest,

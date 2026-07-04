@@ -1,6 +1,6 @@
-import { DataTypes, Model } from 'sequelize'
+import { DataTypes, type Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
-import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
+import { BaseModelFields, type IBaseModelFields } from '../interfaces/baseModelFields'
 
 export interface IUserAttributes extends IBaseModelFields {
   userId: number
@@ -12,13 +12,13 @@ export interface IUserAttributes extends IBaseModelFields {
 }
 
 export type IUserCreationAttributes = Omit<
-  IUserAttributes,
-  'userId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+IUserAttributes,
+'userId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >
 
 export interface UserInstance
   extends Model<IUserAttributes, IUserCreationAttributes>,
-    IUserAttributes {}
+  IUserAttributes {}
 
 export const UserModel = sequelizeInit.define<UserInstance>(
   'Users',

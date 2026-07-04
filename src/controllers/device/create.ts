@@ -1,10 +1,10 @@
 import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
-import { IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
+import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { DeviceService } from '../../services/Device.service'
 import { handleError } from '../../utilities/requestHandler'
-import { ICreateDevice } from '../../schemas/DeviceSchema'
+import { type ICreateDevice } from '../../schemas/DeviceSchema'
 
 export const createDevice = async (
   req: IAuthenticatedRequest,

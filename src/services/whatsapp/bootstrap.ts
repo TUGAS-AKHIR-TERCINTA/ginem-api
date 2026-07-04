@@ -9,7 +9,7 @@ import { WhatsappService } from './WhatsApp.service'
 const LOG_PREFIX = '[WhatsappBoot]'
 
 /** Aktif kecuali `WHATSAPP_AUTO_CONNECT_ON_BOOT=false`. */
-export function isWhatsappAutoConnectOnBootEnabled(): boolean {
+export function isWhatsappAutoConnectOnBootEnabled (): boolean {
   return process.env.WHATSAPP_AUTO_CONNECT_ON_BOOT !== 'false'
 }
 
@@ -17,7 +17,7 @@ export function isWhatsappAutoConnectOnBootEnabled(): boolean {
  * `undefined` = tidak dibatasi (semua user terpasang di-resume).
  * Angka positif = batas eksplisit, mis. `50` → paling banyak 50 user, sisanya tidak di-connect.
  */
-function parseMaxUsers(): number | undefined {
+function parseMaxUsers (): number | undefined {
   const raw = process.env.WHATSAPP_AUTO_CONNECT_MAX_USERS
   if (raw == null || raw.trim() === '') return undefined
   const n = parseInt(raw.trim(), 10)
@@ -25,7 +25,7 @@ function parseMaxUsers(): number | undefined {
   return n
 }
 
-type CredsJsonShape = {
+interface CredsJsonShape {
   registered?: boolean
   me?: { id?: string }
 }
@@ -34,13 +34,13 @@ type CredsJsonShape = {
  * Baileys sering menulis `registered: false` di `creds.json` meski akun sudah login;
  * sinyal andal untuk sesi yang bisa di-restore: `registered === true` atau ada `me.id` JID WA.
  */
-function credsJsonIndicatesLoggedInSession(parsed: CredsJsonShape): boolean {
+function credsJsonIndicatesLoggedInSession (parsed: CredsJsonShape): boolean {
   if (parsed.registered === true) return true
   const jid = parsed.me?.id
   return typeof jid === 'string' && jid.includes('@s.whatsapp.net')
 }
 
-async function dirHasResumableSession(authDir: string): Promise<boolean> {
+async function dirHasResumableSession (authDir: string): Promise<boolean> {
   const credsPath = path.join(authDir, 'creds.json')
   try {
     const raw = await readFile(credsPath, 'utf8')
@@ -51,7 +51,7 @@ async function dirHasResumableSession(authDir: string): Promise<boolean> {
   }
 }
 
-function collectNumericUserIds(entries: Dirent[]): number[] {
+function collectNumericUserIds (entries: Dirent[]): number[] {
   const ids: number[] = []
   for (const ent of entries) {
     if (!ent.isDirectory()) continue
@@ -68,7 +68,7 @@ function collectNumericUserIds(entries: Dirent[]): number[] {
  * Setelah server listen: hubungkan ulang sesi yang punya `creds.json` dengan kredensial login
  * (`registered` atau `me.id` ber-JID WhatsApp). Non-blocking; kegagalan per-user hanya di-log.
  */
-export async function resumeWhatsappSessionsOnBoot(): Promise<void> {
+export async function resumeWhatsappSessionsOnBoot (): Promise<void> {
   if (!isWhatsappAutoConnectOnBootEnabled()) {
     logger.info(`${LOG_PREFIX} skipped (WHATSAPP_AUTO_CONNECT_ON_BOOT=false)`)
     return

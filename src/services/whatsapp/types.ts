@@ -5,7 +5,7 @@ export type WhatsappConnectionStatus =
   | 'error'
 
 /** Hasil menunggu QR pairing setelah `connect()` (untuk REST). */
-export type WhatsappPairingConnectResult = {
+export interface WhatsappPairingConnectResult {
   connectionStatus: WhatsappConnectionStatus
   timedOut: boolean
   /** String QR mentah dari Baileys (bisa di-render ke PNG). */

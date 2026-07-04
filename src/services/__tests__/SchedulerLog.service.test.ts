@@ -1,3 +1,7 @@
+import { StatusCodes } from 'http-status-codes'
+import { SchedulerLogModel } from '../../models/SchedulerLogModel'
+import { SchedulerLogService } from '../SchedulerLog.service'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -9,10 +13,6 @@ jest.mock('../../models/SchedulerLogModel', () => ({
     findOne: jest.fn()
   }
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { SchedulerLogModel } from '../../models/SchedulerLogModel'
-import { SchedulerLogService } from '../SchedulerLog.service'
 
 const mockedSchedulerLogModel = SchedulerLogModel as jest.Mocked<typeof SchedulerLogModel>
 

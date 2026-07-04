@@ -1,3 +1,11 @@
+import { mqttClient } from '../../mqtt/client'
+import {
+  publishDeviceCommand,
+  publishDeviceState,
+  publishDeviceTelemetry,
+  toMqttValueEnvelope
+} from '../../mqtt/publisher'
+
 jest.mock('../../mqtt/client', () => ({
   mqttClient: {
     publish: jest.fn()
@@ -12,14 +20,6 @@ jest.mock('../../../utilities/logger', () => ({
     warn: jest.fn()
   }
 }))
-
-import { mqttClient } from '../../mqtt/client'
-import {
-  publishDeviceCommand,
-  publishDeviceState,
-  publishDeviceTelemetry,
-  toMqttValueEnvelope
-} from '../../mqtt/publisher'
 
 describe('mqtt publisher', () => {
   beforeEach(() => {

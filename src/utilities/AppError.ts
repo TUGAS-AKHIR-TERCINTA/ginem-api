@@ -4,7 +4,7 @@ export class AppError extends Error {
   public readonly statusCode: number
   public readonly isOperational: boolean
 
-  constructor(
+  constructor (
     message: string,
     statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR,
     isOperational = true
@@ -18,15 +18,15 @@ export class AppError extends Error {
     }
   }
 
-  static notFound(message: string): AppError {
+  static notFound (message: string): AppError {
     return new AppError(message, StatusCodes.NOT_FOUND)
   }
 
-  static badRequest(message: string): AppError {
+  static badRequest (message: string): AppError {
     return new AppError(message, StatusCodes.BAD_REQUEST)
   }
 
-  static conflict(message: string): AppError {
+  static conflict (message: string): AppError {
     return new AppError(message, StatusCodes.CONFLICT)
   }
 }

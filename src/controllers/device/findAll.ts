@@ -1,11 +1,11 @@
-import { query, type Response } from 'express'
+import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { DeviceService } from '../../services/Device.service'
 import { handleError } from '../../utilities/requestHandler'
-import { IFindAllDevice } from '../../schemas/DeviceSchema'
+import { type IFindAllDevice } from '../../schemas/DeviceSchema'
 
 export const findAllDevice = async (
   req: IAuthenticatedRequest,

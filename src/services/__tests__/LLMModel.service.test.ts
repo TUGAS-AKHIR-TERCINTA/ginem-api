@@ -1,3 +1,7 @@
+import fs from 'fs'
+import { StatusCodes } from 'http-status-codes'
+import { LLMModelService } from '../LLMModel.service'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -7,10 +11,6 @@ jest.mock('fs', () => ({
   readFileSync: jest.fn(),
   writeFileSync: jest.fn()
 }))
-
-import fs from 'fs'
-import { StatusCodes } from 'http-status-codes'
-import { LLMModelService } from '../LLMModel.service'
 
 const mockedFs = fs as jest.Mocked<typeof fs>
 

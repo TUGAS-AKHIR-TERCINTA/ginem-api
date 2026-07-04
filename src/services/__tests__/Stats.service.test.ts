@@ -1,3 +1,11 @@
+import { StatusCodes } from 'http-status-codes'
+import { AppLogModel } from '../../models/AppLogModel'
+import { DeviceModel } from '../../models/DeviceModel'
+import { IndexingModel } from '../../models/IndexingModel'
+import { SchedulerLogModel } from '../../models/SchedulerLogModel'
+import { UserModel } from '../../models/UserModel'
+import { StatsService } from '../Stats.service'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -22,14 +30,6 @@ jest.mock('../../models/SchedulerLogModel', () => ({
 jest.mock('../../models/UserModel', () => ({
   UserModel: { count: jest.fn() }
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { AppLogModel } from '../../models/AppLogModel'
-import { DeviceModel } from '../../models/DeviceModel'
-import { IndexingModel } from '../../models/IndexingModel'
-import { SchedulerLogModel } from '../../models/SchedulerLogModel'
-import { UserModel } from '../../models/UserModel'
-import { StatsService } from '../Stats.service'
 
 describe('StatsService', () => {
   beforeEach(() => {

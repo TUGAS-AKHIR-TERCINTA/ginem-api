@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { DeviceLogService } from '../../services/DeviceLog.service'
-import { IUpdateDeviceLog } from '../../schemas/DeviceLogSchema'
+import { type IUpdateDeviceLog } from '../../schemas/DeviceLogSchema'
 
 export const updateDeviceLog = async (
   req: IAuthenticatedRequest,

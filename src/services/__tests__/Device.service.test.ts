@@ -1,3 +1,7 @@
+import { StatusCodes } from 'http-status-codes'
+import { DeviceModel } from '../../models/DeviceModel'
+import { DeviceService } from '../Device.service'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -19,10 +23,6 @@ jest.mock('../../models/DeviceModel', () => ({
 jest.mock('../../models/DeviceLogModel', () => ({
   DeviceLogModel: {}
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { DeviceModel } from '../../models/DeviceModel'
-import { DeviceService } from '../Device.service'
 
 const mockedDeviceModel = DeviceModel as jest.Mocked<typeof DeviceModel>
 

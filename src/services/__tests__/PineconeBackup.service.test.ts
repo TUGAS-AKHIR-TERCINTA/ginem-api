@@ -1,3 +1,8 @@
+import { StatusCodes } from 'http-status-codes'
+import { IndexingModel } from '../../models/IndexingModel'
+import { pineconeService } from '../Pinecone.service'
+import { PineconeBackupService } from '../PineconeBackup.service'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -17,11 +22,6 @@ jest.mock('../../models/IndexingModel', () => ({
     destroy: jest.fn()
   }
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { IndexingModel } from '../../models/IndexingModel'
-import { pineconeService } from '../Pinecone.service'
-import { PineconeBackupService } from '../PineconeBackup.service'
 
 const mockedIndexingModel = IndexingModel as jest.Mocked<typeof IndexingModel>
 const mockedPinecone = pineconeService as jest.Mocked<typeof pineconeService>

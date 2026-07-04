@@ -1,7 +1,9 @@
-const mockInvoke = jest.fn()
+import { StatusCodes } from 'http-status-codes'
 
 jest.mock('langchain', () => ({
-  createAgent: jest.fn(() => ({ invoke: mockInvoke }))
+  createAgent: jest.fn(() => ({
+    invoke: jest.fn()
+  }))
 }))
 
 jest.mock('../LLM.service', () => ({
@@ -29,11 +31,12 @@ jest.mock('../../utilities/logger', () => ({
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-import { StatusCodes } from 'http-status-codes'
+import { createAgent } from 'langchain'
 import { ChatService } from '../Chat.service'
 import { pineconeService } from '../Pinecone.service'
 import { TTSService } from '../TTS.service'
 
+const mockInvoke = (createAgent as jest.Mock).mock.results[0].value.invoke as jest.Mock
 const mockedPinecone = pineconeService as jest.Mocked<typeof pineconeService>
 const mockedTTS = TTSService as jest.Mocked<typeof TTSService>
 
@@ -54,9 +57,7 @@ describe('ChatService', () => {
   })
 
   it('includes RAG context when pinecone returns hits', async () => {
-    mockedPinecone.search.mockResolvedValue([
-      { content: 'Relay docs', source: 'manual' }
-    ])
+    mockedPinecone.search.mockResolvedValue([{ content: 'Relay docs', source: 'manual' }])
 
     await ChatService.query('Bagaimana cara relay bekerja?')
 

@@ -1,19 +1,19 @@
-import { Op, WhereOptions } from 'sequelize'
+import { Op, type WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
 import {
-  ISchedulerLogModelAttributes,
+  type ISchedulerLogModelAttributes,
   SchedulerLogModel
 } from '../models/SchedulerLogModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
-import { IFindAllSchedulerLog } from '../schemas/SchedulerLogSchema'
+import { type IFindAllSchedulerLog } from '../schemas/SchedulerLogSchema'
 
 export type SchedulerLogType = 'actuator' | 'sensor_data'
 export type SchedulerLogStatus = 'pending' | 'active' | 'completed' | 'failed'
 
 export class SchedulerLogService {
-  private static buildFindAllWhere(payload: IFindAllSchedulerLog) {
+  private static buildFindAllWhere (payload: IFindAllSchedulerLog) {
     const where: WhereOptions<ISchedulerLogModelAttributes> = { deleted: 0 }
 
     if (payload.type != null && ['actuator', 'sensor_data'].includes(payload.type)) {
@@ -52,14 +52,14 @@ export class SchedulerLogService {
     return where
   }
 
-  static async findAll(payload: IFindAllSchedulerLog) {
+  static async findAll (payload: IFindAllSchedulerLog) {
     try {
       const pager = new Pagination(payload.page, payload.size)
 
       const result = await SchedulerLogModel.findAndCountAll({
         where: this.buildFindAllWhere(payload),
         order: [['schedulerLogId', 'desc']],
-        ...(payload.pagination === true && {
+        ...(payload.pagination && {
           limit: pager.limit,
           offset: pager.offset
         })
@@ -76,7 +76,7 @@ export class SchedulerLogService {
     }
   }
 
-  static async findById(schedulerLogId: number) {
+  static async findById (schedulerLogId: number) {
     try {
       const result = await SchedulerLogModel.findOne({
         where: { deleted: 0, schedulerLogId }

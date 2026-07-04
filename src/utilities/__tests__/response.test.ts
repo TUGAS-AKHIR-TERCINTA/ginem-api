@@ -1,10 +1,10 @@
+import { ResponseData } from '../response'
+
 jest.mock('../../configs/appConfig', () => ({
   appConfigs: {
     app: { appVersion: '1.0.0-test' }
   }
 }))
-
-import { ResponseData } from '../response'
 
 describe('ResponseData', () => {
   it('builds a success response with defaults', () => {

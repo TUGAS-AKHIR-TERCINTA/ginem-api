@@ -1,3 +1,5 @@
+import { pineconeService } from '../Pinecone.service'
+
 jest.mock('../../configs/appConfig', () => ({
   appConfigs: {
     pinecone: {
@@ -19,8 +21,6 @@ jest.mock('axios')
 jest.mock('@pinecone-database/pinecone', () => ({
   Pinecone: jest.fn()
 }))
-
-import { pineconeService } from '../Pinecone.service'
 
 describe('PineconeService', () => {
   it('returns empty array for blank search query', async () => {

@@ -1,13 +1,13 @@
-import { Op, WhereOptions } from 'sequelize'
+import { Op, type WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
-import { AppLogModel, IAppLogAttributes } from '../models/AppLogModel'
+import { AppLogModel, type IAppLogAttributes } from '../models/AppLogModel'
 import { AppError } from '../utilities/AppError'
 import { Pagination } from '../utilities/pagination'
 import logger from '../utilities/logger'
-import { ICreateAppLog, IFindAllAppLogs } from '../schemas/AppLogSchema'
+import { type ICreateAppLog, type IFindAllAppLogs } from '../schemas/AppLogSchema'
 
 export class AppLogService {
-  private static buildFindAllWhere(payload: IFindAllAppLogs) {
+  private static buildFindAllWhere (payload: IFindAllAppLogs) {
     const where: WhereOptions<IAppLogAttributes> = {
       deleted: 0
     }
@@ -16,21 +16,21 @@ export class AppLogService {
       where.appLogLevel = payload.level
     }
 
-    if (payload.search != null && String(payload.search).trim()) {
+    if (payload.search != null && String(payload.search).trim() !== '') {
       const term = `%${String(payload.search).trim()}%`
       where.appLogMessage = { [Op.like]: term }
     }
     return where
   }
 
-  static async findAll(payload: IFindAllAppLogs) {
+  static async findAll (payload: IFindAllAppLogs) {
     try {
       const pager = new Pagination(payload.page, payload.size)
 
       const result = await AppLogModel.findAndCountAll({
         where: this.buildFindAllWhere(payload),
         order: [['appLogId', 'DESC']],
-        ...(payload.pagination === true && {
+        ...(payload.pagination && {
           limit: pager.limit,
           offset: pager.offset
         })
@@ -44,7 +44,7 @@ export class AppLogService {
     }
   }
 
-  static async create(payload: ICreateAppLog) {
+  static async create (payload: ICreateAppLog) {
     try {
       return await AppLogModel.create({
         appLogLevel: payload.appLogLevel,

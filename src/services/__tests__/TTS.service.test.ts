@@ -1,3 +1,7 @@
+import axios from 'axios'
+import { StatusCodes } from 'http-status-codes'
+import { TTSService, toSpeakableText } from '../TTS.service'
+
 jest.mock('../../configs/appConfig', () => ({
   appConfigs: {
     llm: { openAIApiKey: 'test-openai-key' },
@@ -11,10 +15,6 @@ jest.mock('../../utilities/logger', () => ({
 }))
 
 jest.mock('axios')
-
-import axios from 'axios'
-import { StatusCodes } from 'http-status-codes'
-import { TTSService, toSpeakableText } from '../TTS.service'
 
 const mockedAxios = axios as jest.Mocked<typeof axios>
 

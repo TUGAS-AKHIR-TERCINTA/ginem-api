@@ -6,9 +6,9 @@ import { type IAuthenticatedRequest } from '../../interfaces/shared/request.inte
 import { handleError } from '../../utilities/requestHandler'
 import { ChatService } from '../../services/Chat.service'
 import { TTSService } from '../../services/TTS.service'
-import { IChatSchema } from '../../schemas/ChatSchema'
+import { type IChatSchema } from '../../schemas/ChatSchema'
 
-function sendBinaryAudioResponse(
+function sendBinaryAudioResponse (
   res: Response,
   reply: string,
   buffer: Buffer,
@@ -41,10 +41,10 @@ export const queryChat = async (
   try {
     const payload = req.body as IChatSchema
     const wantsBinaryAudio =
-      payload.withAudio === true && payload.audioFormat === 'binary'
+      payload.withAudio && payload.audioFormat === 'binary'
 
     const result = await ChatService.query(payload.message, {
-      withAudio: payload.withAudio === true && !wantsBinaryAudio
+      withAudio: payload.withAudio && !wantsBinaryAudio
     })
 
     if (wantsBinaryAudio) {

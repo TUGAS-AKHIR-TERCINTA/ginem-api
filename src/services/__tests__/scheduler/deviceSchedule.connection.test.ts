@@ -1,3 +1,8 @@
+import {
+  DEVICE_SCHEDULE_QUEUE_NAME,
+  getBullMqConnection
+} from '../../scheduler/deviceSchedule.connection'
+
 jest.mock('../../../configs/appConfig', () => ({
   appConfigs: {
     redis: {
@@ -6,11 +11,6 @@ jest.mock('../../../configs/appConfig', () => ({
     }
   }
 }))
-
-import {
-  DEVICE_SCHEDULE_QUEUE_NAME,
-  getBullMqConnection
-} from '../../scheduler/deviceSchedule.connection'
 
 describe('deviceSchedule.connection', () => {
   it('exposes queue name constant', () => {

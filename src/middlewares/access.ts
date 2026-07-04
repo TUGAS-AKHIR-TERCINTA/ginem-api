@@ -23,7 +23,7 @@ export const useAuthorization = (
     const token = req.headers.authorization.split(' ')[1]
     const verify = verifyAccessToken(token)
 
-    if (!verify) {
+    if (verify === false) {
       const message = 'Invalid Authorization.'
       const response = ResponseData.error({ message })
       return res.status(StatusCodes.UNAUTHORIZED).json(response)

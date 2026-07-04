@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { appConfigs } from '../configs/appConfig'
-import { IJwtPayload } from '../interfaces/shared/jwt.interface'
+import { type IJwtPayload } from '../interfaces/shared/jwt.interface'
 
 export const generateAccessToken = (user: IJwtPayload): any => {
   return jwt.sign(user, appConfigs.secret.jwtToken ?? '')

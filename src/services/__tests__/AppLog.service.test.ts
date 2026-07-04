@@ -1,3 +1,7 @@
+import { StatusCodes } from 'http-status-codes'
+import { AppLogModel } from '../../models/AppLogModel'
+import { AppLogService } from '../AppLog.service'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -9,10 +13,6 @@ jest.mock('../../models/AppLogModel', () => ({
     create: jest.fn()
   }
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { AppLogModel } from '../../models/AppLogModel'
-import { AppLogService } from '../AppLog.service'
 
 const mockedAppLogModel = AppLogModel as jest.Mocked<typeof AppLogModel>
 

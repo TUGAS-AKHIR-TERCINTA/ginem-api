@@ -3,9 +3,8 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { IUpdateMyProfile } from '../../schemas/MyProfileSchema'
+import { type IUpdateMyProfile } from '../../schemas/MyProfileSchema'
 import { MyProfileService } from '../../services/MyProfile.service'
-import { AppError } from '../../utilities/AppError'
 
 export const updateMyProfile = async (
   req: IAuthenticatedRequest,

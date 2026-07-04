@@ -1,3 +1,8 @@
+import { StatusCodes } from 'http-status-codes'
+import { UserModel } from '../../models/UserModel'
+import { AuthService } from '../Auth.service'
+import { generateAccessToken } from '../../utilities/jwt'
+
 jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
@@ -18,11 +23,6 @@ jest.mock('../../models/UserModel', () => ({
     update: jest.fn()
   }
 }))
-
-import { StatusCodes } from 'http-status-codes'
-import { UserModel } from '../../models/UserModel'
-import { AuthService } from '../Auth.service'
-import { generateAccessToken } from '../../utilities/jwt'
 
 const mockedUserModel = UserModel as jest.Mocked<typeof UserModel>
 

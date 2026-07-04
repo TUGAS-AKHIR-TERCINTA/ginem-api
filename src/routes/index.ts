@@ -1,6 +1,5 @@
 import path from 'path'
-import { Router } from 'express'
-import express from 'express'
+import express, { Router } from 'express'
 
 import { StatusCodes } from 'http-status-codes'
 import swaggerUi from 'swagger-ui-express'
@@ -39,7 +38,7 @@ routers.use(
 )
 
 routers.use((req, res) => {
-  const message = `Route not found!`
+  const message = 'Route not found!'
   logger.warn(message)
   const response = ResponseData.error({ message })
   return res.status(StatusCodes.NOT_FOUND).json(response)

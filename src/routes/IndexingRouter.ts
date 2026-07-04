@@ -2,7 +2,6 @@ import { Router } from 'express'
 import { MiddleWares } from '../middlewares/index'
 import { IndexingController } from '../controllers/indexing/index'
 import {
-  createIndexingBodySchema,
   findAllIndexingsSchema,
   deleteIndexingParamsSchema
 } from '../schemas/IndexingSchema'

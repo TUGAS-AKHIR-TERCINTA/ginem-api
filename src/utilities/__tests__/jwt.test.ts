@@ -1,10 +1,10 @@
+import { generateAccessToken, verifyAccessToken } from '../jwt'
+
 jest.mock('../../configs/appConfig', () => ({
   appConfigs: {
     secret: { jwtToken: 'test-jwt-secret-key' }
   }
 }))
-
-import { generateAccessToken, verifyAccessToken } from '../jwt'
 
 describe('jwt utilities', () => {
   const payload = {

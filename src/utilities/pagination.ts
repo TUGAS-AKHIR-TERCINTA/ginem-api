@@ -12,21 +12,29 @@ class Pagination {
   /** 1-based page number (page 1 = first page) */
   readonly page: number
 
-  constructor(page: number, size: number = 10) {
-    this.page = Math.max(1, Math.floor(Number(page)) || 1)
-    this.limit = Math.max(1, Math.floor(Number(size)) || 10)
+  constructor (page: number, size: number = 10) {
+    const parsedPage = Math.floor(Number(page))
+    const parsedSize = Math.floor(Number(size))
+    this.page = Math.max(
+      1,
+      Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
+    )
+    this.limit = Math.max(
+      1,
+      Number.isFinite(parsedSize) && parsedSize > 0 ? parsedSize : 10
+    )
     this.offset = this.calculateOffset(this.page, this.limit)
   }
 
   /** Offset for 1-based page: page 1 -> 0, page 2 -> limit, etc. */
-  private calculateOffset(page: number, size: number): number {
+  private calculateOffset (page: number, size: number): number {
     return (page - 1) * size
   }
 
-  public formatData(data: PaginationDataType) {
+  public formatData (data: PaginationDataType) {
     const { count, rows } = data
 
-    const totalPages = Math.ceil(count / this.limit) || 0
+    const totalPages = this.limit > 0 ? Math.ceil(count / this.limit) : 0
 
     return {
       totalItems: count,
