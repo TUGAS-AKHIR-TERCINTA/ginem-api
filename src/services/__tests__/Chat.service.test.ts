@@ -1,5 +1,10 @@
 import { StatusCodes } from 'http-status-codes'
 
+import { createAgent } from 'langchain'
+import { ChatService } from '../Chat.service'
+import { pineconeService } from '../Pinecone.service'
+import { TTSService } from '../TTS.service'
+
 jest.mock('langchain', () => ({
   createAgent: jest.fn(() => ({
     invoke: jest.fn()
@@ -30,11 +35,6 @@ jest.mock('../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
-
-import { createAgent } from 'langchain'
-import { ChatService } from '../Chat.service'
-import { pineconeService } from '../Pinecone.service'
-import { TTSService } from '../TTS.service'
 
 const mockInvoke = (createAgent as jest.Mock).mock.results[0].value.invoke as jest.Mock
 const mockedPinecone = pineconeService as jest.Mocked<typeof pineconeService>

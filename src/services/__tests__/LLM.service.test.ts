@@ -1,3 +1,6 @@
+import { ChatOpenAI } from '@langchain/openai'
+import { LLMService } from '../LLM.service'
+
 jest.mock('../../configs/appConfig', () => ({
   appConfigs: {
     llm: { openAIApiKey: 'test-openai-key' }
@@ -12,9 +15,6 @@ jest.mock('../../utilities/logger', () => ({
 jest.mock('@langchain/openai', () => ({
   ChatOpenAI: jest.fn()
 }))
-
-import { ChatOpenAI } from '@langchain/openai'
-import { LLMService } from '../LLM.service'
 
 const ChatOpenAIMock = jest.mocked(ChatOpenAI)
 
