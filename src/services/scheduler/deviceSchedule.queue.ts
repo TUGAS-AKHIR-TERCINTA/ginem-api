@@ -7,7 +7,7 @@ import {
 } from './deviceSchedule.connection'
 import { WIB_SCHEDULE_TIMEZONE } from './deviceSchedule.datetime'
 
-export type DeviceScheduleJobData = {
+export interface DeviceScheduleJobData {
   jobId: string
   type: 'actuator' | 'sensor_data'
   category: SchedulerCategory
@@ -17,7 +17,7 @@ export type DeviceScheduleJobData = {
 
 let queue: Queue<DeviceScheduleJobData> | null = null
 
-export function getDeviceScheduleQueue(): Queue<DeviceScheduleJobData> {
+export function getDeviceScheduleQueue (): Queue<DeviceScheduleJobData> {
   if (queue == null) {
     queue = new Queue<DeviceScheduleJobData>(DEVICE_SCHEDULE_QUEUE_NAME, {
       connection: getBullMqConnection()
@@ -26,7 +26,7 @@ export function getDeviceScheduleQueue(): Queue<DeviceScheduleJobData> {
   return queue
 }
 
-export async function enqueueDeviceScheduleJob(
+export async function enqueueDeviceScheduleJob (
   data: DeviceScheduleJobData,
   runAt: Date
 ): Promise<void> {
@@ -63,14 +63,14 @@ export async function enqueueDeviceScheduleJob(
   )
 }
 
-function isRepeatJobRegistered(
+function isRepeatJobRegistered (
   repeatables: Awaited<ReturnType<Queue<DeviceScheduleJobData>['getRepeatableJobs']>>,
   jobId: string
 ): boolean {
   return repeatables.some((entry) => entry.id === jobId || entry.key.includes(jobId))
 }
 
-export async function enqueueRepeatDeviceScheduleJob(
+export async function enqueueRepeatDeviceScheduleJob (
   data: DeviceScheduleJobData,
   cronPattern: string,
   timezone: string = WIB_SCHEDULE_TIMEZONE
@@ -101,7 +101,7 @@ export async function enqueueRepeatDeviceScheduleJob(
   )
 }
 
-export async function listRepeatableDeviceScheduleJobs() {
+export async function listRepeatableDeviceScheduleJobs () {
   const q = getDeviceScheduleQueue()
-  return q.getRepeatableJobs()
+  return await q.getRepeatableJobs()
 }

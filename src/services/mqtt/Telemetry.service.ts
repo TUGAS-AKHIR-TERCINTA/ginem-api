@@ -5,7 +5,7 @@ import logger from '../../utilities/logger'
 import { StatusCodes } from 'http-status-codes'
 import { AppError } from '../../utilities/AppError'
 
-function extractValueAsString(payload: unknown): string | null {
+function extractValueAsString (payload: unknown): string | null {
   if (payload != null && typeof payload === 'object' && 'value' in payload) {
     const raw = (payload as { value: unknown }).value
     if (raw === undefined || raw === null) {
@@ -17,7 +17,7 @@ function extractValueAsString(payload: unknown): string | null {
 }
 
 export class TelemetryService {
-  static initialize() {
+  static initialize () {
     MQTTService.onDeviceTelemetry(async (deviceId: number, payload: unknown) => {
       try {
         console.log('payload', payload)
@@ -25,7 +25,7 @@ export class TelemetryService {
           where: { deviceId, deleted: 0 }
         })
 
-        if (!existingDevice) {
+        if (existingDevice == null) {
           logger.warn(
             `[TelemetryService] Device ${deviceId} not found, ignoring telemetry`
           )

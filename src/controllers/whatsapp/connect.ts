@@ -7,7 +7,7 @@ import { WhatsappService } from '../../services/whatsapp/index'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
 
-function jsonStatusPayload(
+function jsonStatusPayload (
   session: WhatsappService,
   connectionStatus: string,
   timedOut: boolean,

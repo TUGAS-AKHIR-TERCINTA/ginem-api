@@ -5,7 +5,7 @@ import { ResponseData } from '../../utilities/response'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { DeviceService } from '../../services/Device.service'
 import { handleError } from '../../utilities/requestHandler'
-import { IRemoveDevice } from '../../schemas/DeviceSchema'
+import { type IRemoveDevice } from '../../schemas/DeviceSchema'
 
 export const removeDevice = async (
   req: IAuthenticatedRequest,

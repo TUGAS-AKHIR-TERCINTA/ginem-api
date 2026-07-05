@@ -16,7 +16,7 @@ export const chatSchema = z
         'json = reply + audio.base64 in JSON (for web app). binary = raw WAV body (for Swagger download/play). Requires withAudio=true.'
       )
   })
-  .refine((data) => data.audioFormat !== 'binary' || data.withAudio === true, {
+  .refine((data) => data.audioFormat !== 'binary' || data.withAudio, {
     message: 'audioFormat "binary" requires withAudio to be true'
   })
 

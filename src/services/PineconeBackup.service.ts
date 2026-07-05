@@ -3,14 +3,17 @@ import { pineconeService } from './Pinecone.service'
 import logger from '../utilities/logger'
 import { StatusCodes } from 'http-status-codes'
 import { Pagination } from '../utilities/pagination'
-import { IndexingModel, IndexingSourceType } from '../models/IndexingModel'
+import { IndexingModel, type IndexingSourceType } from '../models/IndexingModel'
 import { AppError } from '../utilities/AppError'
-import { ICreateIndexing, IFindAllIndexing } from '../schemas/IndexingSchema'
+import { type ICreateIndexing, type IFindAllIndexing } from '../schemas/IndexingSchema'
 
-export type IndexingDocument = { content: string; source?: string }
+export interface IndexingDocument {
+  content: string
+  source?: string
+}
 
 export class PineconeBackupService {
-  static async saveIndexingBackup(
+  static async saveIndexingBackup (
     documents: ICreateIndexing[],
     sourceType: IndexingSourceType = 'json'
   ): Promise<void> {
@@ -34,11 +37,16 @@ export class PineconeBackupService {
     }
   }
 
-  static async findAllIndexings(params: IFindAllIndexing) {
+  static async findAllIndexings (params: IFindAllIndexing) {
     try {
       const { page, size, pagination, source, search } = params
 
-      const pager = new Pagination(Number(page) || 1, Number(size) || 10)
+      const parsedPage = Number(page)
+      const parsedSize = Number(size)
+      const pager = new Pagination(
+        Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1,
+        Number.isFinite(parsedSize) && parsedSize > 0 ? parsedSize : 10
+      )
 
       const where: Record<string, unknown> = {}
 
@@ -58,7 +66,7 @@ export class PineconeBackupService {
       const result = await IndexingModel.findAndCountAll({
         where: where as any,
         order: [['indexingId', 'DESC']],
-        ...(pagination === true && {
+        ...(pagination && {
           limit: pager.limit,
           offset: pager.offset
         })
@@ -75,10 +83,10 @@ export class PineconeBackupService {
     }
   }
 
-  static async deleteIndexingById(indexingId: number): Promise<boolean> {
+  static async deleteIndexingById (indexingId: number): Promise<boolean> {
     try {
       const row = await IndexingModel.findByPk(indexingId)
-      if (!row) {
+      if (row == null) {
         throw AppError.notFound('Indexing tidak ditemukan di database.')
       }
 

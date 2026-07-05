@@ -1,6 +1,6 @@
-import { DataTypes, Model } from 'sequelize'
+import { DataTypes, type Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
-import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
+import { BaseModelFields, type IBaseModelFields } from '../interfaces/baseModelFields'
 
 export type AppLogLevel = 'error' | 'warn' | 'info'
 
@@ -13,13 +13,13 @@ export interface IAppLogAttributes extends IBaseModelFields {
 }
 
 export type IAppLogCreationAttributes = Omit<
-  IAppLogAttributes,
-  'appLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+IAppLogAttributes,
+'appLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >
 
 export interface AppLogInstance
   extends Model<IAppLogAttributes, IAppLogCreationAttributes>,
-    IAppLogAttributes {}
+  IAppLogAttributes {}
 
 export const AppLogModel = sequelizeInit.define<AppLogInstance>(
   'AppLogs',

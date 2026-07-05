@@ -4,7 +4,7 @@ import { resumeWhatsappSessionsOnBoot } from './src/services/whatsapp'
 import { stopDeviceScheduleWorker } from './src/services/scheduler/deviceSchedule.worker'
 import logger from './src/utilities/logger'
 
-const PORT = appConfigs.app.port || 8000
+const PORT = Number(appConfigs.app.port ?? 8000)
 
 const server = app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`)

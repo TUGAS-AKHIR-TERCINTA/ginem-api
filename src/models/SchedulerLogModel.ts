@@ -1,6 +1,6 @@
-import { DataTypes, Model } from 'sequelize'
+import { DataTypes, type Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
-import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
+import { BaseModelFields, type IBaseModelFields } from '../interfaces/baseModelFields'
 
 export type SchedulerCategory = 'once' | 'repeat'
 export type SchedulerLogStatus = 'pending' | 'active' | 'completed' | 'failed'
@@ -24,13 +24,13 @@ export interface ISchedulerLogModelAttributes extends IBaseModelFields {
 }
 
 export type ISchedulerLogCreationModelAttributes = Omit<
-  ISchedulerLogModelAttributes,
-  'schedulerLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+ISchedulerLogModelAttributes,
+'schedulerLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >
 
 export interface SchedulerLogInstance
   extends Model<ISchedulerLogModelAttributes, ISchedulerLogCreationModelAttributes>,
-    ISchedulerLogModelAttributes {}
+  ISchedulerLogModelAttributes {}
 
 export const SchedulerLogModel = sequelizeInit.define<SchedulerLogInstance>(
   'SchedulerLogs',

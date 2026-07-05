@@ -1,3 +1,5 @@
+import { MQTTService } from '../../mqtt/MQTT.service'
+
 jest.mock('../../mqtt/client', () => ({
   mqttClient: {
     connected: false,
@@ -14,8 +16,6 @@ jest.mock('../../../utilities/logger', () => ({
     warn: jest.fn()
   }
 }))
-
-import { MQTTService } from '../../mqtt/MQTT.service'
 
 describe('MQTTService.handleIncomingMessage', () => {
   it('records and parses device state messages', () => {

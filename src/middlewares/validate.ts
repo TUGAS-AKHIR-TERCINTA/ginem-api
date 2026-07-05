@@ -25,5 +25,5 @@ export const validate =
       ;(req as any)[location] = result.data
     }
 
-    return next()
+    next()
   }

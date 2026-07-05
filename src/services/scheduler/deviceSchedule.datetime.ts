@@ -31,7 +31,7 @@ export interface ResolvedScheduleDateTime {
 
 const pad2 = (n: number) => String(n).padStart(2, '0')
 
-export function getWibDateParts(from: Date = new Date()): {
+export function getWibDateParts (from: Date = new Date()): {
   year: number
   month: number
   day: number
@@ -47,7 +47,7 @@ export function getWibDateParts(from: Date = new Date()): {
   return { year, month, day }
 }
 
-export function parseDateString(date: string): {
+export function parseDateString (date: string): {
   year: number
   month: number
   day: number
@@ -77,7 +77,7 @@ export function parseDateString(date: string): {
   )
 }
 
-function validateTimeParts(hour: number, minute: number): void {
+function validateTimeParts (hour: number, minute: number): void {
   if (hour < 0 || hour > 23) {
     throw AppError.badRequest('Hour must be between 0 and 23')
   }
@@ -86,7 +86,7 @@ function validateTimeParts(hour: number, minute: number): void {
   }
 }
 
-function validateDateParts(month: number, day: number): void {
+function validateDateParts (month: number, day: number): void {
   if (month < 1 || month > 12) {
     throw AppError.badRequest('Month must be between 1 and 12')
   }
@@ -95,7 +95,7 @@ function validateDateParts(month: number, day: number): void {
   }
 }
 
-function buildRunAt(
+function buildRunAt (
   year: number,
   month: number,
   day: number,
@@ -114,10 +114,10 @@ function buildRunAt(
   return runAt
 }
 
-function addDaysWib(
-  parts: { year: number; month: number; day: number },
+function addDaysWib (
+  parts: { year: number, month: number, day: number },
   days: number
-): { year: number; month: number; day: number } {
+): { year: number, month: number, day: number } {
   const anchor = new Date(
     `${parts.year}-${pad2(parts.month)}-${pad2(parts.day)}T12:00:00${SCHEDULE_TIMEZONE}`
   )
@@ -125,13 +125,7 @@ function addDaysWib(
   return getWibDateParts(shifted)
 }
 
-function hasExplicitDate(input: ScheduleDateTimeInput): boolean {
-  return (
-    input.date != null || input.year != null || input.month != null || input.day != null
-  )
-}
-
-function resolveDateParts(input: ScheduleDateTimeInput): {
+function resolveDateParts (input: ScheduleDateTimeInput): {
   year: number
   month: number
   day: number
@@ -162,7 +156,7 @@ function resolveDateParts(input: ScheduleDateTimeInput): {
  * - Time only (hour + minute): today at that time; if already passed, tomorrow.
  * - Explicit date: DD-MM-YYYY / YYYY-MM-DD or year+month+day at given time.
  */
-export function resolveScheduleDateTime(
+export function resolveScheduleDateTime (
   input: ScheduleDateTimeInput
 ): ResolvedScheduleDateTime {
   validateTimeParts(input.hour, input.minute)
@@ -198,7 +192,7 @@ export function resolveScheduleDateTime(
 }
 
 /** @deprecated Use resolveScheduleDateTime */
-export function parseScheduleDateTime(input: {
+export function parseScheduleDateTime (input: {
   year: number
   month: number
   day: number
@@ -208,7 +202,7 @@ export function parseScheduleDateTime(input: {
   return resolveScheduleDateTime(input).runAt
 }
 
-export function formatScheduleWib(parts: {
+export function formatScheduleWib (parts: {
   year: number
   month: number
   day: number
@@ -218,18 +212,18 @@ export function formatScheduleWib(parts: {
   return `${pad2(parts.day)}-${pad2(parts.month)}-${parts.year} ${pad2(parts.hour)}:${pad2(parts.minute)} WIB`
 }
 
-export function minutesUntilRun(scheduledAt: Date, runAt: Date): number {
+export function minutesUntilRun (scheduledAt: Date, runAt: Date): number {
   return Math.max(1, Math.round((runAt.getTime() - scheduledAt.getTime()) / 60_000))
 }
 
 /** Daily cron in WIB: runs every day at hour:minute. */
-export function buildDailyCronPattern(hour: number, minute: number): string {
+export function buildDailyCronPattern (hour: number, minute: number): string {
   validateTimeParts(hour, minute)
   return `${minute} ${hour} * * *`
 }
 
 /** Next daily occurrence from now in WIB (today or tomorrow). */
-export function resolveNextDailyRun(
+export function resolveNextDailyRun (
   hour: number,
   minute: number
 ): ResolvedScheduleDateTime {
@@ -261,7 +255,7 @@ export function resolveNextDailyRun(
   }
 }
 
-export function formatRepeatScheduleWib(hour: number, minute: number): string {
+export function formatRepeatScheduleWib (hour: number, minute: number): string {
   return `Every day at ${pad2(hour)}:${pad2(minute)} WIB`
 }
 

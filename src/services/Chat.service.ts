@@ -6,7 +6,7 @@ import { AppError } from '../utilities/AppError'
 import { LLMService } from './LLM.service'
 import { TTSService, type ChatAudioPayload } from './TTS.service'
 import { deviceTools } from './mcp/tools/index'
-import { pineconeService, RagDocument } from './Pinecone.service'
+import { pineconeService, type RagDocument } from './Pinecone.service'
 
 const DEVICE_CHAT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
 
@@ -39,7 +39,7 @@ export interface ChatQueryOptions {
  * Chat layer: LLM + device MCP tools + optional Pinecone RAG context + optional OpenAI TTS.
  */
 export class ChatService {
-  private static agent = createAgent({
+  private static readonly agent = createAgent({
     model: LLMService.create(),
     tools: deviceTools,
     systemPrompt: DEVICE_CHAT_SYSTEM_PROMPT
@@ -48,7 +48,7 @@ export class ChatService {
   /**
    * Run a chat turn. When `withAudio` is true, synthesizes reply audio via OpenAI TTS.
    */
-  static async query(
+  static async query (
     userMessage: string,
     options?: ChatQueryOptions
   ): Promise<ChatQueryResponse> {
@@ -71,7 +71,7 @@ export class ChatService {
     }
   }
 
-  private static async generateReply(userMessage: string): Promise<string> {
+  private static async generateReply (userMessage: string): Promise<string> {
     let messageToSend = userMessage
 
     const ragHits = await pineconeService.search(userMessage, 5)
@@ -89,7 +89,7 @@ export class ChatService {
     if (typeof content === 'string') return content
     if (Array.isArray(content)) {
       const textPart = content.find(
-        (c: { type?: string; text?: string }) => c.type === 'text'
+        (c: { type?: string, text?: string }) => c.type === 'text'
       )
       return (textPart as { text?: string })?.text ?? JSON.stringify(content)
     }

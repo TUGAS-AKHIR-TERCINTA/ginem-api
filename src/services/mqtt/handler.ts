@@ -1,5 +1,5 @@
 import { MQTTService } from './MQTT.service'
 
-export function registerMqttHandlers() {
+export function registerMqttHandlers () {
   MQTTService.registerMessageHandlers()
 }

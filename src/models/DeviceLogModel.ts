@@ -1,6 +1,6 @@
-import { DataTypes, Model } from 'sequelize'
+import { DataTypes, type Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
-import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
+import { BaseModelFields, type IBaseModelFields } from '../interfaces/baseModelFields'
 
 import { DeviceModel } from './DeviceModel'
 
@@ -11,13 +11,13 @@ export interface IDeviceLogModelAttributes extends IBaseModelFields {
 }
 
 export type IDeviceLogCreationModelAttributes = Omit<
-  IDeviceLogModelAttributes,
-  'deviceLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+IDeviceLogModelAttributes,
+'deviceLogId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >
 
 export interface DeviceLogInstance
   extends Model<IDeviceLogModelAttributes, IDeviceLogCreationModelAttributes>,
-    IDeviceLogModelAttributes {}
+  IDeviceLogModelAttributes {}
 
 export const DeviceLogModel = sequelizeInit.define<DeviceLogInstance>(
   'DeviceLogs',

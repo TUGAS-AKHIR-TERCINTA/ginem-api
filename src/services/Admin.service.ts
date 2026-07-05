@@ -1,15 +1,19 @@
 import { Op, type WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
 
-import { UserModel, type UserInstance, type IUserAttributes } from '../models/UserModel'
+import { UserModel, type IUserAttributes } from '../models/UserModel'
 import { Pagination } from '../utilities/pagination'
 import { AppError } from '../utilities/AppError'
 import logger from '../utilities/logger'
 import { hashPassword } from '../utilities/scurePassword'
-import { ICreateAdmin, IFindAllAdmin, IUpdateAdmin } from '../schemas/AdminSchema'
+import {
+  type ICreateAdmin,
+  type IFindAllAdmin,
+  type IUpdateAdmin
+} from '../schemas/AdminSchema'
 
 export class AdminService {
-  private static buildFindAllWhere(payload: IFindAllAdmin) {
+  private static buildFindAllWhere (payload: IFindAllAdmin) {
     let where: WhereOptions<IUserAttributes> = {
       deleted: 0,
       userRole: 'admin'
@@ -25,7 +29,7 @@ export class AdminService {
     return where
   }
 
-  static async findAll(payload: IFindAllAdmin) {
+  static async findAll (payload: IFindAllAdmin) {
     try {
       const pager = new Pagination(payload.page, payload.size)
 
@@ -33,7 +37,7 @@ export class AdminService {
         where: this.buildFindAllWhere(payload),
         order: [['userId', 'DESC']],
         attributes: { exclude: ['userPassword'] },
-        ...(payload.pagination === true && {
+        ...(payload.pagination && {
           limit: pager.limit,
           offset: pager.offset
         })
@@ -47,7 +51,7 @@ export class AdminService {
     }
   }
 
-  static async findById(userId: number) {
+  static async findById (userId: number) {
     try {
       const result = await UserModel.findOne({
         where: { userId, deleted: 0, userRole: 'admin' },
@@ -66,7 +70,7 @@ export class AdminService {
     }
   }
 
-  static async create(payload: ICreateAdmin) {
+  static async create (payload: ICreateAdmin) {
     try {
       const existing = await UserModel.findOne({
         where: { deleted: 0, userEmail: payload.userEmail }
@@ -90,7 +94,7 @@ export class AdminService {
     }
   }
 
-  static async update(payload: IUpdateAdmin) {
+  static async update (payload: IUpdateAdmin) {
     try {
       if (payload.userEmail != null && payload.userEmail !== '') {
         const existing = await UserModel.findOne({
@@ -134,7 +138,7 @@ export class AdminService {
     }
   }
 
-  static async remove(userId: number, requesterUserId: number): Promise<void> {
+  static async remove (userId: number, requesterUserId: number): Promise<void> {
     try {
       if (userId === requesterUserId) {
         throw AppError.badRequest('Cannot delete your own admin account')

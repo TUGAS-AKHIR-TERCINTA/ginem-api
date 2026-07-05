@@ -3,12 +3,12 @@ import * as QRCode from 'qrcode'
 
 import logger from '../../utilities/logger'
 
-export function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+export async function sleep (ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export async function pairingQrToPngBuffer(qrPayload: string): Promise<Buffer> {
-  return QRCode.toBuffer(qrPayload, { type: 'png' })
+export async function pairingQrToPngBuffer (qrPayload: string): Promise<Buffer> {
+  return await QRCode.toBuffer(qrPayload, { type: 'png' })
 }
 
 const LOG_PREFIX = '[WhatsappService]'
@@ -17,21 +17,21 @@ type LastDisconnect = BaileysEventMap['connection.update']['lastDisconnect']
 
 type BoomLike = Error & { output?: { statusCode?: number } }
 
-export function disconnectStatusCode(
+export function disconnectStatusCode (
   last: LastDisconnect | undefined
 ): number | undefined {
   const err = last?.error as BoomLike | undefined
   return err?.output?.statusCode
 }
 
-export function disconnectErrorMessage(last: LastDisconnect | undefined): string {
+export function disconnectErrorMessage (last: LastDisconnect | undefined): string {
   const err = last?.error as Error | undefined
   const code = disconnectStatusCode(last)
   return err?.message ?? String(code ?? 'unknown')
 }
 
 /** Pass `DisconnectReason` from the dynamically loaded Baileys module (see baileys-loader). */
-export function isTransientDisconnect(
+export function isTransientDisconnect (
   code: number | undefined,
   DR: {
     restartRequired: number
@@ -49,7 +49,7 @@ export function isTransientDisconnect(
   )
 }
 
-export function plainTextFromMessage(
+export function plainTextFromMessage (
   body: NonNullable<WAMessage['message']>
 ): string | undefined {
   if (typeof body.conversation === 'string' && body.conversation.length > 0) {
@@ -60,7 +60,7 @@ export function plainTextFromMessage(
   return undefined
 }
 
-export async function logQrForSession(userLabel: string, qr: string): Promise<void> {
+export async function logQrForSession (userLabel: string, qr: string): Promise<void> {
   const ascii = await QRCode.toString(qr, { type: 'terminal', small: true })
   logger.info(`${LOG_PREFIX} ${userLabel} — scan QR:\n${ascii}`)
 }

@@ -1,6 +1,6 @@
-import { DataTypes, Model } from 'sequelize'
+import { DataTypes, type Model } from 'sequelize'
 import { sequelizeInit } from '../configs/database'
-import { BaseModelFields, IBaseModelFields } from '../interfaces/baseModelFields'
+import { BaseModelFields, type IBaseModelFields } from '../interfaces/baseModelFields'
 
 export type IndexingSourceType = 'pdf' | 'json'
 
@@ -12,13 +12,13 @@ export interface IIndexingAttributes extends IBaseModelFields {
 }
 
 export type IIndexingCreationAttributes = Omit<
-  IIndexingAttributes,
-  'indexingId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+IIndexingAttributes,
+'indexingId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >
 
 export interface IndexingInstance
   extends Model<IIndexingAttributes, IIndexingCreationAttributes>,
-    IIndexingAttributes {}
+  IIndexingAttributes {}
 
 export const IndexingModel = sequelizeInit.define<IndexingInstance>(
   'Indexings',

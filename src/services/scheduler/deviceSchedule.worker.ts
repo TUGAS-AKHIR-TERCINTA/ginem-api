@@ -10,7 +10,7 @@ import { executeActuatorJob, executeSensorDataJob } from './deviceSchedule.jobs'
 let scheduler: QueueScheduler | null = null
 let worker: Worker<DeviceScheduleJobData> | null = null
 
-async function processDeviceScheduleJob(job: Job<DeviceScheduleJobData>): Promise<void> {
+async function processDeviceScheduleJob (job: Job<DeviceScheduleJobData>): Promise<void> {
   const { type, jobId, deviceName } = job.data
 
   logger.info(`[DeviceScheduleWorker] Processing ${type} job ${jobId} (${deviceName})`)
@@ -28,7 +28,7 @@ async function processDeviceScheduleJob(job: Job<DeviceScheduleJobData>): Promis
   logger.error(`[DeviceScheduleWorker] Unknown job type for ${jobId}`)
 }
 
-export function startDeviceScheduleWorker(): void {
+export function startDeviceScheduleWorker (): void {
   if (worker != null) {
     return
   }
@@ -63,7 +63,7 @@ export function startDeviceScheduleWorker(): void {
   logger.info('[DeviceScheduleWorker] Started (with QueueScheduler for delayed jobs)')
 }
 
-export async function stopDeviceScheduleWorker(): Promise<void> {
+export async function stopDeviceScheduleWorker (): Promise<void> {
   if (worker != null) {
     await worker.close()
     worker = null

@@ -4,11 +4,15 @@ import logger from '../utilities/logger'
 import { AppError } from '../utilities/AppError'
 import { generateAccessToken } from '../utilities/jwt'
 import { hashPassword } from '../utilities/scurePassword'
-import { IUserAttributes, UserModel } from '../models/UserModel'
-import { IUserLogin, IUserRegistration, IUpdateUserPassword } from '../schemas/AuthSchema'
+import { type IUserAttributes, UserModel } from '../models/UserModel'
+import {
+  type IUserLogin,
+  type IUserRegistration,
+  type IUpdateUserPassword
+} from '../schemas/AuthSchema'
 
 export class AuthService {
-  static async loginUser(payload: IUserLogin) {
+  static async loginUser (payload: IUserLogin) {
     try {
       const { userEmail, userPassword } = payload
 
@@ -51,7 +55,7 @@ export class AuthService {
     }
   }
 
-  static async registerUser(payload: IUserRegistration) {
+  static async registerUser (payload: IUserRegistration) {
     try {
       const existingUser = await UserModel.findOne({
         where: {
@@ -80,14 +84,14 @@ export class AuthService {
     }
   }
 
-  static async updateUserPassword(payload: IUpdateUserPassword) {
+  static async updateUserPassword (payload: IUpdateUserPassword) {
     try {
       const { userPassword, userEmail } = payload
 
       const user = await UserModel.findOne({
         where: {
           deleted: 0,
-          userEmail: userEmail,
+          userEmail,
           userRole: 'user'
         }
       })
@@ -99,7 +103,8 @@ export class AuthService {
       }
 
       const updatedData: Partial<IUserAttributes | any> = {
-        ...(userPassword && { userPassword: hashPassword(userPassword) })
+        ...(userPassword != null &&
+          userPassword !== '' && { userPassword: hashPassword(userPassword) })
       }
 
       await UserModel.update(updatedData, {

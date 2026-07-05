@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { DeviceLogService } from '../../services/DeviceLog.service'
-import { IRemoveDeviceLog } from '../../schemas/DeviceLogSchema'
+import { type IRemoveDeviceLog } from '../../schemas/DeviceLogSchema'
 
 export const removeDeviceLog = async (
   req: IAuthenticatedRequest,

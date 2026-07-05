@@ -10,7 +10,7 @@ export const healthCheck = async (req: Request, res: Response): Promise<Response
     const uptimeInSeconds: number = Math.floor((Date.now() - startTime) / 1000)
 
     const data = {
-      environment: process.env.NODE_ENV || 'development',
+      environment: process.env.NODE_ENV ?? 'development',
       uptime: `${uptimeInSeconds}s`,
       timestamp: process.uptime()
     }

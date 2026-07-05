@@ -52,7 +52,7 @@ const scheduleDateTimeSchema = z.object({
   day: z.number().int().min(1).max(31).optional()
 })
 
-function buildOnceScheduleResponse(parts: {
+function buildOnceScheduleResponse (parts: {
   year: number
   month: number
   day: number
@@ -71,7 +71,7 @@ function buildOnceScheduleResponse(parts: {
   }
 }
 
-function buildRepeatScheduleResponse(hour: number, minute: number) {
+function buildRepeatScheduleResponse (hour: number, minute: number) {
   const next = resolveNextDailyRun(hour, minute)
   return {
     category: 'repeat' as const,

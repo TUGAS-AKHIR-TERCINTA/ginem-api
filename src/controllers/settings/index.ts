@@ -1,7 +1,4 @@
-import { findAll } from './llmModel'
-import { findDetail } from './llmModel'
-import { selectModel } from './llmModel'
-import { getSelectedModel } from './llmModel'
+import { findAll, findDetail, selectModel, getSelectedModel } from './llmModel'
 
 export const SettingsController = {
   findAllLLMModel: findAll,

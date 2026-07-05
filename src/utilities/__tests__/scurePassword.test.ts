@@ -1,10 +1,10 @@
+import { hashPassword } from '../scurePassword'
+
 jest.mock('../../configs/appConfig', () => ({
   appConfigs: {
     secret: { passwordEncryption: 'test-password-salt' }
   }
 }))
-
-import { hashPassword } from '../scurePassword'
 
 describe('hashPassword', () => {
   it('returns a deterministic sha1 hex hash', () => {

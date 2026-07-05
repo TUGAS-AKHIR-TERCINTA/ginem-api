@@ -18,13 +18,13 @@ import { loadBaileys, type BaileysModule } from './baileys-loader'
 
 type AuthBundle = Awaited<ReturnType<BaileysModule['useMultiFileAuthState']>>
 type WaVersion = Awaited<
-  ReturnType<BaileysModule['fetchLatestBaileysVersion']>
+ReturnType<BaileysModule['fetchLatestBaileysVersion']>
 >['version']
 
 const LOG_PREFIX = '[WhatsappService]'
 const ALLOWED_SENDER_NUMBER = '6281379574223'
 
-export type WhatsappSocketBindings = {
+export interface WhatsappSocketBindings {
   userLabel: () => string
   getAuth: () => AuthBundle['state']
   getWaVersion: () => WaVersion
@@ -47,13 +47,13 @@ export class WhatsappBaileysSocket {
   /** Set after first successful `attach()`; used for disconnect reason codes. */
   private baileys: BaileysModule | undefined
 
-  constructor(private readonly bind: WhatsappSocketBindings) {}
+  constructor (private readonly bind: WhatsappSocketBindings) {}
 
   /**
    * Tutup socket WA, hentikan reconnect, dan bersihkan listener event.
    * Kredensial di disk tidak dihapus — panggil `attach()` / `connect()` untuk menyambung lagi.
    */
-  detach(): void {
+  detach (): void {
     this.bind.setReconnectScheduled(false)
     this.bind.setLastPairingQr(undefined)
     const sock = this.bind.getSocket()
@@ -73,7 +73,7 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  async attach(): Promise<void> {
+  async attach (): Promise<void> {
     try {
       this.bind.getSocket()?.end(undefined)
       this.bind.setReconnectScheduled(false)
@@ -92,8 +92,14 @@ export class WhatsappBaileysSocket {
       this.bind.setSocket(sock)
 
       sock.ev.on('creds.update', this.bind.getSaveCreds())
-      sock.ev.on('connection.update', (u) => void this.onConnectionChange(u))
-      sock.ev.on('messages.upsert', (p) => this.onInboundMessages(p))
+      sock.ev.on('connection.update', (u) => {
+        this.onConnectionChange(u).catch((error) => {
+          logger.error(`${LOG_PREFIX} connection.update handler failed: ${String(error)}`)
+        })
+      })
+      sock.ev.on('messages.upsert', (p) => {
+        this.onInboundMessages(p)
+      })
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`${LOG_PREFIX} attachSocket failed: ${String(error)}`)
@@ -105,7 +111,7 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  private async onConnectionChange(
+  private async onConnectionChange (
     update: Partial<BaileysEventMap['connection.update']>
   ): Promise<void> {
     try {
@@ -133,7 +139,7 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  private async onSocketClosed(
+  private async onSocketClosed (
     lastDisconnect: BaileysEventMap['connection.update']['lastDisconnect']
   ): Promise<void> {
     const code = disconnectStatusCode(lastDisconnect)
@@ -166,17 +172,23 @@ export class WhatsappBaileysSocket {
 
     this.bind.setConnectionState('connecting')
     this.bind.setReconnectScheduled(true)
-    setTimeout(() => this.retryOpen(), WHATSAPP_RECONNECT_DELAY_MS)
+    setTimeout(() => {
+      this.retryOpen()
+    }, WHATSAPP_RECONNECT_DELAY_MS)
   }
 
-  private retryOpen(): void {
+  private retryOpen (): void {
     try {
       this.bind.setReconnectScheduled(false)
       if (this.bind.getIntentionalDisconnect()) {
         this.bind.setConnectionState('disconnected')
         return
       }
-      this.bind.requestAttachSocket()
+      Promise.resolve(this.bind.requestAttachSocket()).catch((error) => {
+        logger.error(
+          `${LOG_PREFIX} retryOpen requestAttachSocket failed: ${String(error)}`
+        )
+      })
     } catch (error) {
       if (error instanceof AppError) {
         logger.error(`${LOG_PREFIX} retryOpen: ${error.message}`)
@@ -187,16 +199,16 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  private onInboundMessages(payload: BaileysEventMap['messages.upsert']): void {
+  private onInboundMessages (payload: BaileysEventMap['messages.upsert']): void {
     for (const msg of payload.messages) {
       void this.maybePingPong(msg)
     }
   }
 
-  private async maybePingPong(msg: WAMessage): Promise<void> {
+  private async maybePingPong (msg: WAMessage): Promise<void> {
     try {
       const sock = this.bind.getSocket()
-      if (sock == null || msg.key.fromMe) return
+      if (sock == null || msg.key.fromMe === true) return
 
       const chat = msg.key.remoteJid
       if (chat == null || chat === 'status@broadcast') return

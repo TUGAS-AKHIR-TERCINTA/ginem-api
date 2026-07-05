@@ -4,11 +4,11 @@ import type { IUserAttributes } from '../models/UserModel'
 import { AppError } from '../utilities/AppError'
 import { appConfigs } from '../configs/appConfig'
 import logger from '../utilities/logger'
-import { IUpdateMyProfile, IUpdateOnboarding } from '../schemas/MyProfileSchema'
+import { type IUpdateMyProfile, type IUpdateOnboarding } from '../schemas/MyProfileSchema'
 import { StatusCodes } from 'http-status-codes'
 
 export class MyProfileService {
-  static async findByUserId(userId: number) {
+  static async findByUserId (userId: number) {
     try {
       const result = await UserModel.findOne({
         where: { deleted: 0, userId },
@@ -35,7 +35,7 @@ export class MyProfileService {
     }
   }
 
-  static async updateProfile(userId: number, payload: IUpdateMyProfile): Promise<void> {
+  static async updateProfile (userId: number, payload: IUpdateMyProfile): Promise<void> {
     try {
       if (payload.userEmail != null && payload.userEmail !== '') {
         const existing = await UserModel.findOne({
@@ -78,7 +78,7 @@ export class MyProfileService {
     }
   }
 
-  static async updateOnboardingStatus(userId: number, payload: IUpdateOnboarding) {
+  static async updateOnboardingStatus (userId: number, payload: IUpdateOnboarding) {
     try {
       const result = await UserModel.findOne({
         where: { deleted: 0, userId }

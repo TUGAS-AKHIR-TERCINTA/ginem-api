@@ -5,34 +5,41 @@ import { StatusCodes } from 'http-status-codes'
 import { Pinecone } from '@pinecone-database/pinecone'
 import { appConfigs } from '../configs/appConfig'
 import { AppError } from '../utilities/AppError'
-import { ICreateIndexing } from '../schemas/IndexingSchema'
+import { type ICreateIndexing } from '../schemas/IndexingSchema'
 
-export type RagDocument = { content: string; source?: string }
-export type IndexPdfResult = { indexed: number; source: string }
+export interface RagDocument {
+  content: string
+  source?: string
+}
+export interface IndexPdfResult {
+  indexed: number
+  source: string
+}
 
 const DEFAULT_SEARCH_LIMIT = 5
 
-type PineconeVectorMetadata = {
+interface PineconeVectorMetadata {
   content: string
   source: string
+  [key: string]: string
 }
 
 class PineconeService {
   private client: Pinecone | null = null
   private indexName: string
-  private namespace: string
+  private readonly namespace: string
   private indexDimension: number | null = null
 
-  constructor() {
+  constructor () {
     this.indexName = appConfigs.pinecone.indexName ?? 'neuroai'
     this.namespace = appConfigs.pinecone.namespace ?? '__default__'
   }
 
-  private async getClient(): Promise<Pinecone> {
-    if (this.client) return this.client
+  private async getClient (): Promise<Pinecone> {
+    if (this.client != null) return this.client
 
     const apiKey = appConfigs.pinecone.apiKey ?? ''
-    if (!apiKey) {
+    if (apiKey === '') {
       throw new AppError(
         'Pinecone is not configured. Missing PINECONE_API_KEY.',
         StatusCodes.INTERNAL_SERVER_ERROR
@@ -46,17 +53,19 @@ class PineconeService {
 
     this.client = new Pinecone({
       apiKey,
-      ...(controllerHostUrl ? { controllerHostUrl } : {})
+      ...(controllerHostUrl != null && controllerHostUrl !== ''
+        ? { controllerHostUrl }
+        : {})
     })
 
     return this.client
   }
 
-  private static sha256(input: string): string {
+  private static sha256 (input: string): string {
     return crypto.createHash('sha256').update(input).digest('hex')
   }
 
-  private static isTransientPineconeError(error: unknown): boolean {
+  private static isTransientPineconeError (error: unknown): boolean {
     const message = String(error ?? '').toLowerCase()
     return (
       message.includes('status code 502') ||
@@ -68,13 +77,13 @@ class PineconeService {
     )
   }
 
-  private static async sleep(ms: number): Promise<void> {
+  private static async sleep (ms: number): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, ms))
   }
 
-  private async embedTexts(texts: string[]): Promise<number[][]> {
+  private async embedTexts (texts: string[]): Promise<number[][]> {
     const openaiKey = appConfigs.llm.openAIApiKey
-    if (!openaiKey) {
+    if (openaiKey == null || openaiKey === '') {
       throw new AppError('OPENAI_API_KEY is not set', StatusCodes.INTERNAL_SERVER_ERROR)
     }
 
@@ -83,7 +92,7 @@ class PineconeService {
     // If Pinecone index was created with a reduced dimension (e.g. 1024),
     // align OpenAI embedding dimension with that index dimension.
     const dimensions =
-      this.indexDimension && String(model).includes('text-embedding-3')
+      this.indexDimension != null && String(model).includes('text-embedding-3')
         ? this.indexDimension
         : undefined
 
@@ -92,7 +101,7 @@ class PineconeService {
       {
         model,
         input: texts,
-        ...(dimensions ? { dimensions } : {})
+        ...(dimensions != null ? { dimensions } : {})
       },
       {
         headers: {
@@ -111,7 +120,7 @@ class PineconeService {
     const embeddedVectors = embeddings as number[][]
     if (
       typeof this.indexDimension === 'number' &&
-      embeddedVectors[0] &&
+      embeddedVectors.length > 0 &&
       embeddedVectors[0].length !== this.indexDimension
     ) {
       throw new AppError(
@@ -123,7 +132,7 @@ class PineconeService {
     return embeddedVectors
   }
 
-  private async getIndex() {
+  private async getIndex () {
     const client = await this.getClient()
     try {
       const indexModel = await client.describeIndex(this.indexName)
@@ -154,7 +163,7 @@ class PineconeService {
 
       logger.error(
         `[PineconeService] Index not found: ${this.indexName}. Available: ${
-          available.join(', ') || '(none)'
+          available.length > 0 ? available.join(', ') : '(none)'
         }`
       )
       throw new AppError(
@@ -164,7 +173,7 @@ class PineconeService {
     }
   }
 
-  async addDocuments(documents: ICreateIndexing[]): Promise<void> {
+  async addDocuments (documents: ICreateIndexing[]): Promise<void> {
     try {
       if (documents.length === 0) return
 
@@ -199,7 +208,7 @@ class PineconeService {
         // Verify at least one record is readable right after upsert.
         // This helps detect misconfigured namespace/index.
         const first = records[0]
-        if (first?.id) {
+        if (first?.id != null && first.id !== '') {
           const fetched = await index.fetch({
             ids: [first.id],
             namespace: this.namespace
@@ -220,11 +229,11 @@ class PineconeService {
     }
   }
 
-  async search(
+  async search (
     query: string,
     limit: number = DEFAULT_SEARCH_LIMIT
   ): Promise<RagDocument[]> {
-    if (!query.trim()) return []
+    if (query.trim() === '') return []
 
     const maxAttempts = 3
     let lastError: unknown = null
@@ -245,11 +254,11 @@ class PineconeService {
         const matches = result.matches ?? []
         return matches
           .map((m) => {
-            const metadata = m.metadata as PineconeVectorMetadata | undefined
-            if (!metadata) return null
+            const metadata = m.metadata
+            if (metadata == null) return null
             return {
               content: metadata.content,
-              source: metadata.source || undefined
+              source: metadata.source !== '' ? metadata.source : undefined
             }
           })
           .filter(Boolean) as RagDocument[]
@@ -275,12 +284,12 @@ class PineconeService {
     return []
   }
 
-  async deleteByContentAndSource(
+  async deleteByContentAndSource (
     content: string,
     source: string
   ): Promise<{ deleted: number }> {
     try {
-      if (!content) return { deleted: 0 }
+      if (content === '') return { deleted: 0 }
 
       const index = await this.getIndex()
       const id = PineconeService.sha256(`${source ?? ''}:${content}`)
