@@ -16,7 +16,7 @@ export interface StatsCounts {
 }
 
 export class StatsService {
-  static async getCounts (): Promise<StatsCounts> {
+  static async getCounts(): Promise<StatsCounts> {
     try {
       const [devices, users, vectorIndexes, schedulerLogs, appLogs] = await Promise.all([
         DeviceModel.count(),

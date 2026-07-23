@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
 import {
   type DeviceLogInstance,
-  type IDeviceLogCreationModelAttributes
-  , DeviceLogModel
+  type IDeviceLogCreationModelAttributes,
+  DeviceLogModel
 } from '../models/DeviceLogModel'
 import { DeviceModel } from '../models/DeviceModel'
 import { Pagination } from '../utilities/pagination'
@@ -16,7 +16,7 @@ import {
 import { type WhereOptions } from 'sequelize'
 
 export class DeviceLogService {
-  private static buildFindAllWhere (payload: IFindAllDeviceLog) {
+  private static buildFindAllWhere(payload: IFindAllDeviceLog) {
     const where: WhereOptions<IDeviceLogCreationModelAttributes> = { deleted: 0 }
 
     if (payload.deviceLogDeviceId != null) {
@@ -26,7 +26,7 @@ export class DeviceLogService {
     return where
   }
 
-  static async findAll (payload: IFindAllDeviceLog) {
+  static async findAll(payload: IFindAllDeviceLog) {
     try {
       const pager = new Pagination(payload.page, payload.size)
 
@@ -54,7 +54,7 @@ export class DeviceLogService {
     }
   }
 
-  static async findById (deviceLogId: number) {
+  static async findById(deviceLogId: number) {
     try {
       const result = await DeviceLogModel.findOne({
         where: { deleted: 0, deviceLogId },
@@ -82,7 +82,7 @@ export class DeviceLogService {
     }
   }
 
-  static async create (payload: ICreateDeviceLog) {
+  static async create(payload: ICreateDeviceLog) {
     try {
       const deviceExists = await DeviceModel.findOne({
         where: { deleted: 0, deviceId: payload.deviceLogDeviceId }
@@ -103,7 +103,7 @@ export class DeviceLogService {
     }
   }
 
-  static async update (payload: IUpdateDeviceLog) {
+  static async update(payload: IUpdateDeviceLog) {
     try {
       const updateData: Partial<IDeviceLogCreationModelAttributes> = {}
 
@@ -133,7 +133,7 @@ export class DeviceLogService {
     }
   }
 
-  static async remove (deviceLogId: number) {
+  static async remove(deviceLogId: number) {
     try {
       const result = await DeviceLogModel.findOne({
         where: { deleted: 0, deviceLogId }
@@ -151,7 +151,7 @@ export class DeviceLogService {
     }
   }
 
-  static async exists (deviceLogId: number) {
+  static async exists(deviceLogId: number) {
     try {
       await this.findById(deviceLogId)
       return true
@@ -160,14 +160,14 @@ export class DeviceLogService {
     }
   }
 
-  static async deviceExists (deviceLogDeviceId: number): Promise<boolean> {
+  static async deviceExists(deviceLogDeviceId: number): Promise<boolean> {
     const result = await DeviceModel.findOne({
       where: { deleted: 0, deviceId: deviceLogDeviceId }
     })
     return result != null
   }
 
-  static async findLastLogsByDeviceId (deviceId: number, limit: number) {
+  static async findLastLogsByDeviceId(deviceId: number, limit: number) {
     try {
       const result = await DeviceLogModel.findAll({
         where: { deleted: 0, deviceLogDeviceId: deviceId },
@@ -193,7 +193,7 @@ export class DeviceLogService {
     }
   }
 
-  static async getLastLogByDeviceId (deviceId: number) {
+  static async getLastLogByDeviceId(deviceId: number) {
     try {
       const result = await DeviceLogModel.findOne({
         where: { deleted: 0, deviceLogDeviceId: deviceId },
@@ -218,7 +218,7 @@ export class DeviceLogService {
     }
   }
 
-  static async findLatestLogByDeviceId (deviceId: number) {
+  static async findLatestLogByDeviceId(deviceId: number) {
     try {
       const result = await DeviceLogModel.findOne({
         where: { deleted: 0, deviceLogDeviceId: deviceId },

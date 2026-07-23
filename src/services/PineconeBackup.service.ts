@@ -13,7 +13,7 @@ export interface IndexingDocument {
 }
 
 export class PineconeBackupService {
-  static async saveIndexingBackup (
+  static async saveIndexingBackup(
     documents: ICreateIndexing[],
     sourceType: IndexingSourceType = 'json'
   ): Promise<void> {
@@ -37,7 +37,7 @@ export class PineconeBackupService {
     }
   }
 
-  static async findAllIndexings (params: IFindAllIndexing) {
+  static async findAllIndexings(params: IFindAllIndexing) {
     try {
       const { page, size, pagination, source, search } = params
 
@@ -83,7 +83,7 @@ export class PineconeBackupService {
     }
   }
 
-  static async deleteIndexingById (indexingId: number): Promise<boolean> {
+  static async deleteIndexingById(indexingId: number): Promise<boolean> {
     try {
       const row = await IndexingModel.findByPk(indexingId)
       if (row == null) {
