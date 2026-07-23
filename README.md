@@ -1,8 +1,10 @@
-# AI Agent IoT Platform — Backend API
+# Ginem API
 
-Node.js / Express backend for controlling and monitoring IoT devices using natural language (web chat & WhatsApp), MQTT, and an LLM-based AI agent.
+Backend REST API for the **Ginem** Smart Home IoT platform — natural language device control, AI Agent, MQTT, scheduler, WhatsApp, and RAG.
 
-**Stack:** TypeScript · Express · MySQL · Redis · BullMQ · HiveMQ Cloud · OpenAI · Pinecone
+Part of the [Ginem organization](https://github.com/YOUR-ORG). See the [org profile README](https://github.com/YOUR-ORG/.github/blob/main/profile/README.md) for full-stack overview.
+
+**Stack:** TypeScript · Express · MySQL · Redis · BullMQ · RabbitMQ · HiveMQ Cloud · OpenAI · Pinecone
 
 ---
 
@@ -14,6 +16,7 @@ Node.js / Express backend for controlling and monitoring IoT devices using natur
 | npm | 9+ |
 | MySQL | 8 (local or Docker) |
 | Redis | 7 (local or Docker) |
+| RabbitMQ | 3.x |
 | HiveMQ Cloud | MQTT broker (external) |
 | OpenAI API key | LLM + optional TTS |
 | Pinecone API key | Optional (RAG) |
@@ -28,7 +31,7 @@ npm install
 
 # 2. Configure environment
 cp .env.example .env
-# Edit .env — fill DB, Redis, HiveMQ, OpenAI, Pinecone credentials
+# Edit .env — fill DB, Redis, RabbitMQ, HiveMQ, OpenAI, Pinecone credentials
 
 # 3. Run migrations
 npm run migrate:up
@@ -37,8 +40,10 @@ npm run migrate:up
 npm run dev
 ```
 
-API runs at **http://localhost:8000**  
-Swagger docs: **http://localhost:8000/api/v1/docs**
+| Service | URL |
+|---------|-----|
+| API | http://localhost:8000 |
+| Swagger | http://localhost:8000/api/v1/docs |
 
 ---
 
@@ -47,8 +52,8 @@ Swagger docs: **http://localhost:8000/api/v1/docs**
 Docker Compose runs **MySQL**, **Redis**, and the **app**. MQTT uses **HiveMQ Cloud** from `.env` (not containerized).
 
 ```bash
-cp .env.docker.example .env   # or adjust .env for Docker hostnames
-docker compose up -d --build  # production image
+cp .env.docker.example .env
+docker compose up -d --build
 ```
 
 **Development (hot reload):**
@@ -63,17 +68,8 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 | MySQL | `ta-mysql` | 3306 |
 | Redis | `ta-redis` | 6379 |
 
-> Docker Compose overrides `DB_HOST=mysql` and `REDIS_HOST=redis` inside the container.  
+> Set `DB_HOST=mysql` and `REDIS_HOST=redis` inside Docker.  
 > Set `RUN_MIGRATIONS=true` to auto-run migrations on startup.
-
-**Useful commands:**
-
-```bash
-docker compose logs -f app
-docker compose exec app sh
-docker compose down        # stop
-docker compose down -v     # stop + remove volumes
-```
 
 ---
 
@@ -89,6 +85,7 @@ Copy `.env.example` (local) or `.env.docker.example` (Docker) to `.env`.
 | `CORS_ORIGIN` | Frontend URL (e.g. `http://localhost:5173`) |
 | `DB_HOST` / `DB_PORT` | MySQL host & port |
 | `DB_NAME` / `DB_USER_NAME` / `DB_PASSWORD` | MySQL credentials |
+| `RABBITMQ_URL` | RabbitMQ connection URL |
 | `REDIS_HOST` / `REDIS_PORT` | Redis connection |
 | `OPENAI_API_KEY` | OpenAI (LLM + TTS) |
 | `PINECONE_API_KEY` | Pinecone vector DB |
@@ -101,20 +98,15 @@ Never commit `.env` to version control.
 
 ---
 
-## NPM Scripts
+## MQTT Topics
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Dev server with hot reload |
-| `npm run build` | Compile TypeScript → `build/` |
-| `npm start` | Build + run production server |
-| `npm run migrate:up` | Run database migrations |
-| `npm run migrate:undo` | Rollback last migration |
-| `npm run seed` | Run database seeders |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | ESLint with auto-fix |
-| `npm test` | Run unit tests |
-| `npm run test:coverage` | Tests with coverage report |
+```text
+iot/v1/device/{deviceId}/command
+iot/v1/device/{deviceId}/state
+iot/v1/device/{deviceId}/telemetry
+```
+
+`{deviceId}` is the numeric ID from the `devices` table. Command/telemetry payloads use `{ "value": "..." }`.
 
 ---
 
@@ -141,25 +133,45 @@ Most routes require a **Bearer JWT** from `POST /api/v1/auth/login`.
 
 ---
 
+## NPM Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Dev server with hot reload |
+| `npm run build` | Compile TypeScript → `build/` |
+| `npm start` | Build + run production server |
+| `npm run migrate:up` | Run database migrations |
+| `npm run migrate:undo` | Rollback last migration |
+| `npm run seed` | Run database seeders |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | ESLint with auto-fix |
+| `npm test` | Run unit tests |
+| `npm run test:coverage` | Tests with coverage report |
+
+---
+
 ## Project Structure
 
 ```text
-CORE/
-├── server.ts              # Entry point
+ginem-api/
+├── server.ts
 ├── src/
-│   ├── app.ts             # Express bootstrap
-│   ├── configs/           # App, MQTT, Redis, Swagger
-│   ├── controllers/       # Route handlers
-│   ├── middlewares/       # Auth, validation, CORS
-│   ├── models/            # Sequelize models
-│   ├── routes/            # API routes
-│   ├── schemas/           # Zod validation
-│   ├── services/          # Business logic
-│   └── utilities/         # Helpers, logger, JWT
+│   ├── configs/
+│   ├── controllers/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routes/
+│   ├── schemas/
+│   ├── services/
+│   │   ├── Chat.service.ts
+│   │   ├── mcp/
+│   │   ├── mqtt/
+│   │   ├── scheduler/
+│   │   └── whatsapp/
+│   └── utilities/
 ├── resources/
-│   ├── migrations/        # Sequelize migrations
-│   └── seeders/           # Seed data
-├── settings/              # LLM model config (JSON)
+│   ├── migrations/
+│   └── seeders/
 ├── docker-compose.yml
 ├── Dockerfile
 └── .env.example
@@ -174,7 +186,17 @@ npm test              # 169+ unit tests
 npm run lint          # ESLint check
 ```
 
-GitHub Actions (`.github/workflows/ci.yml`) runs **lint + tests** on every push and pull request.
+GitHub Actions runs **lint + tests** on every push and pull request.
+
+---
+
+## Related Repositories
+
+| Repo | Role |
+|------|------|
+| [ginem-admin](https://github.com/YOUR-ORG/ginem-admin) | Admin dashboard & web chat |
+| [ginem-hardware](https://github.com/YOUR-ORG/ginem-hardware) | ESP32 firmware |
+| [.github](https://github.com/YOUR-ORG/.github) | Organization profile |
 
 ---
 
@@ -183,7 +205,4 @@ GitHub Actions (`.github/workflows/ci.yml`) runs **lint + tests** on every push 
 - Use `npm run build && node build/server.js` or the production Docker image.
 - MQTT must point to **HiveMQ Cloud** (`mqtts://`) — not a local broker.
 - WhatsApp uses Baileys (unofficial); use an official API for production messaging.
-- Migrations read DB config from `.env` via `resources/config.js`.
-
----
-
+- Set `CORS_ORIGIN` to your deployed `ginem-admin` URL.

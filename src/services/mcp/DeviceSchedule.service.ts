@@ -4,6 +4,7 @@ import {
   type SchedulerCategory,
   type SchedulerLogInstance
 } from '../../models/SchedulerLogModel'
+import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
 import {
   enqueueDeviceScheduleJob,
@@ -39,12 +40,12 @@ export interface ScheduledJob {
 
 let jobIdCounter = 0
 
-function nextJobId (): string {
+function nextJobId(): string {
   jobIdCounter += 1
   return `schedule-${Date.now()}-${jobIdCounter}`
 }
 
-function toScheduledJob (row: SchedulerLogInstance): ScheduledJob {
+function toScheduledJob(row: SchedulerLogInstance): ScheduledJob {
   return {
     id: row.jobId,
     type: row.type as ScheduledJobType,
@@ -61,7 +62,7 @@ function toScheduledJob (row: SchedulerLogInstance): ScheduledJob {
   }
 }
 
-async function persistOnceJob (
+async function persistOnceJob(
   job: ScheduledJob,
   queueData: DeviceScheduleJobData
 ): Promise<void> {
@@ -85,7 +86,7 @@ async function persistOnceJob (
   await enqueueDeviceScheduleJob(queueData, job.runAt)
 }
 
-async function persistRepeatJob (
+async function persistRepeatJob(
   job: ScheduledJob,
   queueData: DeviceScheduleJobData,
   cronPattern: string
@@ -111,7 +112,7 @@ async function persistRepeatJob (
 /**
  * Schedule turning on/off an actuator (once or daily repeat).
  */
-export async function scheduleActuatorState (
+export async function scheduleActuatorState(
   deviceName: string,
   state: 'on' | 'off',
   category: SchedulerCategory,
@@ -144,7 +145,7 @@ export async function scheduleActuatorState (
 
   if (category === 'repeat') {
     if (cronPattern == null) {
-      throw new Error('cronPattern is required for repeat schedules')
+      throw AppError.badRequest('cronPattern is required for repeat schedules')
     }
     await persistRepeatJob(job, queueData, cronPattern)
   } else {
@@ -157,7 +158,7 @@ export async function scheduleActuatorState (
 /**
  * Schedule daily repeat for actuator on/off at hour:minute WIB.
  */
-export async function scheduleActuatorStateRepeat (
+export async function scheduleActuatorStateRepeat(
   deviceName: string,
   state: 'on' | 'off',
   hour: number,
@@ -171,7 +172,7 @@ export async function scheduleActuatorStateRepeat (
 /**
  * Schedule fetching sensor/device data (once or daily repeat).
  */
-export async function scheduleSensorData (
+export async function scheduleSensorData(
   deviceName: string,
   category: SchedulerCategory,
   runAt: Date,
@@ -201,7 +202,7 @@ export async function scheduleSensorData (
 
   if (category === 'repeat') {
     if (cronPattern == null) {
-      throw new Error('cronPattern is required for repeat schedules')
+      throw AppError.badRequest('cronPattern is required for repeat schedules')
     }
     await persistRepeatJob(job, queueData, cronPattern)
   } else {
@@ -214,7 +215,7 @@ export async function scheduleSensorData (
 /**
  * Schedule daily repeat for sensor data at hour:minute WIB.
  */
-export async function scheduleSensorDataRepeat (
+export async function scheduleSensorDataRepeat(
   deviceName: string,
   hour: number,
   minute: number
@@ -224,7 +225,7 @@ export async function scheduleSensorDataRepeat (
   return await scheduleSensorData(deviceName, 'repeat', next.runAt, cronPattern)
 }
 
-export async function getScheduledJob (jobId: string): Promise<ScheduledJob | null> {
+export async function getScheduledJob(jobId: string): Promise<ScheduledJob | null> {
   const row = await SchedulerLogModel.findOne({
     where: { jobId, deleted: 0 }
   })
@@ -232,7 +233,7 @@ export async function getScheduledJob (jobId: string): Promise<ScheduledJob | nu
   return row == null ? null : toScheduledJob(row)
 }
 
-export async function listScheduledJobs (limit: number = 20): Promise<ScheduledJob[]> {
+export async function listScheduledJobs(limit: number = 20): Promise<ScheduledJob[]> {
   const rows = await SchedulerLogModel.findAll({
     where: { deleted: 0 },
     order: [['scheduledAt', 'DESC']],
@@ -242,7 +243,7 @@ export async function listScheduledJobs (limit: number = 20): Promise<ScheduledJ
   return rows.map(toScheduledJob)
 }
 
-async function recoverPendingOnceJobs (): Promise<void> {
+async function recoverPendingOnceJobs(): Promise<void> {
   const pending = await SchedulerLogModel.findAll({
     where: {
       deleted: 0,
@@ -271,7 +272,7 @@ async function recoverPendingOnceJobs (): Promise<void> {
   }
 }
 
-async function recoverActiveRepeatJobs (): Promise<void> {
+async function recoverActiveRepeatJobs(): Promise<void> {
   const activeRepeats = await SchedulerLogModel.findAll({
     where: {
       deleted: 0,
@@ -313,7 +314,7 @@ async function recoverActiveRepeatJobs (): Promise<void> {
   logger.info('[DeviceScheduleService] Recovered repeat job(s) from DB')
 }
 
-export async function initializeDeviceSchedule (): Promise<void> {
+export async function initializeDeviceSchedule(): Promise<void> {
   startDeviceScheduleWorker()
   await recoverPendingOnceJobs()
   await recoverActiveRepeatJobs()

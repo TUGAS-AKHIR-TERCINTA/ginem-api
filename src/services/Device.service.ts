@@ -23,7 +23,10 @@ export class DeviceService {
       const term = `%${payload.search.trim()}%`
       where = {
         ...where,
-        [Op.or]: [{ deviceName: { [Op.like]: term } }]
+        [Op.or]: [
+          { deviceName: { [Op.like]: term } },
+          { deviceDescription: { [Op.like]: term } }
+        ]
       }
     }
     return where
@@ -138,6 +141,10 @@ export class DeviceService {
 
       if (payload.deviceName != null) {
         updateData.deviceName = payload.deviceName
+      }
+
+      if (payload.deviceDescription != null) {
+        updateData.deviceDescription = payload.deviceDescription
       }
 
       if (payload.deviceStatus != null) {

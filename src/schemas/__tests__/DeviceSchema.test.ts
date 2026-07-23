@@ -18,6 +18,16 @@ describe('DeviceSchema', () => {
       expect(result.deviceType).toBe('actuator')
     })
 
+    it('accepts optional deviceDescription', () => {
+      const result = createDeviceSchema.parse({
+        deviceName: 'Living Room Light',
+        deviceDescription: 'Ceiling lamp in living room',
+        deviceType: 'actuator'
+      })
+
+      expect(result.deviceDescription).toBe('Ceiling lamp in living room')
+    })
+
     it('rejects invalid device type', () => {
       const result = createDeviceSchema.safeParse({
         deviceName: 'Sensor',
@@ -36,6 +46,15 @@ describe('DeviceSchema', () => {
       })
 
       expect(result.success).toBe(false)
+    })
+
+    it('accepts deviceDescription update', () => {
+      const result = updateDeviceSchema.parse({
+        deviceId: 1,
+        deviceDescription: 'Updated description'
+      })
+
+      expect(result.deviceDescription).toBe('Updated description')
     })
   })
 

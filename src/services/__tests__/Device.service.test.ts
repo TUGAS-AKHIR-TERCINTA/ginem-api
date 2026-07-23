@@ -106,6 +106,20 @@ describe('DeviceService', () => {
         statusCode: StatusCodes.BAD_REQUEST
       })
     })
+
+    it('updates deviceDescription when provided', async () => {
+      mockedDeviceModel.update.mockResolvedValue([1] as never)
+
+      await DeviceService.update({
+        deviceId: 1,
+        deviceDescription: 'Updated description'
+      })
+
+      expect(mockedDeviceModel.update).toHaveBeenCalledWith(
+        { deviceDescription: 'Updated description' },
+        { where: { deleted: 0, deviceId: 1 } }
+      )
+    })
   })
 
   describe('exists', () => {

@@ -18,6 +18,9 @@
  *         deviceName:
  *           type: string
  *           example: Temperature Sensor Living Room
+ *         deviceDescription:
+ *           type: string
+ *           example: Measures ambient temperature in the living room
  *         deviceType:
  *           type: string
  *           enum: [sensor, actuator, hybrid]
@@ -62,6 +65,9 @@
  *               deviceName:
  *                 type: string
  *                 example: Smart Lamp
+ *               deviceDescription:
+ *                 type: string
+ *                 example: Bedroom ceiling lamp controlled via MQTT
  *               deviceType:
  *                 type: string
  *                 enum: [sensor, actuator, hybrid]
@@ -139,6 +145,9 @@
  *               deviceName:
  *                 type: string
  *                 example: Updated Device Name
+ *               deviceDescription:
+ *                 type: string
+ *                 example: Updated device description
  *               deviceStatus:
  *                 type: string
  *                 enum: [online, offline]
