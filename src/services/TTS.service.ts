@@ -39,7 +39,7 @@ const ALLOWED_VOICES = new Set([
 /**
  * Normalize agent reply into natural speech text (avoid empty/ultra-short TTS).
  */
-export function toSpeakableText (text: string): string {
+export function toSpeakableText(text: string): string {
   const trimmed = text.trim()
   if (trimmed === '') {
     return 'Maaf, saya tidak memiliki jawaban saat ini.'
@@ -78,7 +78,7 @@ export function toSpeakableText (text: string): string {
     : speakable
 }
 
-function extractSpeakableFromJson (parsed: Record<string, unknown>): string | null {
+function extractSpeakableFromJson(parsed: Record<string, unknown>): string | null {
   const candidates = [
     parsed.message,
     parsed.reply,
@@ -100,7 +100,7 @@ function extractSpeakableFromJson (parsed: Record<string, unknown>): string | nu
   return null
 }
 
-function assertValidAudioBuffer (buffer: Buffer, format: TtsAudioFormat): void {
+function assertValidAudioBuffer(buffer: Buffer, format: TtsAudioFormat): void {
   if (buffer.length < MIN_AUDIO_BYTES) {
     throw new AppError(
       `TTS returned empty or too small audio (${buffer.length} bytes)`,
@@ -138,14 +138,14 @@ function assertValidAudioBuffer (buffer: Buffer, format: TtsAudioFormat): void {
 }
 
 export class TTSService {
-  static async synthesizeSpeechBuffer (
+  static async synthesizeSpeechBuffer(
     text: string,
     format: TtsAudioFormat = 'mp3'
   ): Promise<{
-      buffer: Buffer
-      speakText: string
-      mimeType: ChatAudioPayload['mimeType']
-    }> {
+    buffer: Buffer
+    speakText: string
+    mimeType: ChatAudioPayload['mimeType']
+  }> {
     const apiKey = appConfigs.llm.openAIApiKey
     if (apiKey == null || apiKey === '') {
       throw new AppError('OPENAI_API_KEY is not set', StatusCodes.INTERNAL_SERVER_ERROR)
@@ -215,7 +215,7 @@ export class TTSService {
     }
   }
 
-  static async synthesizeSpeech (
+  static async synthesizeSpeech(
     text: string,
     format: TtsAudioFormat = 'mp3'
   ): Promise<ChatAudioPayload> {

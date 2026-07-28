@@ -42,8 +42,8 @@ export class MQTTService {
   private static readonly telemetryListeners = new Set<MqttMessageListener>()
   private static readonly lastStateByDevice = new Map<number, LastDeviceStateRecord>()
   private static readonly lastTelemetryByDevice = new Map<
-  number,
-  LastDeviceTelemetryRecord
+    number,
+    LastDeviceTelemetryRecord
   >()
 
   private static messageHandlersRegistered = false
@@ -51,7 +51,7 @@ export class MQTTService {
   /**
    * Register the global `message` listener on the shared MQTT client (call once at app startup).
    */
-  static registerMessageHandlers (): void {
+  static registerMessageHandlers(): void {
     if (MQTTService.messageHandlersRegistered) {
       logger.warn('[MQTTService] registerMessageHandlers called more than once; skipping')
       return
@@ -69,17 +69,17 @@ export class MQTTService {
   /**
    * Subscribe to wildcard status and prepare inbound handling. Call after `registerMessageHandlers`.
    */
-  static initialize (): void {
+  static initialize(): void {
     subscribeToAllDeviceStatus()
     subscribeToAllDeviceTelemetry()
   }
 
-  static isConnected (): boolean {
+  static isConnected(): boolean {
     return mqttClient.connected
   }
 
   /** HTTP / API → MQTT: send a command to a device. */
-  static async sendCommand (deviceId: number, command: string): Promise<void> {
+  static async sendCommand(deviceId: number, command: string): Promise<void> {
     publishDeviceCommand(deviceId, command)
   }
 
@@ -87,19 +87,19 @@ export class MQTTService {
    * Publish actuator on/off to `iot/v1/device/{deviceId}/command` as `{ "value": "1" | "0" }`.
    * Uses the numeric DB `deviceId` as the MQTT topic segment (same as REST MQTT API).
    */
-  static publishActuatorState (deviceId: number, state: 'on' | 'off'): void {
+  static publishActuatorState(deviceId: number, state: 'on' | 'off'): void {
     const command = state === 'on' ? '1' : '0'
     void MQTTService.sendCommand(deviceId, command)
   }
 
   /** Publish status on behalf of a device (e.g. tests or gateway emulation). */
-  static publishState (deviceId: number, state: string): void {
+  static publishState(deviceId: number, state: string): void {
     publishDeviceState(deviceId, state)
     MQTTService.recordDeviceState(deviceId, { state })
   }
 
   /** Publish telemetry to `iot/v1/device/{deviceId}/telemetry` as `{ "value": string }`. */
-  static publishTelemetry (deviceId: number, telemetry: unknown): void {
+  static publishTelemetry(deviceId: number, telemetry: unknown): void {
     publishDeviceTelemetry(deviceId, telemetry)
     MQTTService.recordDeviceTelemetry(deviceId, toMqttValueEnvelope(telemetry))
   }
@@ -107,11 +107,11 @@ export class MQTTService {
   /**
    * Last status received from MQTT (`device/{id}/status`) or recorded after API publish.
    */
-  static getLastDeviceState (deviceId: number): LastDeviceStateRecord | null {
+  static getLastDeviceState(deviceId: number): LastDeviceStateRecord | null {
     return MQTTService.lastStateByDevice.get(deviceId) ?? null
   }
 
-  private static recordDeviceState (deviceId: number, payload: unknown): void {
+  private static recordDeviceState(deviceId: number, payload: unknown): void {
     MQTTService.lastStateByDevice.set(deviceId, {
       deviceId,
       payload,
@@ -119,7 +119,7 @@ export class MQTTService {
     })
   }
 
-  private static recordDeviceTelemetry (deviceId: number, payload: unknown): void {
+  private static recordDeviceTelemetry(deviceId: number, payload: unknown): void {
     MQTTService.lastTelemetryByDevice.set(deviceId, {
       deviceId,
       payload,
@@ -127,15 +127,15 @@ export class MQTTService {
     })
   }
 
-  static subscribeAllDeviceState (): void {
+  static subscribeAllDeviceState(): void {
     subscribeToAllDeviceStatus()
   }
 
-  static subscribeDeviceCommand (deviceId: number): void {
+  static subscribeDeviceCommand(deviceId: number): void {
     subscribeToDeviceCommand(deviceId)
   }
 
-  static subscribeDeviceTelemetry (deviceId: number): void {
+  static subscribeDeviceTelemetry(deviceId: number): void {
     subscribeToDeviceTelemetry(deviceId)
   }
 
@@ -143,7 +143,7 @@ export class MQTTService {
    * Subscribe to parsed status payloads for `device/{deviceId}/status`.
    * @returns Unsubscribe function.
    */
-  static onDeviceStatus (listener: MqttMessageListener): () => void {
+  static onDeviceStatus(listener: MqttMessageListener): () => void {
     MQTTService.stateListeners.add(listener)
     return () => {
       MQTTService.stateListeners.delete(listener)
@@ -154,7 +154,7 @@ export class MQTTService {
    * Subscribe to parsed payloads for `device/{deviceId}/command` (inbound on that topic).
    * @returns Unsubscribe function.
    */
-  static onDeviceCommand (listener: MqttMessageListener): () => void {
+  static onDeviceCommand(listener: MqttMessageListener): () => void {
     MQTTService.commandListeners.add(listener)
     return () => {
       MQTTService.commandListeners.delete(listener)
@@ -166,14 +166,14 @@ export class MQTTService {
    * @returns Unsubscribe function.
    */
 
-  static onDeviceTelemetry (listener: MqttMessageListener): () => void {
+  static onDeviceTelemetry(listener: MqttMessageListener): () => void {
     MQTTService.telemetryListeners.add(listener)
     return () => {
       MQTTService.telemetryListeners.delete(listener)
     }
   }
 
-  static handleIncomingMessage (topic: string, payload: Buffer): void {
+  static handleIncomingMessage(topic: string, payload: Buffer): void {
     const raw = payload.toString()
     logger.info(`MQTT message [${topic}] ${raw}`)
 
@@ -204,7 +204,7 @@ export class MQTTService {
     }
   }
 
-  private static emitTo (
+  private static emitTo(
     listeners: Set<MqttMessageListener>,
     deviceId: number,
     payload: unknown

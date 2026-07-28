@@ -30,12 +30,12 @@ class PineconeService {
   private readonly namespace: string
   private indexDimension: number | null = null
 
-  constructor () {
-    this.indexName = appConfigs.pinecone.indexName ?? 'neuroai'
+  constructor() {
+    this.indexName = appConfigs.pinecone.indexName ?? 'ginem'
     this.namespace = appConfigs.pinecone.namespace ?? '__default__'
   }
 
-  private async getClient (): Promise<Pinecone> {
+  private async getClient(): Promise<Pinecone> {
     if (this.client != null) return this.client
 
     const apiKey = appConfigs.pinecone.apiKey ?? ''
@@ -61,11 +61,11 @@ class PineconeService {
     return this.client
   }
 
-  private static sha256 (input: string): string {
+  private static sha256(input: string): string {
     return crypto.createHash('sha256').update(input).digest('hex')
   }
 
-  private static isTransientPineconeError (error: unknown): boolean {
+  private static isTransientPineconeError(error: unknown): boolean {
     const message = String(error ?? '').toLowerCase()
     return (
       message.includes('status code 502') ||
@@ -77,11 +77,11 @@ class PineconeService {
     )
   }
 
-  private static async sleep (ms: number): Promise<void> {
+  private static async sleep(ms: number): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, ms))
   }
 
-  private async embedTexts (texts: string[]): Promise<number[][]> {
+  private async embedTexts(texts: string[]): Promise<number[][]> {
     const openaiKey = appConfigs.llm.openAIApiKey
     if (openaiKey == null || openaiKey === '') {
       throw new AppError('OPENAI_API_KEY is not set', StatusCodes.INTERNAL_SERVER_ERROR)
@@ -132,7 +132,7 @@ class PineconeService {
     return embeddedVectors
   }
 
-  private async getIndex () {
+  private async getIndex() {
     const client = await this.getClient()
     try {
       const indexModel = await client.describeIndex(this.indexName)
@@ -173,7 +173,7 @@ class PineconeService {
     }
   }
 
-  async addDocuments (documents: ICreateIndexing[]): Promise<void> {
+  async addDocuments(documents: ICreateIndexing[]): Promise<void> {
     try {
       if (documents.length === 0) return
 
@@ -229,7 +229,7 @@ class PineconeService {
     }
   }
 
-  async search (
+  async search(
     query: string,
     limit: number = DEFAULT_SEARCH_LIMIT
   ): Promise<RagDocument[]> {
@@ -284,7 +284,7 @@ class PineconeService {
     return []
   }
 
-  async deleteByContentAndSource (
+  async deleteByContentAndSource(
     content: string,
     source: string
   ): Promise<{ deleted: number }> {

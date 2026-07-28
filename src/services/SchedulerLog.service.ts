@@ -13,7 +13,7 @@ export type SchedulerLogType = 'actuator' | 'sensor_data'
 export type SchedulerLogStatus = 'pending' | 'active' | 'completed' | 'failed'
 
 export class SchedulerLogService {
-  private static buildFindAllWhere (payload: IFindAllSchedulerLog) {
+  private static buildFindAllWhere(payload: IFindAllSchedulerLog) {
     const where: WhereOptions<ISchedulerLogModelAttributes> = { deleted: 0 }
 
     if (payload.type != null && ['actuator', 'sensor_data'].includes(payload.type)) {
@@ -52,7 +52,7 @@ export class SchedulerLogService {
     return where
   }
 
-  static async findAll (payload: IFindAllSchedulerLog) {
+  static async findAll(payload: IFindAllSchedulerLog) {
     try {
       const pager = new Pagination(payload.page, payload.size)
 
@@ -76,7 +76,7 @@ export class SchedulerLogService {
     }
   }
 
-  static async findById (schedulerLogId: number) {
+  static async findById(schedulerLogId: number) {
     try {
       const result = await SchedulerLogModel.findOne({
         where: { deleted: 0, schedulerLogId }

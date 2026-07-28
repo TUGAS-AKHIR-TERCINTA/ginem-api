@@ -2,6 +2,7 @@ import app from './src/app'
 import { appConfigs } from './src/configs/appConfig'
 import { resumeWhatsappSessionsOnBoot } from './src/services/whatsapp'
 import { stopDeviceScheduleWorker } from './src/services/scheduler/deviceSchedule.worker'
+import { ChatMessageBroker } from './src/services/rabbitmq/ChatMessageBroker.service'
 import logger from './src/utilities/logger'
 
 const PORT = Number(appConfigs.app.port ?? 8000)
@@ -14,6 +15,7 @@ const server = app.listen(PORT, () => {
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received. Shutting down gracefully.')
   void stopDeviceScheduleWorker()
+  void ChatMessageBroker.shutdown()
   server.close(() => {
     logger.info('HTTP server closed.')
   })

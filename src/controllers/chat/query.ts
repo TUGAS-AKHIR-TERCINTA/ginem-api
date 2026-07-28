@@ -4,11 +4,11 @@ import { ResponseData } from '../../utilities/response'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { handleError } from '../../utilities/requestHandler'
-import { ChatService } from '../../services/Chat.service'
+import { ChatMessageBroker } from '../../services/rabbitmq/ChatMessageBroker.service'
 import { TTSService } from '../../services/TTS.service'
 import { type IChatSchema } from '../../schemas/ChatSchema'
 
-function sendBinaryAudioResponse (
+function sendBinaryAudioResponse(
   res: Response,
   reply: string,
   buffer: Buffer,
@@ -40,10 +40,10 @@ export const queryChat = async (
 ): Promise<Response> => {
   try {
     const payload = req.body as IChatSchema
-    const wantsBinaryAudio =
-      payload.withAudio && payload.audioFormat === 'binary'
+    const wantsBinaryAudio = payload.withAudio && payload.audioFormat === 'binary'
 
-    const result = await ChatService.query(payload.message, {
+    const result = await ChatMessageBroker.requestChat(payload.message, {
+      source: 'web',
       withAudio: payload.withAudio && !wantsBinaryAudio
     })
 

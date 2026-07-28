@@ -13,13 +13,16 @@ interface LLMModel {
 }
 
 export class LLMModelService {
-  private static readonly modelsPath = path.join(process.cwd(), 'settings/llm-models.json')
+  private static readonly modelsPath = path.join(
+    process.cwd(),
+    'settings/llm-models.json'
+  )
   private static readonly selectedPath = path.join(
     process.cwd(),
     'settings/selected-llm-model.json'
   )
 
-  static async findAll (options: IFindAllLLMModel) {
+  static async findAll(options: IFindAllLLMModel) {
     try {
       const { search } = options
 
@@ -46,7 +49,7 @@ export class LLMModelService {
     }
   }
 
-  static async findById (id: string) {
+  static async findById(id: string) {
     try {
       const raw = fs.readFileSync(this.modelsPath, 'utf-8')
       const data: LLMModel[] = JSON.parse(raw)
@@ -65,7 +68,7 @@ export class LLMModelService {
     }
   }
 
-  static async selectModel (modelId: string): Promise<void> {
+  static async selectModel(modelId: string): Promise<void> {
     try {
       const raw = fs.readFileSync(this.modelsPath, 'utf-8')
       const models: LLMModel[] = JSON.parse(raw)
@@ -84,7 +87,7 @@ export class LLMModelService {
     }
   }
 
-  static async getSelectedModel (): Promise<LLMModel> {
+  static async getSelectedModel(): Promise<LLMModel> {
     try {
       const rawSelected = fs.readFileSync(this.selectedPath, 'utf-8')
       const { modelId } = JSON.parse(rawSelected)
