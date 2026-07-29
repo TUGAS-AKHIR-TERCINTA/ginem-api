@@ -23,7 +23,7 @@
  *           type: string
  *           minLength: 1
  *           maxLength: 2000
- *           description: Request field name; broker payload is JSON { "value": "0" | "1" } (same shape as telemetry)
+ *           description: 'Request field name; broker payload is JSON { "value": "0" | "1" } (same shape as telemetry)'
  *           example: "1"
  *     MqttPublishStatusRequest:
  *       type: object
@@ -40,7 +40,7 @@
  *           enum:
  *             - on
  *             - off
- *           description: State string published as JSON { "state" } to the broker
+ *           description: 'State string published as JSON { "state" } to the broker'
  *           example: "on"
  *     MqttConnectionResponse:
  *       type: object
