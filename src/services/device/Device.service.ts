@@ -1,15 +1,15 @@
 import { StatusCodes } from 'http-status-codes'
-import { DeviceLogModel } from '../models/DeviceLogModel'
-import { DeviceModel } from '../models/DeviceModel'
-import type { IDeviceAttributes } from '../models/DeviceModel'
-import { Pagination } from '../utilities/pagination'
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
+import { DeviceLogModel } from '../../models/DeviceLogModel'
+import { DeviceModel } from '../../models/DeviceModel'
+import type { IDeviceAttributes } from '../../models/DeviceModel'
+import { Pagination } from '../../utilities/pagination'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
 import {
   type ICreateDevice,
   type IFindAllDevice,
   type IUpdateDevice
-} from '../schemas/DeviceSchema'
+} from '../../schemas/DeviceSchema'
 import { v4 as uuidv4 } from 'uuid'
 import { Op, type WhereOptions, type Order } from 'sequelize'
 

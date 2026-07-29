@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
-import { DeviceModel } from '../../models/DeviceModel'
-import { DeviceService } from '../Device.service'
+import { DeviceModel } from '../../../models/DeviceModel'
+import { DeviceService } from '../../device/Device.service'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
@@ -11,7 +11,7 @@ jest.mock('uuid', () => ({
   v4: jest.fn(() => 'test-uuid')
 }))
 
-jest.mock('../../models/DeviceModel', () => ({
+jest.mock('../../../models/DeviceModel', () => ({
   DeviceModel: {
     findAndCountAll: jest.fn(),
     findOne: jest.fn(),
@@ -20,7 +20,7 @@ jest.mock('../../models/DeviceModel', () => ({
   }
 }))
 
-jest.mock('../../models/DeviceLogModel', () => ({
+jest.mock('../../../models/DeviceLogModel', () => ({
   DeviceLogModel: {}
 }))
 

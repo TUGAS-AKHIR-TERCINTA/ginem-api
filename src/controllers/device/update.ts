@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { DeviceService } from '../../services/Device.service'
+import { DeviceService } from '../../services/device'
 import { handleError } from '../../utilities/requestHandler'
 import { type IUpdateDevice } from '../../schemas/DeviceSchema'
 

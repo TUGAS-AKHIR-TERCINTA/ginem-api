@@ -1,7 +1,6 @@
 import { tool } from '@langchain/core/tools'
 import { z } from 'zod'
-import { DeviceService } from '../../../Device.service'
-import { DeviceLogService } from '../../../DeviceLog.service'
+import { DeviceService, DeviceLogService } from '../../../device'
 
 export const getLastLogByDeviceNameTool = tool(
   async ({ deviceName }) => {

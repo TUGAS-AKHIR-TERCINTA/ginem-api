@@ -1,14 +1,14 @@
 import { StatusCodes } from 'http-status-codes'
-import { DeviceLogModel } from '../../models/DeviceLogModel'
-import { DeviceModel } from '../../models/DeviceModel'
-import { DeviceLogService } from '../DeviceLog.service'
+import { DeviceLogModel } from '../../../models/DeviceLogModel'
+import { DeviceModel } from '../../../models/DeviceModel'
+import { DeviceLogService } from '../../device/DeviceLog.service'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../../models/DeviceLogModel', () => ({
+jest.mock('../../../models/DeviceLogModel', () => ({
   DeviceLogModel: {
     findAndCountAll: jest.fn(),
     findOne: jest.fn(),
@@ -18,7 +18,7 @@ jest.mock('../../models/DeviceLogModel', () => ({
   }
 }))
 
-jest.mock('../../models/DeviceModel', () => ({
+jest.mock('../../../models/DeviceModel', () => ({
   DeviceModel: {
     findOne: jest.fn()
   }

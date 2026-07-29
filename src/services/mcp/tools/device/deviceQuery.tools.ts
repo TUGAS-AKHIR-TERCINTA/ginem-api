@@ -1,7 +1,7 @@
 import { tool } from '@langchain/core/tools'
 import { z } from 'zod'
 import { AppError } from '../../../../utilities/AppError'
-import { DeviceService } from '../../../Device.service'
+import { DeviceService } from '../../../device'
 import { serializeDevice } from './serializeDevice'
 
 export const listDevicesTool = tool(

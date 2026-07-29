@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { type IFindDetailDeviceLog } from '../../schemas/DeviceLogSchema'
-import { DeviceLogService } from '../../services/DeviceLog.service'
+import { DeviceLogService } from '../../services/device'
 
 export const findDetailDeviceLog = async (
   req: IAuthenticatedRequest,

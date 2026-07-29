@@ -3,16 +3,16 @@ import {
   type DeviceLogInstance,
   type IDeviceLogCreationModelAttributes,
   DeviceLogModel
-} from '../models/DeviceLogModel'
-import { DeviceModel } from '../models/DeviceModel'
-import { Pagination } from '../utilities/pagination'
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
+} from '../../models/DeviceLogModel'
+import { DeviceModel } from '../../models/DeviceModel'
+import { Pagination } from '../../utilities/pagination'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
 import {
   type ICreateDeviceLog,
   type IFindAllDeviceLog,
   type IUpdateDeviceLog
-} from '../schemas/DeviceLogSchema'
+} from '../../schemas/DeviceLogSchema'
 import { type WhereOptions } from 'sequelize'
 
 export class DeviceLogService {
