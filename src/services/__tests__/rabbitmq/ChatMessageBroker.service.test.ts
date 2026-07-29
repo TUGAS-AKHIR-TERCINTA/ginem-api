@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 
 import { ChatMessageBroker } from '../../rabbitmq/ChatMessageBroker.service'
-import { ChatService } from '../../Chat.service'
+import { ChatService } from '../../chat'
 import * as rabbitConnection from '../../rabbitmq/connection'
 
 jest.mock('../../../utilities/logger', () => ({
@@ -9,7 +9,7 @@ jest.mock('../../../utilities/logger', () => ({
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn(), debug: jest.fn() }
 }))
 
-jest.mock('../../Chat.service', () => ({
+jest.mock('../../chat', () => ({
   ChatService: {
     query: jest.fn()
   }

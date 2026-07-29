@@ -1,10 +1,10 @@
 import { Op, type WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
-import { AppLogModel, type IAppLogAttributes } from '../models/AppLogModel'
-import { AppError } from '../utilities/AppError'
-import { Pagination } from '../utilities/pagination'
-import logger from '../utilities/logger'
-import { type ICreateAppLog, type IFindAllAppLogs } from '../schemas/AppLogSchema'
+import { AppLogModel, type IAppLogAttributes } from '../../models/AppLogModel'
+import { AppError } from '../../utilities/AppError'
+import { Pagination } from '../../utilities/pagination'
+import logger from '../../utilities/logger'
+import { type ICreateAppLog, type IFindAllAppLogs } from '../../schemas/AppLogSchema'
 
 export class AppLogService {
   private static buildFindAllWhere (payload: IFindAllAppLogs) {

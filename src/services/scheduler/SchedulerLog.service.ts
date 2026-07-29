@@ -3,11 +3,11 @@ import { StatusCodes } from 'http-status-codes'
 import {
   type ISchedulerLogModelAttributes,
   SchedulerLogModel
-} from '../models/SchedulerLogModel'
-import { Pagination } from '../utilities/pagination'
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
-import { type IFindAllSchedulerLog } from '../schemas/SchedulerLogSchema'
+} from '../../models/SchedulerLogModel'
+import { Pagination } from '../../utilities/pagination'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
+import { type IFindAllSchedulerLog } from '../../schemas/SchedulerLogSchema'
 
 export type SchedulerLogType = 'actuator' | 'sensor_data'
 export type SchedulerLogStatus = 'pending' | 'active' | 'completed' | 'failed'

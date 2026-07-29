@@ -1,26 +1,29 @@
 import { StatusCodes } from 'http-status-codes'
-import { UserModel } from '../../models/UserModel'
-import { MyProfileService } from '../MyProfile.service'
+import { UserModel } from '../../../models/UserModel'
+import { MyProfileService } from '../../profile'
 
-jest.mock('../../configs/appConfig', () => ({
+jest.mock('../../../configs/appConfig', () => ({
   appConfigs: {
     secret: { passwordEncryption: 'test-password-salt' }
   }
 }))
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../../models/UserModel', () => ({
+jest.mock('../../../models/UserModel', () => ({
   UserModel: {
     findOne: jest.fn(),
     update: jest.fn()
   }
 }))
 
-const mockedUserModel = jest.mocked(UserModel)
+const mockedUserModel = UserModel as unknown as {
+  findOne: jest.Mock
+  update: jest.Mock
+}
 
 describe('MyProfileService', () => {
   beforeEach(() => {

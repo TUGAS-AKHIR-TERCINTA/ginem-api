@@ -1,18 +1,18 @@
 import { StatusCodes } from 'http-status-codes'
-import { UserModel } from '../../models/UserModel'
-import { AdminService } from '../Admin.service'
-import { hashPassword } from '../../utilities/scurePassword'
+import { UserModel } from '../../../models/UserModel'
+import { AdminService } from '../../admin'
+import { hashPassword } from '../../../utilities/scurePassword'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../../utilities/scurePassword', () => ({
+jest.mock('../../../utilities/scurePassword', () => ({
   hashPassword: jest.fn((password: string) => `hashed_${password}`)
 }))
 
-jest.mock('../../models/UserModel', () => ({
+jest.mock('../../../models/UserModel', () => ({
   UserModel: {
     findAndCountAll: jest.fn(),
     findOne: jest.fn(),
@@ -22,7 +22,13 @@ jest.mock('../../models/UserModel', () => ({
   }
 }))
 
-const mockedUserModel = jest.mocked(UserModel)
+const mockedUserModel = UserModel as unknown as {
+  findAndCountAll: jest.Mock
+  findOne: jest.Mock
+  create: jest.Mock
+  update: jest.Mock
+  count: jest.Mock
+}
 
 describe('AdminService', () => {
   beforeEach(() => {

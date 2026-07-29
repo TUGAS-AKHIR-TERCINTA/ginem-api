@@ -4,7 +4,7 @@ import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { type IUpdateMyProfile } from '../../schemas/MyProfileSchema'
-import { MyProfileService } from '../../services/MyProfile.service'
+import { MyProfileService } from '../../services/profile'
 
 export const updateMyProfile = async (
   req: IAuthenticatedRequest,

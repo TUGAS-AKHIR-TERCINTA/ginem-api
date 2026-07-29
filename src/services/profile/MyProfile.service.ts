@@ -1,10 +1,10 @@
 import { createHash } from 'crypto'
-import { UserModel } from '../models/UserModel'
-import type { IUserAttributes } from '../models/UserModel'
-import { AppError } from '../utilities/AppError'
-import { appConfigs } from '../configs/appConfig'
-import logger from '../utilities/logger'
-import { type IUpdateMyProfile, type IUpdateOnboarding } from '../schemas/MyProfileSchema'
+import { UserModel } from '../../models/UserModel'
+import type { IUserAttributes } from '../../models/UserModel'
+import { AppError } from '../../utilities/AppError'
+import { appConfigs } from '../../configs/appConfig'
+import logger from '../../utilities/logger'
+import { type IUpdateMyProfile, type IUpdateOnboarding } from '../../schemas/MyProfileSchema'
 import { StatusCodes } from 'http-status-codes'
 
 export class MyProfileService {

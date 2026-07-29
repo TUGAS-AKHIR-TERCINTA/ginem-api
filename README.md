@@ -178,10 +178,19 @@ ginem-api/
 │   ├── routes/
 │   ├── schemas/
 │   ├── services/
-│   │   ├── Chat.service.ts
+│   │   ├── admin/
+│   │   ├── appLog/
+│   │   ├── auth/
+│   │   ├── chat/
+│   │   ├── device/
+│   │   ├── llm/
 │   │   ├── mcp/
 │   │   ├── mqtt/
+│   │   ├── profile/
+│   │   ├── rabbitmq/
+│   │   ├── rag/
 │   │   ├── scheduler/
+│   │   ├── stats/
 │   │   └── whatsapp/
 │   └── utilities/
 ├── resources/

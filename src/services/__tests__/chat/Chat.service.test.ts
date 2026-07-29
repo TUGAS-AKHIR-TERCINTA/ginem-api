@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
 
 import { createAgent } from 'langchain'
-import { ChatService } from '../Chat.service'
-import { pineconeService } from '../rag'
-import { TTSService } from '../TTS.service'
+import { ChatService } from '../../chat/Chat.service'
+import { pineconeService } from '../../rag'
+import { TTSService } from '../../chat/TTS.service'
 
 jest.mock('langchain', () => ({
   createAgent: jest.fn(() => ({
@@ -11,27 +11,27 @@ jest.mock('langchain', () => ({
   }))
 }))
 
-jest.mock('../llm', () => ({
+jest.mock('../../llm', () => ({
   LLMService: { create: jest.fn(() => ({})) }
 }))
 
-jest.mock('../TTS.service', () => ({
+jest.mock('../../chat/TTS.service', () => ({
   TTSService: {
     synthesizeSpeech: jest.fn()
   }
 }))
 
-jest.mock('../rag', () => ({
+jest.mock('../../rag', () => ({
   pineconeService: {
     search: jest.fn()
   }
 }))
 
-jest.mock('../mcp/tools/index', () => ({
+jest.mock('../../mcp/tools/index', () => ({
   deviceTools: []
 }))
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))

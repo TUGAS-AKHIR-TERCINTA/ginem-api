@@ -1,13 +1,13 @@
 import { StatusCodes } from 'http-status-codes'
-import { AppLogModel } from '../../models/AppLogModel'
-import { AppLogService } from '../AppLog.service'
+import { AppLogModel } from '../../../models/AppLogModel'
+import { AppLogService } from '../../appLog'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../../models/AppLogModel', () => ({
+jest.mock('../../../models/AppLogModel', () => ({
   AppLogModel: {
     findAndCountAll: jest.fn(),
     create: jest.fn()

@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes'
-import { AppLogModel } from '../models/AppLogModel'
-import { DeviceModel } from '../models/DeviceModel'
-import { SchedulerLogModel } from '../models/SchedulerLogModel'
-import { UserModel } from '../models/UserModel'
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
-import { IndexingModel } from '../models/IndexingModel'
+import { AppLogModel } from '../../models/AppLogModel'
+import { DeviceModel } from '../../models/DeviceModel'
+import { SchedulerLogModel } from '../../models/SchedulerLogModel'
+import { UserModel } from '../../models/UserModel'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
+import { IndexingModel } from '../../models/IndexingModel'
 
 export interface StatsCounts {
   devices: number

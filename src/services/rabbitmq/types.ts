@@ -1,4 +1,4 @@
-import type { ChatAudioPayload } from '../TTS.service'
+import type { ChatAudioPayload } from '../chat'
 
 export type ChatMessageSource = 'web' | 'whatsapp'
 

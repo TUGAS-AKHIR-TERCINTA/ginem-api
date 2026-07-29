@@ -5,7 +5,7 @@ import { ResponseData } from '../../utilities/response'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { handleError } from '../../utilities/requestHandler'
 import { ChatMessageBroker } from '../../services/rabbitmq/ChatMessageBroker.service'
-import { TTSService } from '../../services/TTS.service'
+import { TTSService } from '../../services/chat'
 import { type IChatSchema } from '../../schemas/ChatSchema'
 
 function sendBinaryAudioResponse(

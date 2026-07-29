@@ -3,7 +3,7 @@ import { type Response } from 'express'
 import { ResponseData } from './response'
 import logger from './logger'
 import { AppError } from './AppError'
-import { AppLogService } from '../services/AppLog.service'
+import { AppLogService } from '../services/appLog'
 
 export function handleServerError (res: Response, err: unknown) {
   if (err instanceof Error) {

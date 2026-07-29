@@ -1,12 +1,12 @@
 import { StatusCodes } from 'http-status-codes'
 import { createAgent } from 'langchain'
 
-import logger from '../utilities/logger'
-import { AppError } from '../utilities/AppError'
-import { LLMService } from './llm'
+import logger from '../../utilities/logger'
+import { AppError } from '../../utilities/AppError'
+import { LLMService } from '../llm'
 import { TTSService, type ChatAudioPayload } from './TTS.service'
-import { deviceTools } from './mcp/tools/index'
-import { pineconeService, type RagDocument } from './rag'
+import { deviceTools } from '../mcp/tools/index'
+import { pineconeService, type RagDocument } from '../rag'
 
 const DEVICE_CHAT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
 

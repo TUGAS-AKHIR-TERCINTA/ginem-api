@@ -1,16 +1,16 @@
 import { Op, type WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
 
-import { UserModel, type IUserAttributes } from '../models/UserModel'
-import { Pagination } from '../utilities/pagination'
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
-import { hashPassword } from '../utilities/scurePassword'
+import { UserModel, type IUserAttributes } from '../../models/UserModel'
+import { Pagination } from '../../utilities/pagination'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
+import { hashPassword } from '../../utilities/scurePassword'
 import {
   type ICreateAdmin,
   type IFindAllAdmin,
   type IUpdateAdmin
-} from '../schemas/AdminSchema'
+} from '../../schemas/AdminSchema'
 
 export class AdminService {
   private static buildFindAllWhere (payload: IFindAllAdmin) {

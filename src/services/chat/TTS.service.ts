@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
 
-import { appConfigs } from '../configs/appConfig'
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
+import { appConfigs } from '../../configs/appConfig'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
 
 export type TtsAudioFormat = 'mp3' | 'wav'
 

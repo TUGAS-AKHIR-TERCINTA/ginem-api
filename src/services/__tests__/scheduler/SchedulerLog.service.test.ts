@@ -1,13 +1,13 @@
 import { StatusCodes } from 'http-status-codes'
-import { SchedulerLogModel } from '../../models/SchedulerLogModel'
-import { SchedulerLogService } from '../SchedulerLog.service'
+import { SchedulerLogModel } from '../../../models/SchedulerLogModel'
+import { SchedulerLogService } from '../../scheduler/SchedulerLog.service'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../../models/SchedulerLogModel', () => ({
+jest.mock('../../../models/SchedulerLogModel', () => ({
   SchedulerLogModel: {
     findAndCountAll: jest.fn(),
     findOne: jest.fn()

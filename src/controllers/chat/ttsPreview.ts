@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { handleError } from '../../utilities/requestHandler'
-import { TTSService } from '../../services/TTS.service'
+import { TTSService } from '../../services/chat'
 import { type ITtsPreviewSchema } from '../../schemas/ChatSchema'
 
 /** Direct WAV playback in browser/Swagger (GET opens playable audio). */

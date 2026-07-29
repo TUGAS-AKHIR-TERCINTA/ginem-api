@@ -1,33 +1,33 @@
 import { StatusCodes } from 'http-status-codes'
-import { AppLogModel } from '../../models/AppLogModel'
-import { DeviceModel } from '../../models/DeviceModel'
-import { IndexingModel } from '../../models/IndexingModel'
-import { SchedulerLogModel } from '../../models/SchedulerLogModel'
-import { UserModel } from '../../models/UserModel'
-import { StatsService } from '../Stats.service'
+import { AppLogModel } from '../../../models/AppLogModel'
+import { DeviceModel } from '../../../models/DeviceModel'
+import { IndexingModel } from '../../../models/IndexingModel'
+import { SchedulerLogModel } from '../../../models/SchedulerLogModel'
+import { UserModel } from '../../../models/UserModel'
+import { StatsService } from '../../stats'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../../models/AppLogModel', () => ({
+jest.mock('../../../models/AppLogModel', () => ({
   AppLogModel: { count: jest.fn() }
 }))
 
-jest.mock('../../models/DeviceModel', () => ({
+jest.mock('../../../models/DeviceModel', () => ({
   DeviceModel: { count: jest.fn() }
 }))
 
-jest.mock('../../models/IndexingModel', () => ({
+jest.mock('../../../models/IndexingModel', () => ({
   IndexingModel: { count: jest.fn() }
 }))
 
-jest.mock('../../models/SchedulerLogModel', () => ({
+jest.mock('../../../models/SchedulerLogModel', () => ({
   SchedulerLogModel: { count: jest.fn() }
 }))
 
-jest.mock('../../models/UserModel', () => ({
+jest.mock('../../../models/UserModel', () => ({
   UserModel: { count: jest.fn() }
 }))
 

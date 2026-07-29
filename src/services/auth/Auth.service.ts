@@ -1,15 +1,15 @@
 import { StatusCodes } from 'http-status-codes'
 import { Op } from 'sequelize'
-import logger from '../utilities/logger'
-import { AppError } from '../utilities/AppError'
-import { generateAccessToken } from '../utilities/jwt'
-import { hashPassword } from '../utilities/scurePassword'
-import { type IUserAttributes, UserModel } from '../models/UserModel'
+import logger from '../../utilities/logger'
+import { AppError } from '../../utilities/AppError'
+import { generateAccessToken } from '../../utilities/jwt'
+import { hashPassword } from '../../utilities/scurePassword'
+import { type IUserAttributes, UserModel } from '../../models/UserModel'
 import {
   type IUserLogin,
   type IUserRegistration,
   type IUpdateUserPassword
-} from '../schemas/AuthSchema'
+} from '../../schemas/AuthSchema'
 
 export class AuthService {
   static async loginUser(payload: IUserLogin) {

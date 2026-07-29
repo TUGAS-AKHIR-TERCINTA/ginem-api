@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 import { type IUpdateAdmin } from '../../schemas/AdminSchema'
-import { AdminService } from '../../services/Admin.service'
+import { AdminService } from '../../services/admin'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
 

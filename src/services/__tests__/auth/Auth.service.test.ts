@@ -1,22 +1,22 @@
 import { StatusCodes } from 'http-status-codes'
-import { UserModel } from '../../models/UserModel'
-import { AuthService } from '../Auth.service'
-import { generateAccessToken } from '../../utilities/jwt'
+import { UserModel } from '../../../models/UserModel'
+import { AuthService } from '../../auth'
+import { generateAccessToken } from '../../../utilities/jwt'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../../utilities/scurePassword', () => ({
+jest.mock('../../../utilities/scurePassword', () => ({
   hashPassword: jest.fn((password: string) => `hashed_${password}`)
 }))
 
-jest.mock('../../utilities/jwt', () => ({
+jest.mock('../../../utilities/jwt', () => ({
   generateAccessToken: jest.fn(() => 'access-token')
 }))
 
-jest.mock('../../models/UserModel', () => ({
+jest.mock('../../../models/UserModel', () => ({
   UserModel: {
     findOne: jest.fn(),
     create: jest.fn(),

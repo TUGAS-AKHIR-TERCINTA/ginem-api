@@ -9,7 +9,7 @@ import {
   ChatService,
   type ChatQueryOptions,
   type ChatQueryResponse
-} from '../Chat.service'
+} from '../chat'
 import { closeRabbitConnection, getChatQueueName, getRabbitChannel } from './connection'
 import { LOG_PREFIX } from './constants'
 import type { ChatMessageSource, ChatQueueReply, ChatQueueRequest } from './types'

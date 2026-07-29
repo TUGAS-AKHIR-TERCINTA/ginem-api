@@ -1,15 +1,15 @@
 import axios from 'axios'
 import { StatusCodes } from 'http-status-codes'
-import { TTSService, toSpeakableText } from '../TTS.service'
+import { TTSService, toSpeakableText } from '../../chat/TTS.service'
 
-jest.mock('../../configs/appConfig', () => ({
+jest.mock('../../../configs/appConfig', () => ({
   appConfigs: {
     llm: { openAIApiKey: 'test-openai-key' },
     tts: { model: 'tts-1-hd', voice: 'nova' }
   }
 }))
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
