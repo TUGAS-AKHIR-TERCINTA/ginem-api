@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes'
 import { ChatOpenAI } from '@langchain/openai'
-import { appConfigs } from '../configs/appConfig'
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
+import { appConfigs } from '../../configs/appConfig'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
 
 export class LLMService {
-  static create () {
+  static create() {
     try {
       return new ChatOpenAI({
         model: 'gpt-4o',

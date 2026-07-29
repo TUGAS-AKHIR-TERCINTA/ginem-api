@@ -11,7 +11,7 @@ jest.mock('langchain', () => ({
   }))
 }))
 
-jest.mock('../LLM.service', () => ({
+jest.mock('../llm', () => ({
   LLMService: { create: jest.fn(() => ({})) }
 }))
 

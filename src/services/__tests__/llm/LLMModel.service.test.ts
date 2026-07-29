@@ -1,8 +1,8 @@
 import fs from 'fs'
 import { StatusCodes } from 'http-status-codes'
-import { LLMModelService } from '../LLMModel.service'
+import { LLMModelService } from '../../llm/LLMModel.service'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))

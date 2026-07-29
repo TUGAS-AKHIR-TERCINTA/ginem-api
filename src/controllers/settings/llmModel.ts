@@ -2,7 +2,7 @@ import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { LLMModelService } from '../../services/LLMModel.service'
+import { LLMModelService } from '../../services/llm'
 import { handleError } from '../../utilities/requestHandler'
 import { ResponseData } from '../../utilities/response'
 import {

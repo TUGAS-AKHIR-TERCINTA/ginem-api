@@ -3,7 +3,7 @@ import { createAgent } from 'langchain'
 
 import logger from '../utilities/logger'
 import { AppError } from '../utilities/AppError'
-import { LLMService } from './LLM.service'
+import { LLMService } from './llm'
 import { TTSService, type ChatAudioPayload } from './TTS.service'
 import { deviceTools } from './mcp/tools/index'
 import { pineconeService, type RagDocument } from './rag'

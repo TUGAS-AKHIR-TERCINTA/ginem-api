@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { StatusCodes } from 'http-status-codes'
 
-import { AppError } from '../utilities/AppError'
-import logger from '../utilities/logger'
-import { type IFindAllLLMModel } from '../schemas/LLMModelSchema'
+import { AppError } from '../../utilities/AppError'
+import logger from '../../utilities/logger'
+import { type IFindAllLLMModel } from '../../schemas/LLMModelSchema'
 
 interface LLMModel {
   id: string

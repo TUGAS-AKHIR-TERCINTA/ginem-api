@@ -1,13 +1,13 @@
 import { ChatOpenAI } from '@langchain/openai'
-import { LLMService } from '../LLM.service'
+import { LLMService } from '../../llm/LLM.service'
 
-jest.mock('../../configs/appConfig', () => ({
+jest.mock('../../../configs/appConfig', () => ({
   appConfigs: {
     llm: { openAIApiKey: 'test-openai-key' }
   }
 }))
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
