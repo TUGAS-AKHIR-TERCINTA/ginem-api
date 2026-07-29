@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { createAgent } from 'langchain'
 import { ChatService } from '../Chat.service'
+import { ChatMemoryService } from '../ChatMemory.service'
 import { pineconeService } from '../../rag'
 import { TTSService } from '../TTS.service'
 
@@ -27,6 +28,13 @@ jest.mock('../../rag', () => ({
   }
 }))
 
+jest.mock('../ChatMemory.service', () => ({
+  ChatMemoryService: {
+    getRecent: jest.fn(),
+    appendTurn: jest.fn()
+  }
+}))
+
 jest.mock('../../mcp/tools/index', () => ({
   deviceTools: []
 }))
@@ -39,11 +47,14 @@ jest.mock('../../../utilities/logger', () => ({
 const mockInvoke = (createAgent as jest.Mock).mock.results[0].value.invoke as jest.Mock
 const mockedPinecone = pineconeService as jest.Mocked<typeof pineconeService>
 const mockedTTS = TTSService as jest.Mocked<typeof TTSService>
+const mockedMemory = ChatMemoryService as jest.Mocked<typeof ChatMemoryService>
 
 describe('ChatService', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockedPinecone.search.mockResolvedValue([])
+    mockedMemory.getRecent.mockResolvedValue([])
+    mockedMemory.appendTurn.mockResolvedValue(undefined)
     mockInvoke.mockResolvedValue({
       messages: [{ content: 'Lampu sudah dinyalakan.' }]
     })
@@ -54,6 +65,8 @@ describe('ChatService', () => {
 
     expect(result).toEqual({ reply: 'Lampu sudah dinyalakan.' })
     expect(mockedTTS.synthesizeSpeech).not.toHaveBeenCalled()
+    expect(mockedMemory.getRecent).not.toHaveBeenCalled()
+    expect(mockedMemory.appendTurn).not.toHaveBeenCalled()
   })
 
   it('includes RAG context when pinecone returns hits', async () => {
@@ -69,6 +82,36 @@ describe('ChatService', () => {
         })
       ]
     })
+  })
+
+  it('loads recent memory and persists the turn when scoped', async () => {
+    mockedMemory.getRecent.mockResolvedValue([
+      { role: 'user', content: 'Halo' },
+      { role: 'assistant', content: 'Halo, ada yang bisa dibantu?' }
+    ])
+
+    await ChatService.query('Nyalakan lampu', {
+      userId: 7,
+      sessionId: 'web:7',
+      source: 'web'
+    })
+
+    expect(mockedMemory.getRecent).toHaveBeenCalledWith({
+      userId: 7,
+      sessionId: 'web:7'
+    })
+    expect(mockInvoke).toHaveBeenCalledWith({
+      messages: [
+        { role: 'human', content: 'Halo' },
+        { role: 'assistant', content: 'Halo, ada yang bisa dibantu?' },
+        { role: 'human', content: 'Nyalakan lampu' }
+      ]
+    })
+    expect(mockedMemory.appendTurn).toHaveBeenCalledWith(
+      { userId: 7, sessionId: 'web:7', source: 'web' },
+      'Nyalakan lampu',
+      'Lampu sudah dinyalakan.'
+    )
   })
 
   it('returns reply with audio when withAudio is true', async () => {

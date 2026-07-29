@@ -5,10 +5,18 @@ import logger from '../../utilities/logger'
 import { AppError } from '../../utilities/AppError'
 import { LLMService } from '../llm'
 import { TTSService, type ChatAudioPayload } from './TTS.service'
+import {
+  ChatMemoryService,
+  type ChatMemoryScope,
+  type ChatMemoryTurn
+} from './ChatMemory.service'
 import { deviceTools } from '../mcp/tools/index'
 import { pineconeService, type RagDocument } from '../rag'
+import type { ChatMessageSource } from '../../models/ChatMessageModel'
 
 const DEVICE_CHAT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
+
+You may also receive recent conversation history. Use it to stay consistent with prior turns (names, devices, preferences) without repeating yourself unnecessarily.
 
 You have tools to:
 - list_devices: List devices with optional pagination (page, size).
@@ -33,10 +41,13 @@ export interface ChatQueryResponse {
 
 export interface ChatQueryOptions {
   withAudio?: boolean
+  userId?: number
+  sessionId?: string
+  source?: ChatMessageSource
 }
 
 /**
- * Chat layer: LLM + device MCP tools + optional Pinecone RAG context + optional OpenAI TTS.
+ * Chat layer: LLM + short-term MySQL memory + device tools + Pinecone RAG + optional TTS.
  */
 export class ChatService {
   private static readonly agent = createAgent({
@@ -47,13 +58,14 @@ export class ChatService {
 
   /**
    * Run a chat turn. When `withAudio` is true, synthesizes reply audio via OpenAI TTS.
+   * When `userId` + `sessionId` are provided, loads/saves short-term chat memory.
    */
   static async query(
     userMessage: string,
     options?: ChatQueryOptions
   ): Promise<ChatQueryResponse> {
     try {
-      const reply = await ChatService.generateReply(userMessage)
+      const reply = await ChatService.generateReply(userMessage, options)
 
       if (options?.withAudio !== true) {
         return { reply }
@@ -71,19 +83,74 @@ export class ChatService {
     }
   }
 
-  private static async generateReply(userMessage: string): Promise<string> {
-    let messageToSend = userMessage
+  private static resolveMemoryScope(options?: ChatQueryOptions): ChatMemoryScope | null {
+    if (
+      options?.userId == null ||
+      options.sessionId == null ||
+      options.sessionId === ''
+    ) {
+      return null
+    }
+    return {
+      userId: options.userId,
+      sessionId: options.sessionId,
+      source: options.source ?? 'web'
+    }
+  }
+
+  private static toAgentMessages(
+    history: ChatMemoryTurn[],
+    currentUserContent: string
+  ): Array<{ role: 'human' | 'assistant'; content: string }> {
+    const prior = history.map((turn) => ({
+      role: (turn.role === 'user' ? 'human' : 'assistant') as 'human' | 'assistant',
+      content: turn.content
+    }))
+    return [...prior, { role: 'human', content: currentUserContent }]
+  }
+
+  private static async generateReply(
+    userMessage: string,
+    options?: ChatQueryOptions
+  ): Promise<string> {
+    const memoryScope = ChatService.resolveMemoryScope(options)
+    const history =
+      memoryScope != null
+        ? await ChatMemoryService.getRecent({
+            userId: memoryScope.userId,
+            sessionId: memoryScope.sessionId
+          })
+        : []
+
+    let currentContent = userMessage
 
     const ragHits = await pineconeService.search(userMessage, 5)
     if (ragHits.length > 0) {
       const contextBlock = ragHits.map((h: RagDocument) => h.content).join('\n\n')
-      messageToSend = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
+      currentContent = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
     }
 
     const result = await ChatService.agent.invoke({
-      messages: [{ role: 'human', content: messageToSend }]
+      messages: ChatService.toAgentMessages(history, currentContent)
     })
 
+    const reply = ChatService.extractReplyText(result)
+
+    if (memoryScope != null) {
+      try {
+        await ChatMemoryService.appendTurn(memoryScope, userMessage, reply)
+      } catch (memoryError) {
+        // Do not fail the user-facing reply if persistence fails.
+        logger.warn(`[ChatService] failed to persist chat memory: ${String(memoryError)}`)
+      }
+    }
+
+    return reply
+  }
+
+  private static extractReplyText(result: {
+    messages?: Array<{ content?: unknown }>
+  }): string {
     const lastMessage = result.messages?.at(-1)
     const content = lastMessage?.content
     if (typeof content === 'string') return content

@@ -5,11 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { appConfigs } from '../../configs/appConfig'
 import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
-import {
-  ChatService,
-  type ChatQueryOptions,
-  type ChatQueryResponse
-} from '../chat'
+import { ChatService, type ChatQueryOptions, type ChatQueryResponse } from '../chat'
 import { closeRabbitConnection, getChatQueueName, getRabbitChannel } from './connection'
 import { LOG_PREFIX } from './constants'
 import type { ChatMessageSource, ChatQueueReply, ChatQueueRequest } from './types'
@@ -28,7 +24,12 @@ function parseReply(raw: Buffer): ChatQueueReply {
 async function processChatRequest(request: ChatQueueRequest): Promise<ChatQueueReply> {
   try {
     const result = await ChatService.query(request.message, {
-      withAudio: request.withAudio === true
+      withAudio: request.withAudio === true,
+      source: request.source,
+      ...(request.userId != null ? { userId: request.userId } : {}),
+      ...(request.sessionId != null && request.sessionId !== ''
+        ? { sessionId: request.sessionId }
+        : {})
     })
 
     return {
@@ -161,7 +162,11 @@ export class ChatMessageBroker {
       messageId,
       source,
       message,
-      withAudio: options?.withAudio === true
+      withAudio: options?.withAudio === true,
+      ...(options?.userId != null ? { userId: options.userId } : {}),
+      ...(options?.sessionId != null && options.sessionId !== ''
+        ? { sessionId: options.sessionId }
+        : {})
     }
 
     return await new Promise<ChatQueryResponse>((resolve, reject) => {

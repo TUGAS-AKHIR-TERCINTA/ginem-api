@@ -237,7 +237,9 @@ export class WhatsappBaileysSocket {
       }
 
       const { reply } = await ChatMessageBroker.requestChat(incoming, {
-        source: 'whatsapp'
+        source: 'whatsapp',
+        userId: this.bind.userId(),
+        sessionId: `whatsapp:${this.bind.userId()}:${chat}`
       })
 
       await sock.sendMessage(chat, { text: reply }, { quoted: msg })

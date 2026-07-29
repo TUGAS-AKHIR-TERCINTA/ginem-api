@@ -20,6 +20,8 @@ export interface ChatQueueRequest {
   source: ChatMessageSource
   message: string
   withAudio?: boolean
+  userId?: number
+  sessionId?: string
   whatsapp?: WhatsappChatMeta
 }
 

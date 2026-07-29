@@ -41,10 +41,14 @@ export const queryChat = async (
   try {
     const payload = req.body as IChatSchema
     const wantsBinaryAudio = payload.withAudio && payload.audioFormat === 'binary'
+    const userId = req.jwtPayload?.userId
+    const sessionId = payload.sessionId ?? (userId != null ? `web:${userId}` : undefined)
 
     const result = await ChatMessageBroker.requestChat(payload.message, {
       source: 'web',
-      withAudio: payload.withAudio && !wantsBinaryAudio
+      withAudio: payload.withAudio === true && !wantsBinaryAudio,
+      ...(userId != null ? { userId } : {}),
+      ...(sessionId != null ? { sessionId } : {})
     })
 
     if (wantsBinaryAudio) {
