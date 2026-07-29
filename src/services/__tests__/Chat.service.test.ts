@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { createAgent } from 'langchain'
 import { ChatService } from '../Chat.service'
-import { pineconeService } from '../Pinecone.service'
+import { pineconeService } from '../rag'
 import { TTSService } from '../TTS.service'
 
 jest.mock('langchain', () => ({
@@ -21,7 +21,7 @@ jest.mock('../TTS.service', () => ({
   }
 }))
 
-jest.mock('../Pinecone.service', () => ({
+jest.mock('../rag', () => ({
   pineconeService: {
     search: jest.fn()
   }

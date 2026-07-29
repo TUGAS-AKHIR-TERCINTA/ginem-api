@@ -1,6 +1,6 @@
-import { pineconeService } from '../Pinecone.service'
+import { pineconeService } from '../../rag/Pinecone.service'
 
-jest.mock('../../configs/appConfig', () => ({
+jest.mock('../../../configs/appConfig', () => ({
   appConfigs: {
     pinecone: {
       apiKey: 'test-pinecone-key',
@@ -12,7 +12,7 @@ jest.mock('../../configs/appConfig', () => ({
   }
 }))
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
@@ -29,9 +29,11 @@ describe('PineconeService', () => {
   })
 
   it('returns zero deleted count for empty content', async () => {
-    await expect(pineconeService.deleteByContentAndSource('', 'manual')).resolves.toEqual({
-      deleted: 0
-    })
+    await expect(pineconeService.deleteByContentAndSource('', 'manual')).resolves.toEqual(
+      {
+        deleted: 0
+      }
+    )
   })
 
   it('skips addDocuments when documents array is empty', async () => {

@@ -1,11 +1,11 @@
 import { Op } from 'sequelize'
 import { pineconeService } from './Pinecone.service'
-import logger from '../utilities/logger'
+import logger from '../../utilities/logger'
 import { StatusCodes } from 'http-status-codes'
-import { Pagination } from '../utilities/pagination'
-import { IndexingModel, type IndexingSourceType } from '../models/IndexingModel'
-import { AppError } from '../utilities/AppError'
-import { type ICreateIndexing, type IFindAllIndexing } from '../schemas/IndexingSchema'
+import { Pagination } from '../../utilities/pagination'
+import { IndexingModel, type IndexingSourceType } from '../../models/IndexingModel'
+import { AppError } from '../../utilities/AppError'
+import { type ICreateIndexing, type IFindAllIndexing } from '../../schemas/IndexingSchema'
 
 export interface IndexingDocument {
   content: string

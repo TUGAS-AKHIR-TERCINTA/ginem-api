@@ -1,20 +1,20 @@
 import { StatusCodes } from 'http-status-codes'
-import { IndexingModel } from '../../models/IndexingModel'
-import { pineconeService } from '../Pinecone.service'
-import { PineconeBackupService } from '../PineconeBackup.service'
+import { IndexingModel } from '../../../models/IndexingModel'
+import { pineconeService } from '../../rag/Pinecone.service'
+import { PineconeBackupService } from '../../rag/PineconeBackup.service'
 
-jest.mock('../../utilities/logger', () => ({
+jest.mock('../../../utilities/logger', () => ({
   __esModule: true,
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-jest.mock('../Pinecone.service', () => ({
+jest.mock('../../rag/Pinecone.service', () => ({
   pineconeService: {
     deleteByContentAndSource: jest.fn()
   }
 }))
 
-jest.mock('../../models/IndexingModel', () => ({
+jest.mock('../../../models/IndexingModel', () => ({
   IndexingModel: {
     bulkCreate: jest.fn(),
     findAndCountAll: jest.fn(),
@@ -23,7 +23,12 @@ jest.mock('../../models/IndexingModel', () => ({
   }
 }))
 
-const mockedIndexingModel = jest.mocked(IndexingModel)
+const mockedIndexingModel = IndexingModel as unknown as {
+  bulkCreate: jest.Mock
+  findAndCountAll: jest.Mock
+  findByPk: jest.Mock
+  destroy: jest.Mock
+}
 const mockedPinecone = pineconeService as jest.Mocked<typeof pineconeService>
 
 describe('PineconeBackupService', () => {

@@ -1,8 +1,7 @@
 import { type Request, type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
-import { PineconeService } from '../../services/Pinecone.service'
-import { PineconeBackupService } from '../../services/PineconeBackup.service'
+import { PineconeService, PineconeBackupService } from '../../services/rag'
 import { handleError } from '../../utilities/requestHandler'
 import { type ICreateIndexing } from '../../schemas/IndexingSchema'
 

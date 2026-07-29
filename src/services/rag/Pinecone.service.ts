@@ -1,11 +1,11 @@
 import axios from 'axios'
 import crypto from 'crypto'
-import logger from '../utilities/logger'
+import logger from '../../utilities/logger'
 import { StatusCodes } from 'http-status-codes'
 import { Pinecone } from '@pinecone-database/pinecone'
-import { appConfigs } from '../configs/appConfig'
-import { AppError } from '../utilities/AppError'
-import { type ICreateIndexing } from '../schemas/IndexingSchema'
+import { appConfigs } from '../../configs/appConfig'
+import { AppError } from '../../utilities/AppError'
+import { type ICreateIndexing } from '../../schemas/IndexingSchema'
 
 export interface RagDocument {
   content: string
