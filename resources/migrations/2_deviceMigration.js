@@ -15,15 +15,17 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
-
       device_token: {
         type: DataTypes.STRING(100),
         allowNull: false
       },
-
       device_name: {
         type: DataTypes.STRING(100),
         allowNull: false
+      },
+      device_description: {
+        type: DataTypes.TEXT,
+        allowNull: true
       },
       device_type: {
         type: DataTypes.ENUM('sensor', 'actuator', 'hybrid'),

@@ -1,11 +1,10 @@
 import { DeviceLogService } from '../DeviceLog.service'
-import { DeviceModel } from '../../models/DeviceModel'
+import { DeviceService } from '../Device.service'
 import { MQTTService } from './MQTT.service'
 import logger from '../../utilities/logger'
-import { StatusCodes } from 'http-status-codes'
 import { AppError } from '../../utilities/AppError'
 
-function extractValueAsString (payload: unknown): string | null {
+function extractValueAsString(payload: unknown): string | null {
   if (payload != null && typeof payload === 'object' && 'value' in payload) {
     const raw = (payload as { value: unknown }).value
     if (raw === undefined || raw === null) {
@@ -17,15 +16,15 @@ function extractValueAsString (payload: unknown): string | null {
 }
 
 export class TelemetryService {
-  static initialize () {
+  static initialize() {
     MQTTService.onDeviceTelemetry(async (deviceId: number, payload: unknown) => {
       try {
-        console.log('payload', payload)
-        const existingDevice = await DeviceModel.findOne({
-          where: { deviceId, deleted: 0 }
+        logger.info(`[TelemetryService] telemetry received device=${deviceId}`, {
+          payload
         })
 
-        if (existingDevice == null) {
+        const deviceExists = await DeviceService.exists(deviceId)
+        if (!deviceExists) {
           logger.warn(
             `[TelemetryService] Device ${deviceId} not found, ignoring telemetry`
           )
@@ -46,12 +45,13 @@ export class TelemetryService {
           deviceLogData
         })
       } catch (serviceError) {
-        if (serviceError instanceof AppError) throw serviceError
+        if (serviceError instanceof AppError) {
+          logger.warn(
+            `[TelemetryService] operational error for device ${deviceId}: ${serviceError.message}`
+          )
+          return
+        }
         logger.error(`[TelemetryService] create failed: ${String(serviceError)}`)
-        throw new AppError(
-          'Failed to create telemetry',
-          StatusCodes.INTERNAL_SERVER_ERROR
-        )
       }
     })
   }

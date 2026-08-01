@@ -9,7 +9,7 @@ export const findAllSchedulerLogSchema = z.object({
   pagination: z
     .string()
     .optional()
-    .transform((v) => v === 'true'),
+    .transform((v): boolean => v === 'true'),
 
   type: z.enum(['actuator', 'sensor_data']).optional(),
   category: z.enum(['once', 'repeat']).optional(),

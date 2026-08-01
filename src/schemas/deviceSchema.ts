@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 export const createDeviceSchema = z.object({
   deviceName: z.string().max(100).min(1),
+  deviceDescription: z.string().optional(),
   deviceType: z.enum(['sensor', 'actuator', 'hybrid']),
   deviceStatus: z.enum(['online', 'offline']).optional(),
   deviceFirmwareVersion: z.string().max(50).optional(),
@@ -13,6 +14,7 @@ export const updateDeviceSchema = z.object({
   deviceId: z.number().int().positive(),
   deviceToken: z.string().max(100).optional(),
   deviceName: z.string().max(100).optional(),
+  deviceDescription: z.string().optional(),
   deviceType: z.enum(['sensor', 'actuator', 'hybrid']).optional(),
   deviceStatus: z.enum(['online', 'offline']).optional(),
   deviceFirmwareVersion: z.string().max(50).optional(),
@@ -36,7 +38,7 @@ export const findAllDeviceSchema = z.object({
   pagination: z
     .string()
     .optional()
-    .transform((v) => v === 'true')
+    .transform((v): boolean => v === 'true')
 })
 
 export type IUpdateDevice = z.infer<typeof updateDeviceSchema>

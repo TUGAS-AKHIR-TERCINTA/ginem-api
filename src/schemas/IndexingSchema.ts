@@ -6,7 +6,7 @@ export const findAllIndexingsSchema = z.object({
   pagination: z
     .string()
     .optional()
-    .transform((v) => v === 'true'),
+    .transform((v): boolean => v === 'true'),
   source: z
     .union([z.enum(['pdf', 'text']), z.literal('')])
     .optional()

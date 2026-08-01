@@ -9,7 +9,7 @@ export const useAuthorization = (
   req: IAuthenticatedRequest,
   res: Response,
   next: NextFunction
-): any => {
+): Response | undefined => {
   try {
     if (
       req.headers.authorization == null ||

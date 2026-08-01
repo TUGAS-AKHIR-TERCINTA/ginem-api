@@ -18,7 +18,7 @@ import { loadBaileys, type BaileysModule } from './baileys-loader'
 
 type AuthBundle = Awaited<ReturnType<BaileysModule['useMultiFileAuthState']>>
 type WaVersion = Awaited<
-ReturnType<BaileysModule['fetchLatestBaileysVersion']>
+  ReturnType<BaileysModule['fetchLatestBaileysVersion']>
 >['version']
 
 const LOG_PREFIX = '[WhatsappService]'
@@ -32,7 +32,7 @@ const DISCONNECT_CLEARED_MESSAGE =
 export class WhatsappService {
   private static readonly instancesByUserId = new Map<number, WhatsappService>()
 
-  static forUser (userId: number): WhatsappService {
+  static forUser(userId: number): WhatsappService {
     const hit = WhatsappService.instancesByUserId.get(userId)
     if (hit != null) return hit
     const created = new WhatsappService(userId)
@@ -60,17 +60,17 @@ export class WhatsappService {
 
   private readonly baileysSocket: WhatsappBaileysSocket
 
-  get connectionStatus (): WhatsappConnectionStatus {
+  get connectionStatus(): WhatsappConnectionStatus {
     return this.state
   }
 
-  constructor (userId: number | string, sessionsRoot: string = WHATSAPP_SESSIONS_ROOT) {
+  constructor(userId: number | string, sessionsRoot: string = WHATSAPP_SESSIONS_ROOT) {
     this.userId = userId
     this.authDir = path.join(sessionsRoot, String(userId))
     this.baileysSocket = new WhatsappBaileysSocket(this.socketBindings())
   }
 
-  private socketBindings (): WhatsappSocketBindings {
+  private socketBindings(): WhatsappSocketBindings {
     return {
       userLabel: () => this.userLabel(),
       getAuth: () => this.auth,
@@ -106,11 +106,11 @@ export class WhatsappService {
     }
   }
 
-  private userLabel (): string {
+  private userLabel(): string {
     return `user=${this.userId}`
   }
 
-  async connect (): Promise<void> {
+  async connect(): Promise<void> {
     if (this.connectPromise != null) {
       await this.connectPromise
       return
@@ -134,7 +134,7 @@ export class WhatsappService {
     await this.connectPromise
   }
 
-  async connectAwaitingPairingQr (
+  async connectAwaitingPairingQr(
     timeoutMs?: number
   ): Promise<WhatsappPairingConnectResult> {
     const waitMs = timeoutMs ?? WHATSAPP_PAIRING_QR_WAIT_DEFAULT_MS
@@ -172,7 +172,7 @@ export class WhatsappService {
     }
   }
 
-  async renderPairingQrPng (qrPayload: string): Promise<Buffer> {
+  async renderPairingQrPng(qrPayload: string): Promise<Buffer> {
     try {
       return await pairingQrToPngBuffer(qrPayload)
     } catch (error) {
@@ -189,7 +189,7 @@ export class WhatsappService {
    * Logout dari WhatsApp (jika sedang connected), hapus folder sesi di disk, dan reset auth di memori.
    * Setelah ini, `connect` memerlukan pairing QR lagi; bootstrap server juga tidak akan auto-connect user ini.
    */
-  async disconnect (): Promise<void> {
+  async disconnect(): Promise<void> {
     try {
       this.reconnectScheduled = false
       this.lastPairingQr = undefined
@@ -243,9 +243,9 @@ export class WhatsappService {
     }
   }
 
-  async sendMessage (jid: string, text: string): Promise<void> {
+  async sendMessage(jid: string, text: string): Promise<void> {
     try {
-      console.log('=============sendMessage: ', jid, text)
+      logger.info(`${LOG_PREFIX} sendMessage user=${this.userId} jid=${jid}`)
 
       const to = jid.trim()
       const body = text.trim()
@@ -271,7 +271,7 @@ export class WhatsappService {
     }
   }
 
-  private async openSession (): Promise<void> {
+  private async openSession(): Promise<void> {
     this.intentionalDisconnect = false
     await this.loadCredentialsOnce()
 
@@ -283,7 +283,7 @@ export class WhatsappService {
     await this.baileysSocket.attach()
   }
 
-  private async loadCredentialsOnce (): Promise<void> {
+  private async loadCredentialsOnce(): Promise<void> {
     if (this.credentialsReady) return
     try {
       const b = await loadBaileys()

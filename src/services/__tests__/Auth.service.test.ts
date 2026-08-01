@@ -24,7 +24,11 @@ jest.mock('../../models/UserModel', () => ({
   }
 }))
 
-const mockedUserModel = UserModel as jest.Mocked<typeof UserModel>
+const mockedUserModel = UserModel as unknown as {
+  findOne: jest.Mock
+  create: jest.Mock
+  update: jest.Mock
+}
 
 describe('AuthService', () => {
   beforeEach(() => {

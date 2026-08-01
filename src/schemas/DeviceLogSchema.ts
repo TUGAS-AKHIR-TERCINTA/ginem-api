@@ -33,7 +33,7 @@ export const findAllDeviceLogSchema = z.object({
   pagination: z
     .string()
     .optional()
-    .transform((v) => v === 'true')
+    .transform((v): boolean => v === 'true')
 })
 
 export const findLastLatestDeviceLogByDeviceIdSchema = z.object({

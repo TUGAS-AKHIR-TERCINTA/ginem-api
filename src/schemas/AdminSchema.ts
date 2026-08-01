@@ -22,7 +22,7 @@ export const findAllAdminQuerySchema = z.object({
   pagination: z
     .string()
     .optional()
-    .transform((v) => v === 'true')
+    .transform((v): boolean => v === 'true')
 })
 
 export const adminUserIdParamSchema = z.object({
