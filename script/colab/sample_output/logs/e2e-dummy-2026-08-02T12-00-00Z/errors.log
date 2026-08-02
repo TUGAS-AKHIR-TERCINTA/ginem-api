@@ -1,0 +1,5 @@
+[start] E2E ChatService runId=e2e-dummy-2026-08-02T12-00-00Z models=openai-gpt-4o,openai-gpt-4o-mini,deepseek-chat cases=12 mqttConnected=true
+[warn] openai-gpt-4o M03 parameter mismatch hour
+[warn] openai-gpt-4o A03 Expected clarify but tool was called
+[warn] openai-gpt-4o-mini A03 Expected clarify but tool was called
+[warn] deepseek-chat M03 parameter mismatch hour

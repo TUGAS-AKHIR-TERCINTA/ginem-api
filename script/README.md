@@ -15,7 +15,7 @@ cd CORE
 |---|---|
 | [`eval/`](./eval/) | Thesis evaluation & system testing (LLM + chat E2E + MQTT) |
 | [`eval/README.md`](./eval/README.md) | Full eval documentation (install, env, scoring, outputs) |
-| [`eval_results_colab.ipynb`](./eval_results_colab.ipynb) | Google Colab notebook to explore `eval/output/` (tables + charts) |
+| [`colab/`](./colab/) | Google Colab notebook + dummy sample outputs for result visualization |
 | `wa-test.ts` | Legacy / exploratory WhatsApp harness (mostly commented out) |
 
 ---
@@ -86,9 +86,11 @@ For installation, environment variables, folder layout, and output file details,
 
 ### View results in Google Colab
 
-1. Zip `CORE/script/eval/output` (or a single `processed/<runId>` folder).
-2. Open [`eval_results_colab.ipynb`](./eval_results_colab.ipynb) in [Google Colab](https://colab.research.google.com/) (**File → Upload notebook**).
+1. Zip `CORE/script/eval/output` (real runs) **or** `CORE/script/colab/sample_output` (dummy demo data).
+2. Open [`colab/eval_results_colab.ipynb`](./colab/eval_results_colab.ipynb) in [Google Colab](https://colab.research.google.com/) (**File → Upload notebook**).
 3. Run the setup cells, upload the zip (or mount Drive), select a run, and explore KPIs/charts.
+
+Details: [`colab/README.md`](./colab/README.md).
 
 ---
 

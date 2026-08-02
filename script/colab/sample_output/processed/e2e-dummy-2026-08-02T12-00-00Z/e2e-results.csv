@@ -1,0 +1,37 @@
+caseId,category,modelId,repetition,toolNameCorrect,toolCallValid,parameterCorrectCount,parameterExpectedCount,parameterAccuracyPct,behaviorMatch,functionalSuccess,integrationSuccess,mqttSuccess,brokerConnected,latencyMs,inputTokens,outputTokens,totalTokens,estimatedCostUsd,error,rawToolNames,replyPreview,command
+S01,simple,openai-gpt-4o,0,True,True,2,2,100.0,True,True,True,True,True,1820,0,0,0,0,,set_actuator_state_by_device_name,Lampu kamar sudah dinyalakan.,Hidupkan lampu kamar
+S02,simple,openai-gpt-4o,0,True,True,2,2,100.0,True,True,True,True,True,1650,0,0,0,0,,set_actuator_state_by_device_name,Lampu depan sudah dimatikan.,Matikan lampu depan
+S03,simple,openai-gpt-4o,0,True,True,1,1,100.0,True,True,True,True,True,2100,0,0,0,0,,get_last_log_by_device_name,Status terakhir: on.,Cek status Smart Lamp Bedroom
+S04,simple,openai-gpt-4o,0,True,True,1,1,100.0,True,True,True,True,True,1980,0,0,0,0,,get_last_log_by_device_name,Suhu sekitar 27.5 C.,Berapa suhu ruang tamu?
+M02,medium,openai-gpt-4o,0,True,True,3,3,100.0,True,True,True,True,True,2450,0,0,0,0,,schedule_actuator_state_at,Jadwal sekali pukul 07:00 dibuat.,Jadwalkan nyalakan lampu jam 07:00
+M03,medium,openai-gpt-4o,0,False,True,2,3,66.67,False,True,True,True,True,2600,0,0,0,0,parameter mismatch hour,schedule_actuator_state_at,Jadwal harian dibuat.,Setiap hari jam 18:30 matikan lampu
+C03,complex,openai-gpt-4o,0,True,True,2,2,100.0,True,True,True,True,True,3200,0,0,0,0,,set_actuator_state_by_device_name,Smart Gate Controller dimatikan.,Matikan perangkat yang tadi dibahas
+C06,complex,openai-gpt-4o,0,True,True,0,0,100.0,True,True,True,True,True,1400,0,0,0,0,,,"Maaf, aturan ECA belum didukung.",Buat aturan ECA suhu > 32
+A01,ambiguous,openai-gpt-4o,0,True,True,0,0,100.0,True,True,True,True,True,1100,0,0,0,0,,,Perangkat mana yang dimaksud?,Nyalakan itu
+A03,ambiguous,openai-gpt-4o,0,False,True,0,0,100.0,False,True,True,True,True,1250,0,0,0,0,,,Saya cek Temperature Sensor Living Room.,Cek sensor
+I01,invalid,openai-gpt-4o,0,True,True,0,0,100.0,True,True,True,True,True,900,0,0,0,0,,,Perintah di luar kemampuan sistem.,Kirim email ke admin
+I02,invalid,openai-gpt-4o,0,True,True,0,0,100.0,True,True,True,True,True,1050,0,0,0,0,,,Penghapusan jadwal belum didukung.,Hapus semua jadwal
+S01,simple,openai-gpt-4o-mini,0,True,True,2,2,100.0,True,True,True,True,True,1620,0,0,0,0,,set_actuator_state_by_device_name,Lampu kamar sudah dinyalakan.,Hidupkan lampu kamar
+S02,simple,openai-gpt-4o-mini,0,True,True,2,2,100.0,True,True,True,True,True,1450,0,0,0,0,,set_actuator_state_by_device_name,Lampu depan sudah dimatikan.,Matikan lampu depan
+S03,simple,openai-gpt-4o-mini,0,True,True,1,1,100.0,True,True,True,True,True,1900,0,0,0,0,,get_last_log_by_device_name,Status terakhir: on.,Cek status Smart Lamp Bedroom
+S04,simple,openai-gpt-4o-mini,0,True,True,1,1,100.0,True,True,True,True,True,1780,0,0,0,0,,get_last_log_by_device_name,Suhu sekitar 27.5 C.,Berapa suhu ruang tamu?
+M02,medium,openai-gpt-4o-mini,0,True,True,3,3,100.0,True,True,True,True,True,2250,0,0,0,0,,schedule_actuator_state_at,Jadwal sekali pukul 07:00 dibuat.,Jadwalkan nyalakan lampu jam 07:00
+M03,medium,openai-gpt-4o-mini,0,True,True,3,3,100.0,True,True,True,True,True,2400,0,0,0,0,,schedule_actuator_state_at,Jadwal harian dibuat.,Setiap hari jam 18:30 matikan lampu
+C03,complex,openai-gpt-4o-mini,0,True,True,2,2,100.0,True,True,True,True,True,3000,0,0,0,0,,set_actuator_state_by_device_name,Smart Gate Controller dimatikan.,Matikan perangkat yang tadi dibahas
+C06,complex,openai-gpt-4o-mini,0,True,True,0,0,100.0,True,True,True,True,True,1200,0,0,0,0,,,"Maaf, aturan ECA belum didukung.",Buat aturan ECA suhu > 32
+A01,ambiguous,openai-gpt-4o-mini,0,True,True,0,0,100.0,True,True,True,True,True,900,0,0,0,0,,,Perangkat mana yang dimaksud?,Nyalakan itu
+A03,ambiguous,openai-gpt-4o-mini,0,False,True,0,0,100.0,False,True,True,True,True,1050,0,0,0,0,,,Saya cek Temperature Sensor Living Room.,Cek sensor
+I01,invalid,openai-gpt-4o-mini,0,True,True,0,0,100.0,True,True,True,True,True,700,0,0,0,0,,,Perintah di luar kemampuan sistem.,Kirim email ke admin
+I02,invalid,openai-gpt-4o-mini,0,True,True,0,0,100.0,True,True,True,True,True,850,0,0,0,0,,,Penghapusan jadwal belum didukung.,Hapus semua jadwal
+S01,simple,deepseek-chat,0,True,True,2,2,100.0,True,True,True,True,True,1870,0,0,0,0,,set_actuator_state_by_device_name,Lampu kamar sudah dinyalakan.,Hidupkan lampu kamar
+S02,simple,deepseek-chat,0,True,True,2,2,100.0,True,True,True,True,True,1700,0,0,0,0,,set_actuator_state_by_device_name,Lampu depan sudah dimatikan.,Matikan lampu depan
+S03,simple,deepseek-chat,0,True,True,1,1,100.0,True,True,True,True,True,2150,0,0,0,0,,get_last_log_by_device_name,Status terakhir: on.,Cek status Smart Lamp Bedroom
+S04,simple,deepseek-chat,0,True,True,1,1,100.0,True,True,True,True,True,2030,0,0,0,0,,get_last_log_by_device_name,Suhu sekitar 27.5 C.,Berapa suhu ruang tamu?
+M02,medium,deepseek-chat,0,True,True,3,3,100.0,True,True,True,True,True,2500,0,0,0,0,,schedule_actuator_state_at,Jadwal sekali pukul 07:00 dibuat.,Jadwalkan nyalakan lampu jam 07:00
+M03,medium,deepseek-chat,0,False,True,2,3,66.67,False,True,True,True,True,2650,0,0,0,0,parameter mismatch hour,schedule_actuator_state_at,Jadwal harian dibuat.,Setiap hari jam 18:30 matikan lampu
+C03,complex,deepseek-chat,0,True,True,2,2,100.0,True,True,True,True,True,3250,0,0,0,0,,set_actuator_state_by_device_name,Smart Gate Controller dimatikan.,Matikan perangkat yang tadi dibahas
+C06,complex,deepseek-chat,0,True,True,0,0,100.0,True,True,True,True,True,1450,0,0,0,0,,,"Maaf, aturan ECA belum didukung.",Buat aturan ECA suhu > 32
+A01,ambiguous,deepseek-chat,0,True,True,0,0,100.0,True,True,True,True,True,1150,0,0,0,0,,,Perangkat mana yang dimaksud?,Nyalakan itu
+A03,ambiguous,deepseek-chat,0,True,True,0,0,100.0,True,True,True,True,True,1300,0,0,0,0,,,Saya cek Temperature Sensor Living Room.,Cek sensor
+I01,invalid,deepseek-chat,0,True,True,0,0,100.0,True,True,True,True,True,950,0,0,0,0,,,Perintah di luar kemampuan sistem.,Kirim email ke admin
+I02,invalid,deepseek-chat,0,True,True,0,0,100.0,True,True,True,True,True,1100,0,0,0,0,,,Penghapusan jadwal belum didukung.,Hapus semua jadwal

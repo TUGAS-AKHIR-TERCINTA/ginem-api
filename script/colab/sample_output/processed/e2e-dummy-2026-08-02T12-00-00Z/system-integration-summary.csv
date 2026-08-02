@@ -1,0 +1,2 @@
+runId,totalTests,functionalSuccessRatePct,integrationSuccessRatePct,mqttSuccessRatePct,averageLatencyMs,errorCount,note
+e2e-dummy-2026-08-02T12-00-00Z,36,100.0,100.0,100.0,1741.67,2,DUMMY SAMPLE DATA for Colab notebook demo only. Not from a real device run.

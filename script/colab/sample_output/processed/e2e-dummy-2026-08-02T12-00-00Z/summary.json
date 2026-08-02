@@ -1,0 +1,123 @@
+{
+  "runId": "e2e-dummy-2026-08-02T12-00-00Z",
+  "config": {
+    "repetitions": 1,
+    "mqttAckTimeoutMs": 10000,
+    "models": [
+      "openai-gpt-4o",
+      "openai-gpt-4o-mini",
+      "deepseek-chat"
+    ]
+  },
+  "byModel": [
+    {
+      "modelId": "openai-gpt-4o",
+      "totalTests": 12,
+      "toolAccuracyPct": 83.33,
+      "parameterAccuracyPct": 92.86,
+      "averageLatencyMs": 1791.67,
+      "totalInputTokens": 0,
+      "totalOutputTokens": 0,
+      "totalTokens": 0,
+      "estimatedCostUsd": 0,
+      "behaviorMatchRatePct": 83.33,
+      "scheduleCases": 2,
+      "scheduleToolAccuracyPct": 50.0,
+      "ecaCases": 1,
+      "ecaBehaviorMatchPct": 100.0,
+      "ambiguousClarifyRatePct": 50.0,
+      "invalidRejectRatePct": 100.0,
+      "errorCount": 1
+    },
+    {
+      "modelId": "openai-gpt-4o-mini",
+      "totalTests": 12,
+      "toolAccuracyPct": 91.67,
+      "parameterAccuracyPct": 100.0,
+      "averageLatencyMs": 1591.67,
+      "totalInputTokens": 0,
+      "totalOutputTokens": 0,
+      "totalTokens": 0,
+      "estimatedCostUsd": 0,
+      "behaviorMatchRatePct": 91.67,
+      "scheduleCases": 2,
+      "scheduleToolAccuracyPct": 100.0,
+      "ecaCases": 1,
+      "ecaBehaviorMatchPct": 100.0,
+      "ambiguousClarifyRatePct": 50.0,
+      "invalidRejectRatePct": 100.0,
+      "errorCount": 0
+    },
+    {
+      "modelId": "deepseek-chat",
+      "totalTests": 12,
+      "toolAccuracyPct": 91.67,
+      "parameterAccuracyPct": 92.86,
+      "averageLatencyMs": 1841.67,
+      "totalInputTokens": 0,
+      "totalOutputTokens": 0,
+      "totalTokens": 0,
+      "estimatedCostUsd": 0,
+      "behaviorMatchRatePct": 91.67,
+      "scheduleCases": 2,
+      "scheduleToolAccuracyPct": 50.0,
+      "ecaCases": 1,
+      "ecaBehaviorMatchPct": 100.0,
+      "ambiguousClarifyRatePct": 100.0,
+      "invalidRejectRatePct": 100.0,
+      "errorCount": 1
+    }
+  ],
+  "byCategory": [
+    {
+      "category": "simple",
+      "totalTests": 12,
+      "toolAccuracyPct": 100.0,
+      "parameterAccuracyPct": 100.0,
+      "averageLatencyMs": 1837.5,
+      "behaviorMatchRatePct": 100.0
+    },
+    {
+      "category": "medium",
+      "totalTests": 6,
+      "toolAccuracyPct": 66.67,
+      "parameterAccuracyPct": 88.89,
+      "averageLatencyMs": 2475.0,
+      "behaviorMatchRatePct": 66.67
+    },
+    {
+      "category": "complex",
+      "totalTests": 6,
+      "toolAccuracyPct": 100.0,
+      "parameterAccuracyPct": 100.0,
+      "averageLatencyMs": 2250.0,
+      "behaviorMatchRatePct": 100.0
+    },
+    {
+      "category": "ambiguous",
+      "totalTests": 6,
+      "toolAccuracyPct": 66.67,
+      "parameterAccuracyPct": 100.0,
+      "averageLatencyMs": 1125.0,
+      "behaviorMatchRatePct": 66.67
+    },
+    {
+      "category": "invalid",
+      "totalTests": 6,
+      "toolAccuracyPct": 100.0,
+      "parameterAccuracyPct": 100.0,
+      "averageLatencyMs": 925.0,
+      "behaviorMatchRatePct": 100.0
+    }
+  ],
+  "systemSummary": {
+    "runId": "e2e-dummy-2026-08-02T12-00-00Z",
+    "totalTests": 36,
+    "functionalSuccessRatePct": 100.0,
+    "integrationSuccessRatePct": 100.0,
+    "mqttSuccessRatePct": 100.0,
+    "averageLatencyMs": 1741.67,
+    "errorCount": 2,
+    "note": "DUMMY SAMPLE DATA for Colab notebook demo only. Not from a real device run."
+  }
+}
