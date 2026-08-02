@@ -20,6 +20,12 @@ export const appConfigs = {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT
   },
+  rabbitmq: {
+    url: process.env.RABBITMQ_URL ?? 'amqp://guest:guest@127.0.0.1:5672',
+    chatQueue: process.env.RABBITMQ_CHAT_QUEUE ?? 'chat.llm.requests',
+    /** Max wait for LLM reply over the broker (web RPC). */
+    chatReplyTimeoutMs: Number(process.env.RABBITMQ_CHAT_REPLY_TIMEOUT_MS ?? 120000)
+  },
   secret: {
     keyEncryption: process.env.SECRET_KEY_ENCRYPTION,
     passwordEncryption: process.env.SECRET_PASSWORD_ENCRYPTION,

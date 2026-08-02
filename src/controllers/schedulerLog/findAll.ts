@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { SchedulerLogService } from '../../services/SchedulerLog.service'
+import { SchedulerLogService } from '../../services/scheduler/SchedulerLog.service'
 import { handleError } from '../../utilities/requestHandler'
 import { type IFindAllSchedulerLog } from '../../schemas/SchedulerLogSchema'
 

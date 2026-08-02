@@ -1,0 +1,42 @@
+[
+  {
+    "category": "simple",
+    "totalTests": 12,
+    "toolAccuracyPct": 100.0,
+    "parameterAccuracyPct": 100.0,
+    "averageLatencyMs": 1837.5,
+    "behaviorMatchRatePct": 100.0
+  },
+  {
+    "category": "medium",
+    "totalTests": 6,
+    "toolAccuracyPct": 66.67,
+    "parameterAccuracyPct": 88.89,
+    "averageLatencyMs": 2475.0,
+    "behaviorMatchRatePct": 66.67
+  },
+  {
+    "category": "complex",
+    "totalTests": 6,
+    "toolAccuracyPct": 100.0,
+    "parameterAccuracyPct": 100.0,
+    "averageLatencyMs": 2250.0,
+    "behaviorMatchRatePct": 100.0
+  },
+  {
+    "category": "ambiguous",
+    "totalTests": 6,
+    "toolAccuracyPct": 66.67,
+    "parameterAccuracyPct": 100.0,
+    "averageLatencyMs": 1125.0,
+    "behaviorMatchRatePct": 66.67
+  },
+  {
+    "category": "invalid",
+    "totalTests": 6,
+    "toolAccuracyPct": 100.0,
+    "parameterAccuracyPct": 100.0,
+    "averageLatencyMs": 925.0,
+    "behaviorMatchRatePct": 100.0
+  }
+]

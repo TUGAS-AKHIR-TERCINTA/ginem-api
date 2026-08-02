@@ -35,6 +35,11 @@
  *           minLength: 1
  *           maxLength: 2000
  *           example: "Hidupkan lampu depan"
+ *         sessionId:
+ *           type: string
+ *           maxLength: 191
+ *           description: Optional conversation id for short-term MySQL chat memory. Defaults to web:{userId}.
+ *           example: web:1
  *         withAudio:
  *           type: boolean
  *           default: false

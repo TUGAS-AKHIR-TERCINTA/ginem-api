@@ -1,13 +1,13 @@
-import { DeviceService } from '../Device.service'
+import { DeviceService } from '../device'
 import { SchedulerLogModel, type SchedulerCategory } from '../../models/SchedulerLogModel'
 import logger from '../../utilities/logger'
-import { DeviceLogService } from '../DeviceLog.service'
+import { DeviceLogService } from '../device'
 import { MQTTService } from '../mqtt/MQTT.service'
 import type { DeviceScheduleJobData } from './deviceSchedule.queue'
 
 export type ScheduledJobStatus = 'pending' | 'active' | 'completed' | 'failed'
 
-async function recordSchedulerResult (
+async function recordSchedulerResult(
   jobId: string,
   status: ScheduledJobStatus,
   category: SchedulerCategory,
@@ -34,7 +34,7 @@ async function recordSchedulerResult (
   }
 }
 
-export async function executeActuatorJob (data: DeviceScheduleJobData): Promise<void> {
+export async function executeActuatorJob(data: DeviceScheduleJobData): Promise<void> {
   const { jobId, deviceName, state, category } = data
 
   try {
@@ -91,7 +91,7 @@ export async function executeActuatorJob (data: DeviceScheduleJobData): Promise<
   }
 }
 
-export async function executeSensorDataJob (data: DeviceScheduleJobData): Promise<void> {
+export async function executeSensorDataJob(data: DeviceScheduleJobData): Promise<void> {
   const { jobId, deviceName, category } = data
 
   try {

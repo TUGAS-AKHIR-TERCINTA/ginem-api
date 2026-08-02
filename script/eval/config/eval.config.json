@@ -1,0 +1,23 @@
+{
+  "repetitions": 1,
+  "llmTimeoutMs": 120000,
+  "mqttAckTimeoutMs": 10000,
+  "integrationTimeoutMs": 30000,
+  "defaultMode": "real-device",
+  "requireEnableRealDeviceFlag": true,
+  "datasetPath": "data/dataset.json",
+  "modelsPath": "config/models.json",
+  "outputDir": "output",
+  "evalUserId": 1,
+  "deviceAliases": {
+    "lampu depan": "Smart Lamp Bedroom",
+    "lampu kamar": "Smart Lamp Bedroom",
+    "lampu": "Smart Lamp Bedroom",
+    "kipas": "Smart Gate Controller",
+    "sensor suhu": "Temperature Sensor Living Room",
+    "sensor kelembaban": "Humidity Sensor Greenhouse",
+    "suhu": "Temperature Sensor Living Room",
+    "kelembaban": "Humidity Sensor Greenhouse"
+  },
+  "systemPrompt": "Production ChatService system prompt is used for E2E runs (DEVICE_CHAT_SYSTEM_PROMPT). This field is only used by the isolated (non-ChatService) LLM runner."
+}

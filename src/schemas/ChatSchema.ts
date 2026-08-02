@@ -3,6 +3,14 @@ import { z } from 'zod'
 export const chatSchema = z
   .object({
     message: z.string().min(1).max(2000),
+    sessionId: z
+      .string()
+      .min(1)
+      .max(191)
+      .optional()
+      .describe(
+        'Optional conversation session id. Defaults to web:{userId} when omitted.'
+      ),
     withAudio: z
       .boolean()
       .optional()

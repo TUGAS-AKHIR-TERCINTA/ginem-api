@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
-import { DeviceLogService } from '../../services/DeviceLog.service'
+import { DeviceLogService } from '../../services/device'
 import { type IRemoveDeviceLog } from '../../schemas/DeviceLogSchema'
 
 export const removeDeviceLog = async (

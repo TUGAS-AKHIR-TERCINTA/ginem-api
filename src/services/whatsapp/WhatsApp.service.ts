@@ -2,7 +2,7 @@ import path from 'path'
 import { rm } from 'fs/promises'
 
 import { StatusCodes } from 'http-status-codes'
-import type { WASocket } from '@whiskeysockets/baileys'
+import type { WAMessage, WASocket } from '@whiskeysockets/baileys'
 
 import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
@@ -72,6 +72,7 @@ export class WhatsappService {
 
   private socketBindings(): WhatsappSocketBindings {
     return {
+      userId: () => Number(this.userId),
       userLabel: () => this.userLabel(),
       getAuth: () => this.auth,
       getWaVersion: () => this.waVersion,
@@ -243,7 +244,11 @@ export class WhatsappService {
     }
   }
 
-  async sendMessage(jid: string, text: string): Promise<void> {
+  async sendMessage(
+    jid: string,
+    text: string,
+    options?: { quoted?: WAMessage }
+  ): Promise<void> {
     try {
       logger.info(`${LOG_PREFIX} sendMessage user=${this.userId} jid=${jid}`)
 
@@ -260,7 +265,11 @@ export class WhatsappService {
         throw AppError.conflict(`WhatsApp is not connected (status: ${this.state})`)
       }
 
-      await this.socket.sendMessage(to, { text: body })
+      await this.socket.sendMessage(
+        to,
+        { text: body },
+        options?.quoted != null ? { quoted: options.quoted } : undefined
+      )
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`${LOG_PREFIX} sendMessage failed: ${String(error)}`)

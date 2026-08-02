@@ -49,7 +49,7 @@ npm run dev
 
 ## Docker
 
-Docker Compose runs **MySQL**, **Redis**, and the **app**. MQTT uses **HiveMQ Cloud** from `.env` (not containerized).
+Docker Compose runs **MySQL**, **Redis**, **RabbitMQ**, and the **app**. MQTT uses **HiveMQ Cloud** from `.env` (not containerized).
 
 ```bash
 cp .env.docker.example .env
@@ -67,9 +67,22 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 | App | `ta-backend` | 8000 |
 | MySQL | `ta-mysql` | 3306 |
 | Redis | `ta-redis` | 6379 |
+| RabbitMQ | `ta-rabbitmq` | 5672 (AMQP), 15672 (management UI) |
 
-> Set `DB_HOST=mysql` and `REDIS_HOST=redis` inside Docker.  
+> Set `DB_HOST=mysql`, `REDIS_HOST=redis`, and `RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672` inside Docker.  
 > Set `RUN_MIGRATIONS=true` to auto-run migrations on startup.
+
+---
+
+## Chat message broker (RabbitMQ)
+
+Inbound chat from **web** (`POST /api/v1/chat`) and **WhatsApp** is published to the durable queue `chat.llm.requests` before `ChatService` / LLM processing. Callers wait for a reply via RabbitMQ RPC (`correlationId` + exclusive reply queue).
+
+| Variable | Description |
+|----------|-------------|
+| `RABBITMQ_URL` | AMQP URL (default `amqp://guest:guest@127.0.0.1:5672`) |
+| `RABBITMQ_CHAT_QUEUE` | Queue name (default `chat.llm.requests`) |
+| `RABBITMQ_CHAT_REPLY_TIMEOUT_MS` | RPC timeout (default `120000`) |
 
 ---
 
@@ -85,7 +98,9 @@ Copy `.env.example` (local) or `.env.docker.example` (Docker) to `.env`.
 | `CORS_ORIGIN` | Frontend URL (e.g. `http://localhost:5173`) |
 | `DB_HOST` / `DB_PORT` | MySQL host & port |
 | `DB_NAME` / `DB_USER_NAME` / `DB_PASSWORD` | MySQL credentials |
-| `RABBITMQ_URL` | RabbitMQ connection URL |
+| `RABBITMQ_URL` | RabbitMQ connection URL (chat → LLM broker) |
+| `RABBITMQ_CHAT_QUEUE` | Chat request queue name |
+| `RABBITMQ_CHAT_REPLY_TIMEOUT_MS` | Max wait for LLM reply over RabbitMQ |
 | `REDIS_HOST` / `REDIS_PORT` | Redis connection |
 | `OPENAI_API_KEY` | OpenAI (LLM + TTS) |
 | `PINECONE_API_KEY` | Pinecone vector DB |
@@ -163,10 +178,19 @@ ginem-api/
 │   ├── routes/
 │   ├── schemas/
 │   ├── services/
-│   │   ├── Chat.service.ts
+│   │   ├── admin/
+│   │   ├── appLog/
+│   │   ├── auth/
+│   │   ├── chat/
+│   │   ├── device/
+│   │   ├── llm/
 │   │   ├── mcp/
 │   │   ├── mqtt/
+│   │   ├── profile/
+│   │   ├── rabbitmq/
+│   │   ├── rag/
 │   │   ├── scheduler/
+│   │   ├── stats/
 │   │   └── whatsapp/
 │   └── utilities/
 ├── resources/

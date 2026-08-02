@@ -3,7 +3,9 @@ module.exports = {
     node: true,
     es2021: true
   },
-  extends: 'standard-with-typescript',
+  // prettier last so eslint-config-prettier disables stylistic rules that conflict
+  // (including space-before-function-paren — Prettier never inserts that space)
+  extends: ['standard-with-typescript', 'plugin:prettier/recommended'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -12,9 +14,9 @@ module.exports = {
   },
   rules: {
     indent: 'off',
-    '@typescript-eslint/indent': 'error',
+    '@typescript-eslint/indent': 'off',
     'space-before-function-paren': 'off',
-    '@typescript-eslint/space-before-function-paren': 'error',
+    '@typescript-eslint/space-before-function-paren': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-misused-promises': [

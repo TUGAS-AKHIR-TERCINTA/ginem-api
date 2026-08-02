@@ -12,19 +12,20 @@ import {
   plainTextFromMessage
 } from './helpers'
 import type { WhatsappConnectionStatus } from './types'
-import { ChatService } from '../Chat.service'
+import { ChatMessageBroker } from '../rabbitmq/ChatMessageBroker.service'
 import pino from 'pino'
 import { loadBaileys, type BaileysModule } from './baileys-loader'
 
 type AuthBundle = Awaited<ReturnType<BaileysModule['useMultiFileAuthState']>>
 type WaVersion = Awaited<
-ReturnType<BaileysModule['fetchLatestBaileysVersion']>
+  ReturnType<BaileysModule['fetchLatestBaileysVersion']>
 >['version']
 
 const LOG_PREFIX = '[WhatsappService]'
 const ALLOWED_SENDER_NUMBER = '6281379574223'
 
 export interface WhatsappSocketBindings {
+  userId: () => number
   userLabel: () => string
   getAuth: () => AuthBundle['state']
   getWaVersion: () => WaVersion
@@ -47,13 +48,13 @@ export class WhatsappBaileysSocket {
   /** Set after first successful `attach()`; used for disconnect reason codes. */
   private baileys: BaileysModule | undefined
 
-  constructor (private readonly bind: WhatsappSocketBindings) {}
+  constructor(private readonly bind: WhatsappSocketBindings) {}
 
   /**
    * Tutup socket WA, hentikan reconnect, dan bersihkan listener event.
    * Kredensial di disk tidak dihapus — panggil `attach()` / `connect()` untuk menyambung lagi.
    */
-  detach (): void {
+  detach(): void {
     this.bind.setReconnectScheduled(false)
     this.bind.setLastPairingQr(undefined)
     const sock = this.bind.getSocket()
@@ -73,7 +74,7 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  async attach (): Promise<void> {
+  async attach(): Promise<void> {
     try {
       this.bind.getSocket()?.end(undefined)
       this.bind.setReconnectScheduled(false)
@@ -111,7 +112,7 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  private async onConnectionChange (
+  private async onConnectionChange(
     update: Partial<BaileysEventMap['connection.update']>
   ): Promise<void> {
     try {
@@ -139,7 +140,7 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  private async onSocketClosed (
+  private async onSocketClosed(
     lastDisconnect: BaileysEventMap['connection.update']['lastDisconnect']
   ): Promise<void> {
     const code = disconnectStatusCode(lastDisconnect)
@@ -177,7 +178,7 @@ export class WhatsappBaileysSocket {
     }, WHATSAPP_RECONNECT_DELAY_MS)
   }
 
-  private retryOpen (): void {
+  private retryOpen(): void {
     try {
       this.bind.setReconnectScheduled(false)
       if (this.bind.getIntentionalDisconnect()) {
@@ -199,13 +200,13 @@ export class WhatsappBaileysSocket {
     }
   }
 
-  private onInboundMessages (payload: BaileysEventMap['messages.upsert']): void {
+  private onInboundMessages(payload: BaileysEventMap['messages.upsert']): void {
     for (const msg of payload.messages) {
       void this.maybePingPong(msg)
     }
   }
 
-  private async maybePingPong (msg: WAMessage): Promise<void> {
+  private async maybePingPong(msg: WAMessage): Promise<void> {
     try {
       const sock = this.bind.getSocket()
       if (sock == null || msg.key.fromMe === true) return
@@ -235,12 +236,16 @@ export class WhatsappBaileysSocket {
         return
       }
 
-      // if (msg.key.senderPn !== '6281379574223@s.whatsapp.net') return
-
-      const { reply } = await ChatService.query(incoming)
+      const { reply } = await ChatMessageBroker.requestChat(incoming, {
+        source: 'whatsapp',
+        userId: this.bind.userId(),
+        sessionId: `whatsapp:${this.bind.userId()}:${chat}`
+      })
 
       await sock.sendMessage(chat, { text: reply }, { quoted: msg })
-      logger.info(`${LOG_PREFIX} auto-reply pong → ${chat} (${this.bind.userLabel()})`)
+      logger.info(
+        `${LOG_PREFIX} auto-reply via broker → ${chat} (${this.bind.userLabel()})`
+      )
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`${LOG_PREFIX} maybePingPong failed: ${String(error)}`)

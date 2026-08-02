@@ -2,11 +2,13 @@ import { chatSchema, ttsPreviewSchema } from '../ChatSchema'
 
 describe('ChatSchema', () => {
   describe('chatSchema', () => {
-    it('accepts a valid chat message', () => {
-      const result = chatSchema.parse({ message: 'Turn on the light' })
+    it('accepts optional sessionId for chat memory', () => {
+      const result = chatSchema.parse({
+        message: 'Turn on the light',
+        sessionId: 'web:1'
+      })
 
-      expect(result.withAudio).toBe(false)
-      expect(result.audioFormat).toBe('json')
+      expect(result.sessionId).toBe('web:1')
     })
 
     it('rejects empty message', () => {

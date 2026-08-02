@@ -1,5 +1,4 @@
-import { DeviceLogService } from '../DeviceLog.service'
-import { DeviceService } from '../Device.service'
+import { DeviceLogService, DeviceService } from '../device'
 import { MQTTService } from './MQTT.service'
 import logger from '../../utilities/logger'
 import { AppError } from '../../utilities/AppError'

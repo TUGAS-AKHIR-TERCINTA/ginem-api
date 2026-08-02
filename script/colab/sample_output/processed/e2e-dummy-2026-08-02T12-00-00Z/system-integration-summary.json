@@ -1,0 +1,10 @@
+{
+  "runId": "e2e-dummy-2026-08-02T12-00-00Z",
+  "totalTests": 36,
+  "functionalSuccessRatePct": 100.0,
+  "integrationSuccessRatePct": 100.0,
+  "mqttSuccessRatePct": 100.0,
+  "averageLatencyMs": 1741.67,
+  "errorCount": 2,
+  "note": "DUMMY SAMPLE DATA for Colab notebook demo only. Not from a real device run."
+}

@@ -8,6 +8,8 @@ import { MiddleWares } from './middlewares/index'
 import { MQTTService } from './services/mqtt/MQTT.service'
 import { TelemetryService } from './services/mqtt/Telemetry.service'
 import { initializeDeviceSchedule } from './services/mcp/DeviceSchedule.service'
+import { ChatMessageBroker } from './services/rabbitmq/ChatMessageBroker.service'
+import logger from './utilities/logger'
 
 const app: Express = express()
 
@@ -15,6 +17,9 @@ MQTTService.registerMessageHandlers()
 MQTTService.initialize()
 TelemetryService.initialize()
 void initializeDeviceSchedule()
+void ChatMessageBroker.initialize().catch((error) => {
+  logger.error(`[app] ChatMessageBroker initialize failed: ${String(error)}`)
+})
 
 app.use(helmet())
 app.use(MiddleWares.corsOrigin())

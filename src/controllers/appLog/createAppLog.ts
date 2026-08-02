@@ -2,7 +2,7 @@ import { type Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { handleError } from '../../utilities/requestHandler'
-import { AppLogService } from '../../services/AppLog.service'
+import { AppLogService } from '../../services/appLog'
 import { type ICreateAppLog } from '../../schemas/AppLogSchema'
 import { type IAuthenticatedRequest } from '../../interfaces/shared/request.interface'
 
