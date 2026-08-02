@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { createAgent } from 'langchain'
 
 import logger from '../../utilities/logger'
@@ -14,7 +15,7 @@ import { deviceTools } from '../mcp/tools/index'
 import { pineconeService, type RagDocument } from '../rag'
 import type { ChatMessageSource } from '../../models/ChatMessageModel'
 
-const DEVICE_CHAT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
+export const DEVICE_CHAT_SYSTEM_PROMPT = `You are a helpful assistant with access to device data from the database and a knowledge base (RAG). When the user asks a question, you may receive relevant context from the knowledge base above the user message—use it to answer when applicable, combined with tool results.
 
 You may also receive recent conversation history. Use it to stay consistent with prior turns (names, devices, preferences) without repeating yourself unnecessarily.
 
@@ -34,9 +35,23 @@ Answer in a clear, concise way based on the tool results. If no data is found or
 
 When the user may hear the reply as voice: respond in natural spoken Indonesian (1–4 short sentences). Do NOT use markdown, bullet lists, tables, or raw JSON in the final answer.`
 
+export interface ChatToolCallTrace {
+  name: string
+  args: Record<string, unknown>
+  id?: string
+}
+
+export interface ChatQueryTrace {
+  toolCalls: ChatToolCallTrace[]
+  /** Wall time for agent.invoke only (ms). */
+  agentLatencyMs: number
+}
+
 export interface ChatQueryResponse {
   reply: string
   audio?: ChatAudioPayload
+  /** Present only when `captureTrace` is true. */
+  trace?: ChatQueryTrace
 }
 
 export interface ChatQueryOptions {
@@ -44,35 +59,60 @@ export interface ChatQueryOptions {
   userId?: number
   sessionId?: string
   source?: ChatMessageSource
+  /**
+   * Optional model override (evaluation / experiments).
+   * When omitted, the production default agent model is used.
+   */
+  model?: BaseChatModel
+  /**
+   * When true, response includes tool-call trace from the agent run.
+   * Does not change tool execution behavior.
+   */
+  captureTrace?: boolean
+}
+
+type AgentInvokeResult = {
+  messages?: Array<{
+    content?: unknown
+    tool_calls?: unknown
+    additional_kwargs?: unknown
+  }>
+}
+
+type AgentLike = {
+  invoke: (input: {
+    messages: Array<{ role: 'human' | 'assistant'; content: string }>
+  }) => Promise<AgentInvokeResult>
 }
 
 /**
  * Chat layer: LLM + short-term MySQL memory + device tools + Pinecone RAG + optional TTS.
  */
 export class ChatService {
-  private static readonly agent = createAgent({
+  private static readonly defaultAgent = createAgent({
     model: LLMService.create(),
     tools: deviceTools,
     systemPrompt: DEVICE_CHAT_SYSTEM_PROMPT
-  })
+  }) as AgentLike
 
   /**
    * Run a chat turn. When `withAudio` is true, synthesizes reply audio via OpenAI TTS.
    * When `userId` + `sessionId` are provided, loads/saves short-term chat memory.
+   * Optional `model` / `captureTrace` support evaluation without changing default behavior.
    */
   static async query(
     userMessage: string,
     options?: ChatQueryOptions
   ): Promise<ChatQueryResponse> {
     try {
-      const reply = await ChatService.generateReply(userMessage, options)
+      const { reply, trace } = await ChatService.generateReply(userMessage, options)
 
       if (options?.withAudio !== true) {
-        return { reply }
+        return trace != null ? { reply, trace } : { reply }
       }
 
       const audio = await TTSService.synthesizeSpeech(reply)
-      return { reply, audio }
+      return trace != null ? { reply, audio, trace } : { reply, audio }
     } catch (serviceError) {
       if (serviceError instanceof AppError) throw serviceError
       logger.error(`[ChatService] query failed: ${String(serviceError)}`)
@@ -81,6 +121,17 @@ export class ChatService {
         StatusCodes.INTERNAL_SERVER_ERROR
       )
     }
+  }
+
+  private static resolveAgent(options?: ChatQueryOptions): AgentLike {
+    if (options?.model == null) {
+      return ChatService.defaultAgent
+    }
+    return createAgent({
+      model: options.model,
+      tools: deviceTools,
+      systemPrompt: DEVICE_CHAT_SYSTEM_PROMPT
+    }) as AgentLike
   }
 
   private static resolveMemoryScope(options?: ChatQueryOptions): ChatMemoryScope | null {
@@ -112,7 +163,7 @@ export class ChatService {
   private static async generateReply(
     userMessage: string,
     options?: ChatQueryOptions
-  ): Promise<string> {
+  ): Promise<{ reply: string; trace?: ChatQueryTrace }> {
     const memoryScope = ChatService.resolveMemoryScope(options)
     const history =
       memoryScope != null
@@ -130,9 +181,12 @@ export class ChatService {
       currentContent = `[Context from knowledge base]\n${contextBlock}\n\n[User question]\n${userMessage}`
     }
 
-    const result = await ChatService.agent.invoke({
+    const agent = ChatService.resolveAgent(options)
+    const startedAt = Date.now()
+    const result = await agent.invoke({
       messages: ChatService.toAgentMessages(history, currentContent)
     })
+    const agentLatencyMs = Date.now() - startedAt
 
     const reply = ChatService.extractReplyText(result)
 
@@ -145,7 +199,17 @@ export class ChatService {
       }
     }
 
-    return reply
+    if (options?.captureTrace !== true) {
+      return { reply }
+    }
+
+    return {
+      reply,
+      trace: {
+        toolCalls: ChatService.extractToolCalls(result.messages ?? []),
+        agentLatencyMs
+      }
+    }
   }
 
   private static extractReplyText(result: {
@@ -162,5 +226,75 @@ export class ChatService {
     }
 
     return content != null ? String(content) : JSON.stringify(result)
+  }
+
+  /**
+   * Collect tool calls from agent message history (AI / tool-call messages).
+   */
+  static extractToolCalls(
+    messages: Array<{
+      content?: unknown
+      tool_calls?: unknown
+      additional_kwargs?: unknown
+    }>
+  ): ChatToolCallTrace[] {
+    const calls: ChatToolCallTrace[] = []
+
+    for (const message of messages) {
+      const direct = message.tool_calls
+      if (Array.isArray(direct)) {
+        for (const tc of direct) {
+          const item = tc as {
+            name?: string
+            args?: Record<string, unknown>
+            id?: string
+            function?: { name?: string; arguments?: string }
+          }
+          if (item.name) {
+            calls.push({
+              name: item.name,
+              args: (item.args ?? {}) as Record<string, unknown>,
+              id: item.id
+            })
+            continue
+          }
+          if (item.function?.name) {
+            let args: Record<string, unknown> = {}
+            try {
+              args = JSON.parse(item.function.arguments ?? '{}') as Record<
+                string,
+                unknown
+              >
+            } catch {
+              args = {}
+            }
+            calls.push({ name: item.function.name, args, id: item.id })
+          }
+        }
+      }
+
+      const kwargs = message.additional_kwargs as
+        | { tool_calls?: Array<Record<string, unknown>> }
+        | undefined
+      if (kwargs?.tool_calls && Array.isArray(kwargs.tool_calls)) {
+        for (const tc of kwargs.tool_calls) {
+          const fn = tc.function as { name?: string; arguments?: string } | undefined
+          if (!fn?.name) continue
+          let args: Record<string, unknown> = {}
+          try {
+            args = JSON.parse(fn.arguments ?? '{}') as Record<string, unknown>
+          } catch {
+            args = {}
+          }
+          calls.push({
+            name: fn.name,
+            args,
+            id: typeof tc.id === 'string' ? tc.id : undefined
+          })
+        }
+      }
+    }
+
+    return calls
   }
 }

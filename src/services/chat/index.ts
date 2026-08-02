@@ -1,7 +1,10 @@
 export {
   ChatService,
+  DEVICE_CHAT_SYSTEM_PROMPT,
   type ChatQueryResponse,
-  type ChatQueryOptions
+  type ChatQueryOptions,
+  type ChatQueryTrace,
+  type ChatToolCallTrace
 } from './Chat.service'
 export {
   ChatMemoryService,
