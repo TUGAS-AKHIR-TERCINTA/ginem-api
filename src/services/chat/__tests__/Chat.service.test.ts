@@ -13,7 +13,7 @@ jest.mock('langchain', () => ({
 }))
 
 jest.mock('../../llm', () => ({
-  LLMService: { create: jest.fn(() => ({})) }
+  LLMService: { create: jest.fn(() => ({ id: 'default-model' })) }
 }))
 
 jest.mock('../TTS.service', () => ({
@@ -44,7 +44,8 @@ jest.mock('../../../utilities/logger', () => ({
   default: { error: jest.fn(), info: jest.fn(), warn: jest.fn() }
 }))
 
-const mockInvoke = (createAgent as jest.Mock).mock.results[0].value.invoke as jest.Mock
+const createAgentMock = createAgent as jest.Mock
+const defaultInvoke = createAgentMock.mock.results[0].value.invoke as jest.Mock
 const mockedPinecone = pineconeService as jest.Mocked<typeof pineconeService>
 const mockedTTS = TTSService as jest.Mocked<typeof TTSService>
 const mockedMemory = ChatMemoryService as jest.Mocked<typeof ChatMemoryService>
@@ -55,7 +56,7 @@ describe('ChatService', () => {
     mockedPinecone.search.mockResolvedValue([])
     mockedMemory.getRecent.mockResolvedValue([])
     mockedMemory.appendTurn.mockResolvedValue(undefined)
-    mockInvoke.mockResolvedValue({
+    defaultInvoke.mockResolvedValue({
       messages: [{ content: 'Lampu sudah dinyalakan.' }]
     })
   })
@@ -74,7 +75,7 @@ describe('ChatService', () => {
 
     await ChatService.query('Bagaimana cara relay bekerja?')
 
-    expect(mockInvoke).toHaveBeenCalledWith({
+    expect(defaultInvoke).toHaveBeenCalledWith({
       messages: [
         expect.objectContaining({
           role: 'human',
@@ -100,7 +101,7 @@ describe('ChatService', () => {
       userId: 7,
       sessionId: 'web:7'
     })
-    expect(mockInvoke).toHaveBeenCalledWith({
+    expect(defaultInvoke).toHaveBeenCalledWith({
       messages: [
         { role: 'human', content: 'Halo' },
         { role: 'assistant', content: 'Halo, ada yang bisa dibantu?' },
@@ -133,8 +134,59 @@ describe('ChatService', () => {
     })
   })
 
+  it('uses an override model agent when model is provided', async () => {
+    const overrideInvoke = jest.fn().mockResolvedValue({
+      messages: [{ content: 'Override reply' }]
+    })
+    createAgentMock.mockReturnValueOnce({ invoke: overrideInvoke })
+
+    const overrideModel = { id: 'override' } as never
+    const result = await ChatService.query('Nyalakan lampu', {
+      model: overrideModel
+    })
+
+    expect(createAgentMock).toHaveBeenCalledWith(
+      expect.objectContaining({ model: overrideModel })
+    )
+    expect(overrideInvoke).toHaveBeenCalled()
+    expect(defaultInvoke).not.toHaveBeenCalled()
+    expect(result.reply).toBe('Override reply')
+  })
+
+  it('returns tool-call trace when captureTrace is true', async () => {
+    defaultInvoke.mockResolvedValue({
+      messages: [
+        {
+          content: '',
+          tool_calls: [
+            {
+              name: 'set_actuator_state_by_device_name',
+              args: { deviceName: 'Smart Lamp Bedroom', state: 'on' },
+              id: 'call-1'
+            }
+          ]
+        },
+        { content: 'Lampu sudah dinyalakan.' }
+      ]
+    })
+
+    const result = await ChatService.query('Nyalakan lampu', {
+      captureTrace: true
+    })
+
+    expect(result.reply).toBe('Lampu sudah dinyalakan.')
+    expect(result.trace?.toolCalls).toEqual([
+      {
+        name: 'set_actuator_state_by_device_name',
+        args: { deviceName: 'Smart Lamp Bedroom', state: 'on' },
+        id: 'call-1'
+      }
+    ])
+    expect(result.trace?.agentLatencyMs).toBeGreaterThanOrEqual(0)
+  })
+
   it('wraps unexpected errors', async () => {
-    mockInvoke.mockRejectedValue(new Error('agent failed'))
+    defaultInvoke.mockRejectedValue(new Error('agent failed'))
 
     await expect(ChatService.query('Hello')).rejects.toMatchObject({
       message: 'Failed to process chat query with user message',

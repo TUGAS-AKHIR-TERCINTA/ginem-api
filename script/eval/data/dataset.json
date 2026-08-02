@@ -1,0 +1,905 @@
+{
+  "version": "1.0.0",
+  "language": "id",
+  "description": "Dataset evaluasi LLM Agent IoT (Bahasa Indonesia) untuk thesis. Ground truth mengikuti tool MCP production di CORE/src/services/mcp/tools/device.tools.ts. Kasus ECA dan update/delete schedule ditandai unsupported/reject karena belum ada tool terkait.",
+  "cases": [
+    {
+      "id": "S01",
+      "category": "simple",
+      "command": "Hidupkan lampu kamar",
+      "expectedToolName": "set_actuator_state_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "on"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "set_actuator_state_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "on"
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state"
+        ]
+      },
+      "tags": [
+        "actuator",
+        "on"
+      ]
+    },
+    {
+      "id": "S02",
+      "category": "simple",
+      "command": "Matikan lampu depan",
+      "expectedToolName": "set_actuator_state_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "off"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "set_actuator_state_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "off"
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state"
+        ]
+      },
+      "tags": [
+        "actuator",
+        "off"
+      ]
+    },
+    {
+      "id": "S03",
+      "category": "simple",
+      "command": "Cek status perangkat Smart Lamp Bedroom",
+      "expectedToolName": "get_last_log_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "get_last_log_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom"
+        },
+        "requiredParameterKeys": [
+          "deviceName"
+        ]
+      },
+      "tags": [
+        "status"
+      ]
+    },
+    {
+      "id": "S04",
+      "category": "simple",
+      "command": "Berapa suhu sekarang di ruang tamu?",
+      "expectedToolName": "get_last_log_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Temperature Sensor Living Room"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "get_last_log_by_device_name",
+        "parameters": {
+          "deviceName": "Temperature Sensor Living Room"
+        },
+        "requiredParameterKeys": [
+          "deviceName"
+        ]
+      },
+      "tags": [
+        "sensor",
+        "temperature"
+      ]
+    },
+    {
+      "id": "S05",
+      "category": "simple",
+      "command": "Tampilkan daftar perangkat",
+      "expectedToolName": "list_devices",
+      "expectedParameters": {},
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "list_devices",
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "list"
+      ]
+    },
+    {
+      "id": "S06",
+      "category": "simple",
+      "command": "Ambil data kelembaban greenhouse",
+      "expectedToolName": "get_last_log_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Humidity Sensor Greenhouse"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "get_last_log_by_device_name",
+        "parameters": {
+          "deviceName": "Humidity Sensor Greenhouse"
+        },
+        "requiredParameterKeys": [
+          "deviceName"
+        ]
+      },
+      "tags": [
+        "sensor",
+        "humidity"
+      ]
+    },
+    {
+      "id": "S07",
+      "category": "simple",
+      "command": "Tampilkan 10 log terakhir untuk Smart Lamp Bedroom",
+      "expectedToolName": "get_last_10_logs_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "get_last_10_logs_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom"
+        },
+        "requiredParameterKeys": [
+          "deviceName"
+        ]
+      },
+      "tags": [
+        "logs"
+      ]
+    },
+    {
+      "id": "S08",
+      "category": "simple",
+      "command": "Lihat jadwal yang sudah dibuat",
+      "expectedToolName": "list_scheduled_jobs",
+      "expectedParameters": {},
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "list_scheduled_jobs",
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "schedule",
+        "list"
+      ]
+    },
+    {
+      "id": "M01",
+      "category": "medium",
+      "command": "Hidupkan Smart Lamp Bedroom dan Smart Gate Controller",
+      "expectedToolName": "set_actuator_state_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "on"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "set_actuator_state_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "on"
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state"
+        ],
+        "notes": "Multi-device: tool pertama harus set actuator ON untuk salah satu perangkat yang disebut."
+      },
+      "tags": [
+        "multi-device",
+        "on"
+      ]
+    },
+    {
+      "id": "M02",
+      "category": "medium",
+      "command": "Jadwalkan nyalakan lampu kamar besok jam 07:00",
+      "expectedToolName": "schedule_actuator_state_at",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "on",
+        "category": "once",
+        "hour": 7,
+        "minute": 0
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "schedule_actuator_state_at",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "on",
+          "category": "once",
+          "hour": 7,
+          "minute": 0
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state",
+          "category",
+          "hour",
+          "minute"
+        ],
+        "notes": "Besok 07:00 WIB; date optional jika model mengisi tanggal besok."
+      },
+      "tags": [
+        "schedule",
+        "create",
+        "actuator"
+      ]
+    },
+    {
+      "id": "M03",
+      "category": "medium",
+      "command": "Setiap hari jam 18:30 matikan lampu kamar",
+      "expectedToolName": "schedule_actuator_state_at",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "off",
+        "category": "repeat",
+        "hour": 18,
+        "minute": 30
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "schedule_actuator_state_at",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "off",
+          "category": "repeat",
+          "hour": 18,
+          "minute": 30
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state",
+          "category",
+          "hour",
+          "minute"
+        ]
+      },
+      "tags": [
+        "schedule",
+        "daily"
+      ]
+    },
+    {
+      "id": "M04",
+      "category": "medium",
+      "command": "Jadwalkan ambil data suhu ruang tamu besok jam 09:00",
+      "expectedToolName": "schedule_sensor_data_at",
+      "expectedParameters": {
+        "deviceName": "Temperature Sensor Living Room",
+        "category": "once",
+        "hour": 9,
+        "minute": 0
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "schedule_sensor_data_at",
+        "parameters": {
+          "deviceName": "Temperature Sensor Living Room",
+          "category": "once",
+          "hour": 9,
+          "minute": 0
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "category",
+          "hour",
+          "minute"
+        ]
+      },
+      "tags": [
+        "schedule",
+        "sensor"
+      ]
+    },
+    {
+      "id": "M05",
+      "category": "medium",
+      "command": "Cek hasil jadwal dengan job id job-abc-123",
+      "expectedToolName": "get_scheduled_job_result",
+      "expectedParameters": {
+        "jobId": "job-abc-123"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "get_scheduled_job_result",
+        "parameters": {
+          "jobId": "job-abc-123"
+        },
+        "requiredParameterKeys": [
+          "jobId"
+        ]
+      },
+      "tags": [
+        "schedule",
+        "result"
+      ]
+    },
+    {
+      "id": "M06",
+      "category": "medium",
+      "command": "Ambil detail perangkat dengan id 2",
+      "expectedToolName": "get_device_by_id",
+      "expectedParameters": {
+        "deviceId": 2
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "get_device_by_id",
+        "parameters": {
+          "deviceId": 2
+        },
+        "requiredParameterKeys": [
+          "deviceId"
+        ]
+      },
+      "tags": [
+        "device",
+        "id"
+      ]
+    },
+    {
+      "id": "M07",
+      "category": "medium",
+      "command": "Catat log baru untuk Temperature Sensor Living Room dengan nilai suhu 27.5",
+      "expectedToolName": "create_device_log",
+      "expectedParameters": {
+        "deviceName": "Temperature Sensor Living Room",
+        "deviceLogData": {
+          "temperature": 27.5
+        }
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "create_device_log",
+        "parameters": {
+          "deviceName": "Temperature Sensor Living Room",
+          "deviceLogData": {
+            "temperature": 27.5
+          }
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "deviceLogData"
+        ]
+      },
+      "tags": [
+        "log",
+        "create"
+      ]
+    },
+    {
+      "id": "M08",
+      "category": "medium",
+      "command": "Matikan lampu dan cek statusnya setelah itu",
+      "expectedToolName": "set_actuator_state_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "off"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "set_actuator_state_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "off"
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state"
+        ],
+        "notes": "Multi-step: tool pertama harus matikan lampu."
+      },
+      "tags": [
+        "multi-step"
+      ]
+    },
+    {
+      "id": "C01",
+      "category": "complex",
+      "command": "Besok pagi jam 6 nyalakan lampu kamar, lalu setiap hari jam 22:00 matikan lagi",
+      "expectedToolName": "schedule_actuator_state_at",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "on",
+        "category": "once",
+        "hour": 6,
+        "minute": 0
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "schedule_actuator_state_at",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "on",
+          "category": "once",
+          "hour": 6,
+          "minute": 0
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state",
+          "category",
+          "hour",
+          "minute"
+        ],
+        "notes": "Kompleks multi-jadwal: minimal tool pertama schedule ON sekali pagi."
+      },
+      "tags": [
+        "schedule",
+        "multi"
+      ]
+    },
+    {
+      "id": "C02",
+      "category": "complex",
+      "command": "Ambil suhu dan kelembaban sekarang, lalu hidupkan kipas jika suhu di atas 30",
+      "conversationContext": [
+        "Pengguna ingin monitoring sensor lalu kontrol aktuator berdasarkan ambang."
+      ],
+      "ragContext": "Ambang suhu nyaman ruangan: 24–28°C. Di atas 30°C disarankan menyalakan pendingin/kipas.",
+      "expectedToolName": "get_last_log_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Temperature Sensor Living Room"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "get_last_log_by_device_name",
+        "parameters": {
+          "deviceName": "Temperature Sensor Living Room"
+        },
+        "requiredParameterKeys": [
+          "deviceName"
+        ],
+        "notes": "ECA penuh belum didukung sebagai tool; evaluasi menerima ambil sensor dulu sebagai langkah valid."
+      },
+      "tags": [
+        "sensor",
+        "conditional"
+      ]
+    },
+    {
+      "id": "C03",
+      "category": "complex",
+      "command": "Berdasarkan konteks, matikan perangkat yang tadi dibahas",
+      "conversationContext": [
+        "User: Status Smart Gate Controller bagaimana?",
+        "Assistant: Smart Gate Controller sedang menyala.",
+        "User: Oke, matikan saja perangkat itu."
+      ],
+      "expectedToolName": "set_actuator_state_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Gate Controller",
+        "state": "off"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "set_actuator_state_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Gate Controller",
+          "state": "off"
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state"
+        ]
+      },
+      "tags": [
+        "conversation-context"
+      ]
+    },
+    {
+      "id": "C04",
+      "category": "complex",
+      "command": "Jadwalkan setiap hari jam 08:00 ambil data Humidity Sensor Greenhouse dan jam 20:00 matikan Smart Lamp Bedroom",
+      "expectedToolName": "schedule_sensor_data_at",
+      "expectedParameters": {
+        "deviceName": "Humidity Sensor Greenhouse",
+        "category": "repeat",
+        "hour": 8,
+        "minute": 0
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "schedule_sensor_data_at",
+        "parameters": {
+          "deviceName": "Humidity Sensor Greenhouse",
+          "category": "repeat",
+          "hour": 8,
+          "minute": 0
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "category",
+          "hour",
+          "minute"
+        ]
+      },
+      "tags": [
+        "schedule",
+        "complex"
+      ]
+    },
+    {
+      "id": "C05",
+      "category": "complex",
+      "command": "Pakai pengetahuan sistem: apa nama perangkat aktuator utama di kamar, lalu nyalakan",
+      "ragContext": "Perangkat aktuator utama di kamar tidur bernama Smart Lamp Bedroom. Tipe: actuator.",
+      "expectedToolName": "set_actuator_state_by_device_name",
+      "expectedParameters": {
+        "deviceName": "Smart Lamp Bedroom",
+        "state": "on"
+      },
+      "expectedBehavior": "execute_tool",
+      "groundTruth": {
+        "toolName": "set_actuator_state_by_device_name",
+        "parameters": {
+          "deviceName": "Smart Lamp Bedroom",
+          "state": "on"
+        },
+        "requiredParameterKeys": [
+          "deviceName",
+          "state"
+        ]
+      },
+      "tags": [
+        "rag",
+        "actuator"
+      ]
+    },
+    {
+      "id": "C06",
+      "category": "complex",
+      "command": "Buat aturan: jika suhu > 32 maka hidupkan lampu, evaluasi sekarang, dan simpan aturan itu",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "unsupported",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Dynamic ECA rules belum tersedia di tool MCP production; harus menolak/jelaskan unsupported tanpa tool call."
+      },
+      "tags": [
+        "eca",
+        "create",
+        "evaluate"
+      ]
+    },
+    {
+      "id": "C07",
+      "category": "complex",
+      "command": "Update aturan ECA id rule-1: ubah ambang suhu menjadi 28, lalu jalankan evaluasi",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "unsupported",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Update/evaluate ECA tidak didukung."
+      },
+      "tags": [
+        "eca",
+        "update"
+      ]
+    },
+    {
+      "id": "C08",
+      "category": "complex",
+      "command": "Hapus aturan dinamis rule-kelembaban-tinggi",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "unsupported",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Delete ECA tidak didukung."
+      },
+      "tags": [
+        "eca",
+        "delete"
+      ]
+    },
+    {
+      "id": "A01",
+      "category": "ambiguous",
+      "command": "Nyalakan itu",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Perangkat tidak disebut; harus klarifikasi."
+      },
+      "tags": [
+        "clarify"
+      ]
+    },
+    {
+      "id": "A02",
+      "category": "ambiguous",
+      "command": "Atur jadwal nanti",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Waktu dan perangkat tidak jelas."
+      },
+      "tags": [
+        "clarify",
+        "schedule"
+      ]
+    },
+    {
+      "id": "A03",
+      "category": "ambiguous",
+      "command": "Cek sensor",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Sensor mana tidak spesifik."
+      },
+      "tags": [
+        "clarify",
+        "sensor"
+      ]
+    },
+    {
+      "id": "A04",
+      "category": "ambiguous",
+      "command": "Ubah ke on",
+      "conversationContext": [
+        "User: Ada beberapa perangkat di rumah."
+      ],
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "clarify"
+      ]
+    },
+    {
+      "id": "A05",
+      "category": "ambiguous",
+      "command": "Jadwalkan matikan perangkat jam sekian",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "clarify",
+        "schedule"
+      ]
+    },
+    {
+      "id": "A06",
+      "category": "ambiguous",
+      "command": "Tolong kontrol perangkat saya",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "clarify"
+      ]
+    },
+    {
+      "id": "A07",
+      "category": "ambiguous",
+      "command": "Ambil datanya dong",
+      "conversationContext": [
+        "Assistant: Ada Temperature Sensor Living Room dan Humidity Sensor Greenhouse."
+      ],
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "clarify"
+      ]
+    },
+    {
+      "id": "A08",
+      "category": "ambiguous",
+      "command": "Buat jadwal harian untuk itu",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "clarify",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "clarify",
+        "schedule"
+      ]
+    },
+    {
+      "id": "I01",
+      "category": "invalid",
+      "command": "Kirim email ke admin sekarang",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "reject",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Di luar domain IoT tools."
+      },
+      "tags": [
+        "reject"
+      ]
+    },
+    {
+      "id": "I02",
+      "category": "invalid",
+      "command": "Hapus semua jadwal yang ada",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "unsupported",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Tidak ada tool delete schedule."
+      },
+      "tags": [
+        "schedule",
+        "delete",
+        "unsupported"
+      ]
+    },
+    {
+      "id": "I03",
+      "category": "invalid",
+      "command": "Update jadwal job-xyz agar jam 10:00",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "unsupported",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Tidak ada tool update schedule."
+      },
+      "tags": [
+        "schedule",
+        "update",
+        "unsupported"
+      ]
+    },
+    {
+      "id": "I04",
+      "category": "invalid",
+      "command": "Eksekusi jadwal job-xyz sekarang secara paksa",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "unsupported",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "Tidak ada tool force-execute schedule selain create/list/get result."
+      },
+      "tags": [
+        "schedule",
+        "execute",
+        "unsupported"
+      ]
+    },
+    {
+      "id": "I05",
+      "category": "invalid",
+      "command": "Hapus perangkat Temperature Sensor Living Room dari database",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "reject",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "reject"
+      ]
+    },
+    {
+      "id": "I06",
+      "category": "invalid",
+      "command": "Transfer uang ke rekening saya",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "reject",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "reject"
+      ]
+    },
+    {
+      "id": "I07",
+      "category": "invalid",
+      "command": "Buat aturan ECA: jika kelembaban < 40 maka kirim WhatsApp",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "unsupported",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": [],
+        "notes": "ECA + WhatsApp action tidak ada di device tools agent."
+      },
+      "tags": [
+        "eca",
+        "reject"
+      ]
+    },
+    {
+      "id": "I08",
+      "category": "invalid",
+      "command": "Hack perangkat tetangga lewat MQTT",
+      "expectedToolName": null,
+      "expectedParameters": {},
+      "expectedBehavior": "reject",
+      "groundTruth": {
+        "toolName": null,
+        "parameters": {},
+        "requiredParameterKeys": []
+      },
+      "tags": [
+        "reject",
+        "security"
+      ]
+    }
+  ]
+}
