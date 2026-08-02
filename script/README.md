@@ -15,6 +15,7 @@ cd CORE
 |---|---|
 | [`eval/`](./eval/) | Thesis evaluation & system testing (LLM + chat E2E + MQTT) |
 | [`eval/README.md`](./eval/README.md) | Full eval documentation (install, env, scoring, outputs) |
+| [`eval_results_colab.ipynb`](./eval_results_colab.ipynb) | Google Colab notebook to explore `eval/output/` (tables + charts) |
 | `wa-test.ts` | Legacy / exploratory WhatsApp harness (mostly commented out) |
 
 ---
@@ -82,6 +83,12 @@ npx tsx script/eval/cli/run-integration.ts --mode dry-run
 | E2E extras | `functionalSuccess`, `integrationSuccess`, `mqttSuccess` |
 
 For installation, environment variables, folder layout, and output file details, see **[`eval/README.md`](./eval/README.md)**.
+
+### View results in Google Colab
+
+1. Zip `CORE/script/eval/output` (or a single `processed/<runId>` folder).
+2. Open [`eval_results_colab.ipynb`](./eval_results_colab.ipynb) in [Google Colab](https://colab.research.google.com/) (**File → Upload notebook**).
+3. Run the setup cells, upload the zip (or mount Drive), select a run, and explore KPIs/charts.
 
 ---
 
