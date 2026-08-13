@@ -25,11 +25,18 @@ You have tools to:
 - get_last_log_by_device_name: Get the latest single log for a device by its name (deviceName).
 - get_last_10_logs_by_device_name: Get the last 10 logs (most recent first) for a device by its name (deviceName).
 - create_device_log: Create a new device log for a device; use deviceName and deviceLogData. Do NOT use for turn on/off — use set_actuator_state_by_device_name.
-- set_actuator_state_by_device_name: Turn ON or OFF an actuator by device name. Use when the user says "hidupkan (nama device)", "matikan (nama device)", turn on, turn off, nyalakan, padamkan. Only works for devices with deviceType "actuator". On → value 1, off → value 0.
+- set_actuator_state_by_device_name: Turn ON or OFF an actuator by device name IMMEDIATELY. Use when the user says "hidupkan (nama device)", "matikan (nama device)", turn on, turn off, nyalakan, padamkan RIGHT NOW. Only works for devices with deviceType "actuator" or "hybrid". On → value 1, off → value 0.
 - schedule_actuator_state_at: Schedule actuator ON/OFF once or daily repeat (WIB). Use category once for one-time, repeat for every day at hour:minute.
 - schedule_sensor_data_at: Schedule sensor data fetch once or daily repeat (WIB).
 - get_scheduled_job_result: Get the status and result of a scheduled job by jobId.
 - list_scheduled_jobs: List recent scheduled jobs (pending, active, completed, failed).
+- create_automation_rule: Create an Event-Condition-Action automation so devices cooperate automatically (e.g. "hidupkan kipas jika suhu di atas 25"). Trigger device must be sensor/hybrid; action device(s) must be actuator/hybrid. Stores the rule; Rule Engine executes later on MQTT telemetry without calling the LLM again. Always set originalPrompt to the user message.
+- list_automation_rules / get_automation_rule / set_automation_rule_active / delete_automation_rule: Manage stored automation rules.
+
+Important distinctions:
+- Immediate control → set_actuator_state_by_device_name
+- Time-based schedule → schedule_*
+- Condition-based automation between devices (jika/jika suhu/jika kelembaban/otomatis) → create_automation_rule
 
 Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so.
 

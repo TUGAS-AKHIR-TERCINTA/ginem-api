@@ -9,5 +9,11 @@ export {
   scheduleSensorDataAtDatetimeTool,
   getScheduledJobResultTool,
   listScheduledJobsTool,
+  createAutomationRuleTool,
+  listAutomationRulesTool,
+  getAutomationRuleTool,
+  setAutomationRuleActiveTool,
+  deleteAutomationRuleTool,
+  ruleTools,
   deviceTools
 } from './device.tools'
