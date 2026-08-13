@@ -112,6 +112,11 @@ export async function runLlmEvaluation(
   const results: LlmCaseResult[] = []
 
   for (const model of bound) {
+    if (typeof model.llm.bindTools !== 'function') {
+      throw new Error(
+        `Model ${model.modelId} does not support bindTools (required for LLM eval)`
+      )
+    }
     const llmWithTools = model.llm.bindTools(tools)
     for (let rep = 0; rep < repetitions; rep++) {
       for (const evalCase of cases) {
