@@ -34,13 +34,13 @@ jest.mock('../../../configs/appConfig', () => ({
 const mockedChatService = ChatService as jest.Mocked<typeof ChatService>
 const mockedGetChannel = rabbitConnection.getRabbitChannel as jest.Mock
 
-async function flushMicrotasks (): Promise<void> {
+async function flushMicrotasks(): Promise<void> {
   await new Promise<void>((resolve) => {
     setImmediate(resolve)
   })
 }
 
-async function waitForMockCalls (fn: jest.Mock, count = 1): Promise<void> {
+async function waitForMockCalls(fn: jest.Mock, count = 1): Promise<void> {
   for (let i = 0; i < 30; i++) {
     if (fn.mock.calls.length >= count) return
     await flushMicrotasks()
@@ -174,7 +174,8 @@ describe('ChatMessageBroker', () => {
     await waitForMockCalls(ack)
 
     expect(mockedChatService.query).toHaveBeenCalledWith('status lampu', {
-      withAudio: false
+      withAudio: false,
+      source: 'web'
     })
     expect(sendToQueue).toHaveBeenCalledWith(
       'amq.gen-reply',

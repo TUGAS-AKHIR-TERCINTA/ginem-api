@@ -12,10 +12,7 @@ export const setRuleActive = async (
 ): Promise<Response> => {
   try {
     const payload = req.body as ISetRuleActive
-    const result = await RuleManagementService.setActive(
-      payload.ruleId,
-      payload.isActive
-    )
+    const result = await RuleManagementService.setActive(payload.ruleId, payload.isActive)
     return res.status(StatusCodes.OK).json(
       ResponseData.success({
         data: result,

@@ -207,11 +207,13 @@ export class RuleManagementService {
         })
       }
 
+      const trimmedName = payload.name?.trim()
       const name =
-        payload.name?.trim() ||
-        `Rule: ${payload.trigger.deviceName} → ${payload.actions
-          .map((a) => a.deviceName)
-          .join(', ')}`
+        trimmedName != null && trimmedName !== ''
+          ? trimmedName
+          : `Rule: ${payload.trigger.deviceName} → ${payload.actions
+              .map((a) => a.deviceName)
+              .join(', ')}`
 
       const createdId = await sequelizeInit.transaction(async (tx) => {
         const rule = await RuleModel.create(

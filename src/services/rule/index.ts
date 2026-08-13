@@ -7,5 +7,5 @@ export type {
   SensorEvent
 } from './RuleCache.service'
 export { RuleManagementService } from './RuleManagement.service'
-export { RuleEngine } from './RuleEngine.service'
+export { RuleEngine, evaluateOperator, isInCooldown } from './RuleEngine.service'
 export { parseTelemetryMetrics, resolveMetricReading } from './telemetryMetrics'

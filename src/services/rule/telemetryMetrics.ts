@@ -6,9 +6,7 @@
  * - { value: "28" } → metrics.value = 28 (single-metric sensor fallback)
  * - { value: "{\"temperature\":28}" } JSON string
  */
-export function parseTelemetryMetrics(
-  payload: unknown
-): Record<string, number> {
+export function parseTelemetryMetrics(payload: unknown): Record<string, number> {
   const metrics: Record<string, number> = {}
 
   if (payload == null) return metrics

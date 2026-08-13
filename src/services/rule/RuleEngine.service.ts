@@ -1,7 +1,7 @@
+import { DeviceLogModel } from '../../models/DeviceLogModel'
 import { RuleModel } from '../../models/RuleModel'
 import { RuleExecutionLogModel } from '../../models/RuleExecutionLogModel'
 import { MQTTService } from '../mqtt/MQTT.service'
-import { DeviceLogService } from '../device'
 import logger from '../../utilities/logger'
 import {
   RuleCache,
@@ -11,7 +11,7 @@ import {
 } from './RuleCache.service'
 import { resolveMetricReading } from './telemetryMetrics'
 
-function evaluateOperator(
+export function evaluateOperator(
   reading: number,
   operator: CachedRuleCondition['operator'],
   threshold: number
@@ -34,7 +34,7 @@ function evaluateOperator(
   }
 }
 
-function isInCooldown(rule: CachedRule, now: Date): boolean {
+export function isInCooldown(rule: CachedRule, now: Date): boolean {
   if (rule.cooldownSec <= 0 || rule.lastTriggeredAt == null) return false
   const elapsedMs = now.getTime() - new Date(rule.lastTriggeredAt).getTime()
   return elapsedMs < rule.cooldownSec * 1000
@@ -83,7 +83,6 @@ export class RuleEngine {
   ): Promise<void> {
     const now = new Date()
 
-    // Trigger metric must be present (or fallback value)
     const triggerReading = resolveMetricReading(event.metrics, rule.trigger.metric)
     if (triggerReading == null) {
       return
@@ -100,8 +99,6 @@ export class RuleEngine {
     const results: boolean[] = []
 
     for (const condition of rule.conditions) {
-      // Conditions on the trigger device use the incoming event metrics.
-      // Cross-device conditions use last device log numeric value when possible.
       let reading: number | null = null
       if (condition.deviceId === event.deviceId) {
         reading = resolveMetricReading(event.metrics, condition.metric)
@@ -127,9 +124,7 @@ export class RuleEngine {
     }
 
     const passed =
-      rule.conditionLogic === 'AND'
-        ? results.every(Boolean)
-        : results.some(Boolean)
+      rule.conditionLogic === 'AND' ? results.every(Boolean) : results.some(Boolean)
 
     if (!passed) {
       return
@@ -194,7 +189,11 @@ export class RuleEngine {
     desired: 'on' | 'off'
   ): Promise<boolean> {
     try {
-      const last = await DeviceLogService.getLastLogByDeviceId(deviceId)
+      const last = await DeviceLogModel.findOne({
+        where: { deleted: 0, deviceLogDeviceId: deviceId },
+        order: [['createdAt', 'DESC']],
+        attributes: ['deviceLogData']
+      })
       if (last != null) {
         const data = String(last.deviceLogData ?? '')
         const current: 'on' | 'off' | null =
@@ -224,8 +223,6 @@ export class RuleEngine {
     metric: string
   ): Promise<number | null> {
     try {
-      // Use last log raw value as numeric reading (single-metric devices)
-      const { DeviceLogModel } = await import('../../models/DeviceLogModel')
       const row = await DeviceLogModel.findOne({
         where: { deleted: 0, deviceLogDeviceId: deviceId },
         order: [['createdAt', 'DESC']]
@@ -233,7 +230,6 @@ export class RuleEngine {
       if (row == null) return null
       const n = Number(row.deviceLogData)
       if (Number.isFinite(n)) return n
-      // Try JSON
       try {
         const parsed = JSON.parse(row.deviceLogData) as Record<string, unknown>
         const key = metric.toLowerCase()
