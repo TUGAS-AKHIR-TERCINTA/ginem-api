@@ -5,7 +5,7 @@ import { type IAuthenticatedRequest } from '../interfaces/shared/request.interfa
 
 export type Role = 'user' | 'admin' | 'superAdmin'
 
-export function allowAppRoles (...roles: Role[]): RequestHandler {
+export function allowAppRoles(...roles: Role[]): RequestHandler {
   return (req: IAuthenticatedRequest, res, next) => {
     if (req.jwtPayload == null) {
       const message = 'Unauthorized! Mising Token'
@@ -15,7 +15,7 @@ export function allowAppRoles (...roles: Role[]): RequestHandler {
     }
 
     const userRole = req.jwtPayload.userRole
-    if (userRole == null || userRole === '') {
+    if (userRole == null) {
       const message = 'Unauthorized! unknown user'
       const response = ResponseData.error({ message })
       return res.status(StatusCodes.UNAUTHORIZED).json(response)
