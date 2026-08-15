@@ -18,6 +18,15 @@ jest.mock('../../../models/DeviceLogModel', () => ({
   DeviceLogModel: { findOne: jest.fn().mockResolvedValue(null) }
 }))
 
+jest.mock('../../device', () => ({
+  DeviceLogService: {
+    create: jest.fn().mockResolvedValue({
+      deviceLogId: 99,
+      deviceLogData: '1'
+    })
+  }
+}))
+
 jest.mock('../../mqtt/MQTT.service', () => ({
   MQTTService: {
     publishActuatorState: jest.fn(),
@@ -26,6 +35,7 @@ jest.mock('../../mqtt/MQTT.service', () => ({
 }))
 
 const { MQTTService } = jest.requireMock('../../mqtt/MQTT.service')
+const { DeviceLogService } = jest.requireMock('../../device')
 const { RuleExecutionLogModel } = jest.requireMock(
   '../../../models/RuleExecutionLogModel'
 )
@@ -145,6 +155,10 @@ describe('RuleEngine.evaluate', () => {
       receivedAt: new Date()
     })
 
+    expect(DeviceLogService.create).toHaveBeenCalledWith({
+      deviceLogDeviceId: 20,
+      deviceLogData: '1'
+    })
     expect(MQTTService.publishActuatorState).toHaveBeenCalledWith(20, 'on')
     expect(RuleExecutionLogModel.create).toHaveBeenCalledWith(
       expect.objectContaining({ ruleId: 1, success: true })
@@ -160,6 +174,7 @@ describe('RuleEngine.evaluate', () => {
       receivedAt: new Date()
     })
 
+    expect(DeviceLogService.create).not.toHaveBeenCalled()
     expect(MQTTService.publishActuatorState).not.toHaveBeenCalled()
     expect(RuleExecutionLogModel.create).not.toHaveBeenCalled()
   })
@@ -173,6 +188,10 @@ describe('RuleEngine.evaluate', () => {
       receivedAt: new Date()
     })
 
+    expect(DeviceLogService.create).toHaveBeenCalledWith({
+      deviceLogDeviceId: 20,
+      deviceLogData: '1'
+    })
     expect(MQTTService.publishActuatorState).toHaveBeenCalledWith(20, 'on')
   })
 
@@ -190,6 +209,7 @@ describe('RuleEngine.evaluate', () => {
       receivedAt: new Date()
     })
 
+    expect(DeviceLogService.create).not.toHaveBeenCalled()
     expect(MQTTService.publishActuatorState).not.toHaveBeenCalled()
   })
 })

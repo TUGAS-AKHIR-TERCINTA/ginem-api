@@ -1,6 +1,7 @@
 import { DeviceLogModel } from '../../models/DeviceLogModel'
 import { RuleModel } from '../../models/RuleModel'
 import { RuleExecutionLogModel } from '../../models/RuleExecutionLogModel'
+import { DeviceLogService } from '../device'
 import { MQTTService } from '../mqtt/MQTT.service'
 import logger from '../../utilities/logger'
 import {
@@ -143,12 +144,20 @@ export class RuleEngine {
         continue
       }
 
+      const deviceLogData = action.state === 'on' ? '1' : '0'
+      const deviceLog = await DeviceLogService.create({
+        deviceLogDeviceId: action.deviceId,
+        deviceLogData
+      })
+
       MQTTService.publishActuatorState(action.deviceId, action.state)
       actionResults.push({
         deviceId: action.deviceId,
         state: action.state,
         skipped: false,
-        published: true
+        published: true,
+        deviceLogId: deviceLog.deviceLogId,
+        deviceLogData: deviceLog.deviceLogData
       })
     }
 
