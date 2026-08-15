@@ -25,5 +25,11 @@ export const findDetailSchedulerLogSchema = z.object({
   schedulerLogId: z.number().int().positive()
 })
 
+export const removeSchedulerLogSchema = z.object({
+  jwtPayload: jwtPayloadSchema,
+  schedulerLogId: z.coerce.number().int().positive()
+})
+
 export type IFindAllSchedulerLog = z.infer<typeof findAllSchedulerLogSchema>
 export type IFindDetailSchedulerLog = z.infer<typeof findDetailSchedulerLogSchema>
+export type IRemoveSchedulerLog = z.infer<typeof removeSchedulerLogSchema>

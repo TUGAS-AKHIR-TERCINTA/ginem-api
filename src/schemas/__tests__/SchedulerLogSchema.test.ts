@@ -1,4 +1,8 @@
-import { findAllSchedulerLogSchema, findDetailSchedulerLogSchema } from '../SchedulerLogSchema'
+import {
+  findAllSchedulerLogSchema,
+  findDetailSchedulerLogSchema,
+  removeSchedulerLogSchema
+} from '../SchedulerLogSchema'
 
 describe('SchedulerLogSchema', () => {
   describe('findAllSchedulerLogSchema', () => {
@@ -41,6 +45,26 @@ describe('SchedulerLogSchema', () => {
       const result = findDetailSchedulerLogSchema.parse({
         jwtPayload: { userId: 1 },
         schedulerLogId: 10
+      })
+
+      expect(result.schedulerLogId).toBe(10)
+    })
+  })
+
+  describe('removeSchedulerLogSchema', () => {
+    it('requires positive schedulerLogId', () => {
+      const result = removeSchedulerLogSchema.safeParse({
+        jwtPayload: { userId: 1 },
+        schedulerLogId: 0
+      })
+
+      expect(result.success).toBe(false)
+    })
+
+    it('coerces path param string to number', () => {
+      const result = removeSchedulerLogSchema.parse({
+        jwtPayload: { userId: 1 },
+        schedulerLogId: '10'
       })
 
       expect(result.schedulerLogId).toBe(10)

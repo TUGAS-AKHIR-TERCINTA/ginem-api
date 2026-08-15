@@ -158,3 +158,26 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/v1/scheduler-logs/{schedulerLogId}:
+ *   delete:
+ *     summary: Delete scheduler log
+ *     description: Soft delete a scheduler log entry by schedulerLogId
+ *     tags: [SCHEDULER LOGS]
+ *     parameters:
+ *       - in: path
+ *         name: schedulerLogId
+ *         required: true
+ *         schema:
+ *           type: number
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Scheduler log deleted successfully
+ *       404:
+ *         description: Scheduler log not found
+ *       500:
+ *         description: Internal server error
+ */

@@ -61,4 +61,30 @@ describe('SchedulerLogService', () => {
       })
     })
   })
+
+  describe('remove', () => {
+    it('throws not found when scheduler log is missing', async () => {
+      mockedSchedulerLogModel.findOne.mockResolvedValue(null)
+
+      await expect(SchedulerLogService.remove(10)).rejects.toMatchObject({
+        message: 'Scheduler log not found',
+        statusCode: StatusCodes.NOT_FOUND
+      })
+    })
+
+    it('soft deletes scheduler log when found', async () => {
+      const destroy = jest.fn().mockResolvedValue(undefined)
+      mockedSchedulerLogModel.findOne.mockResolvedValue({
+        schedulerLogId: 10,
+        destroy
+      } as never)
+
+      await SchedulerLogService.remove(10)
+
+      expect(mockedSchedulerLogModel.findOne).toHaveBeenCalledWith({
+        where: { deleted: 0, schedulerLogId: 10 }
+      })
+      expect(destroy).toHaveBeenCalledTimes(1)
+    })
+  })
 })
