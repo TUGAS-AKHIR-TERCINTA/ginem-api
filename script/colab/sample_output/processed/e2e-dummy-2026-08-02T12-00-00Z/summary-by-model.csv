@@ -1,4 +1,0 @@
-modelId,totalTests,toolAccuracyPct,parameterAccuracyPct,averageLatencyMs,totalInputTokens,totalOutputTokens,totalTokens,estimatedCostUsd,behaviorMatchRatePct,scheduleCases,scheduleToolAccuracyPct,ecaCases,ecaBehaviorMatchPct,ambiguousClarifyRatePct,invalidRejectRatePct,errorCount
-openai-gpt-4o,12,83.33,92.86,1791.67,0,0,0,0,83.33,2,50.0,1,100.0,50.0,100.0,1
-openai-gpt-4o-mini,12,91.67,100.0,1591.67,0,0,0,0,91.67,2,100.0,1,100.0,50.0,100.0,0
-deepseek-chat,12,91.67,92.86,1841.67,0,0,0,0,91.67,2,50.0,1,100.0,100.0,100.0,1
