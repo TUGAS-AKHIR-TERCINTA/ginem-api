@@ -185,6 +185,38 @@ describe('ChatService', () => {
     expect(result.trace?.agentLatencyMs).toBeGreaterThanOrEqual(0)
   })
 
+  it('sums token usage across every AI message when captureTrace is true', async () => {
+    defaultInvoke.mockResolvedValue({
+      messages: [
+        {
+          content: '',
+          tool_calls: [
+            { name: 'set_actuator_state_by_device_name', args: {}, id: 'call-1' }
+          ],
+          usage_metadata: { input_tokens: 100, output_tokens: 20, total_tokens: 120 }
+        },
+        {
+          content: 'Lampu sudah dinyalakan.',
+          usage_metadata: { input_tokens: 130, output_tokens: 15, total_tokens: 145 }
+        }
+      ]
+    })
+
+    const result = await ChatService.query('Nyalakan lampu', { captureTrace: true })
+
+    expect(result.trace?.tokenUsage).toEqual({
+      inputTokens: 230,
+      outputTokens: 35,
+      totalTokens: 265
+    })
+  })
+
+  it('omits tokenUsage when provider does not report usage_metadata', async () => {
+    const result = await ChatService.query('Nyalakan lampu', { captureTrace: true })
+
+    expect(result.trace?.tokenUsage).toBeUndefined()
+  })
+
   it('wraps unexpected errors', async () => {
     defaultInvoke.mockRejectedValue(new Error('agent failed'))
 

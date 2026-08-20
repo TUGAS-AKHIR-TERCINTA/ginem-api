@@ -34,7 +34,8 @@ export const appConfigs = {
   },
   llm: {
     deepSeekApiKey: process.env.DEEPSEEK_API_KEY,
-    openAIApiKey: process.env.OPENAI_API_KEY
+    openAIApiKey: process.env.OPENAI_API_KEY,
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY
   },
   tts: {
     model: process.env.OPENAI_TTS_MODEL ?? 'tts-1-hd',

@@ -2,11 +2,12 @@ import { StatusCodes } from 'http-status-codes'
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { ChatOpenAI } from '@langchain/openai'
 import { ChatDeepSeek } from '@langchain/deepseek'
+import { ChatAnthropic } from '@langchain/anthropic'
 import { appConfigs } from '../../configs/appConfig'
 import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
 
-export type LLMProvider = 'openai' | 'deepseek'
+export type LLMProvider = 'openai' | 'deepseek' | 'anthropic'
 
 export interface LLMCreateOptions {
   /** Defaults to openai (production path). */
@@ -43,6 +44,22 @@ export class LLMService {
         }
         return new ChatDeepSeek({
           model: options?.model ?? 'deepseek-chat',
+          temperature,
+          maxTokens,
+          apiKey
+        })
+      }
+
+      if (provider === 'anthropic') {
+        const apiKey = options?.apiKey ?? appConfigs.llm?.anthropicApiKey
+        if (apiKey == null || apiKey === '') {
+          throw new AppError(
+            'Anthropic API key is not configured',
+            StatusCodes.INTERNAL_SERVER_ERROR
+          )
+        }
+        return new ChatAnthropic({
+          model: options?.model ?? 'claude-sonnet-4-5',
           temperature,
           maxTokens,
           apiKey
