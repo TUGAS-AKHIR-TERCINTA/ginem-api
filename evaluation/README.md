@@ -30,9 +30,11 @@ Kegagalan MQTT/ESP32 **tidak pernah** dihitung sebagai kesalahan model — BAB 4
 - Skema penuh + validasi: `evaluation/datasets/dataset.schema.ts` (Zod). Setiap baris divalidasi otomatis oleh `evaluation/__tests__/dataset.test.ts`.
 - **Nama device di dataset mengikuti `resources/seeders/2_deviceSeeder.js`** (`Smart Lamp Bedroom`, `Temperature Sensor Living Room`, `Humidity Sensor Greenhouse`, `Smart Gate Controller`). Kalau database evaluasi Anda punya device dengan nama berbeda, edit `dataset.jsonl` langsung (plain JSONL, satu baris = satu kasus, gampang diedit teks biasa) — ground truth harus cocok persis dengan apa yang ada di DB target.
 
-### `functional-dataset.jsonl` (BAB 4.2, 8 kasus — mengikuti Test 1–8 di brief)
+### `functional-dataset.jsonl` (BAB 4.2, 8 kasus — persis Tabel 4.1)
 
-Field tambahan: `deviceName` (untuk polling ACK), `expectedFinalState` (`"1"`/`"0"`), `expectExecution`. Sesuaikan `deviceName`/`input` dengan device fisik Anda yang sebenarnya sebelum menjalankan (lihat catatan di setiap baris `notes`).
+Kalimat perintah dan urutan skenarionya sudah disamakan persis dengan Tabel 4.1 (`Nyalakan lampu ruang tamu`, `Nyalakan kipas jika suhu di atas 30 °C`, dst). Field tambahan: `deviceName` (untuk polling ACK), `expectedFinalState` (`"1"`/`"0"`), `expectExecution`.
+
+Device yang dipakai — `Lampu Ruang Tamu`, `Sensor Suhu Ruangan`, `Kipas` — **sengaja beda nama dari seeder** (`resources/seeders/2_deviceSeeder.js` dipakai `dataset.jsonl`/BAB 4.3, dalam bahasa Inggris) supaya kedua dataset tidak saling bentrok. Karena BAB 4.2 menyasar perangkat fisik sungguhan, **pastikan device dengan nama-nama tersebut benar-benar terdaftar di database yang dipakai ESP32 Anda** sebelum menjalankan — kalau nama device asli Anda berbeda, edit `deviceName`/`input` di file ini langsung (plain JSONL, gampang diedit) agar cocok persis. Skenario No.6 (Kipas) butuh device actuator baru — seeder tidak menyediakannya secara default.
 
 ## 3. Cara menjalankan
 
