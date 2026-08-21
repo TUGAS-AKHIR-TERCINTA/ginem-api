@@ -83,6 +83,7 @@ describe('generateReports', () => {
       'tabel-4.3-ketepatan-tool.csv',
       'tabel-4.4-parameter-struktur.csv',
       'tabel-4.5-latensi.csv',
+      'tabel-4.6-latensi-kompleksitas.csv',
       'tabel-4.7-token-biaya.csv',
       'tabel-4.8-kompleksitas.csv',
       'tabel-4.9-distribusi-kesalahan.csv'

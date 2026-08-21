@@ -1,0 +1,2254 @@
+[
+  {
+    "id": "TC001",
+    "category": "simple",
+    "input": "Nyalakan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC002",
+    "category": "simple",
+    "input": "Hidupkan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC003",
+    "category": "simple",
+    "input": "Matikan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC004",
+    "category": "simple",
+    "input": "Padamkan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC005",
+    "category": "simple",
+    "input": "Tolong nyalakan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC006",
+    "category": "simple",
+    "input": "Nyalakan lampu ruang tamu sekarang",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC007",
+    "category": "simple",
+    "input": "Matikan lampu ruang tamu sekarang juga",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC008",
+    "category": "simple",
+    "input": "Bisa hidupkan lampu ruang tamu?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC009",
+    "category": "simple",
+    "input": "Lampu kamar tolong dimatikan",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC010",
+    "category": "simple",
+    "input": "Nyalain lampu ruang tamu dong",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC011",
+    "category": "simple",
+    "input": "Turn on Lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC012",
+    "category": "simple",
+    "input": "Turn off Lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC013",
+    "category": "simple",
+    "input": "Berapa suhu ruang tamu saat ini?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC014",
+    "category": "simple",
+    "input": "Cek suhu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC015",
+    "category": "simple",
+    "input": "Suhu ruang tamu berapa derajat?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC016",
+    "category": "simple",
+    "input": "Nyalakan kipas",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC017",
+    "category": "simple",
+    "input": "Matikan kipas",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas",
+            "state": "off"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC018",
+    "category": "simple",
+    "input": "Hidupkan kipas ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC019",
+    "category": "simple",
+    "input": "Berikan data suhu terbaru ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC020",
+    "category": "simple",
+    "input": "Apakah kipas menyala?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC021",
+    "category": "simple",
+    "input": "Data sensor suhu ruang tamu apa?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC022",
+    "category": "simple",
+    "input": "Status kipas bagaimana?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC023",
+    "category": "simple",
+    "input": "Apakah lampu ruang tamu menyala?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC024",
+    "category": "simple",
+    "input": "Status lampu ruang tamu bagaimana?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC025",
+    "category": "simple",
+    "input": "Lampu kamar sedang nyala atau mati?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC026",
+    "category": "simple",
+    "input": "Tampilkan daftar semua perangkat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_devices",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC027",
+    "category": "simple",
+    "input": "Lihat semua device yang terdaftar",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_devices",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC028",
+    "category": "simple",
+    "input": "Ada perangkat apa saja di sistem?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_devices",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC029",
+    "category": "simple",
+    "input": "Tampilkan daftar perangkat halaman pertama",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_devices",
+          "parameters": {
+            "page": 0
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC030",
+    "category": "simple",
+    "input": "Tampilkan 10 riwayat suhu terakhir ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_10_logs_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC031",
+    "category": "simple",
+    "input": "Lihat 10 log terakhir lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_10_logs_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC032",
+    "category": "simple",
+    "input": "Tampilkan 10 riwayat kipas terakhir",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_10_logs_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC033",
+    "category": "simple",
+    "input": "Catat suhu ruang tamu 28 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_device_log",
+          "parameters": {
+            "deviceName": "Suhu ruangan",
+            "deviceLogData": "28"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC034",
+    "category": "simple",
+    "input": "Catat status kipas sedang menyala",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_device_log",
+          "parameters": {
+            "deviceName": "Kipas",
+            "deviceLogData": "1"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC035",
+    "category": "simple",
+    "input": "Tampilkan semua aturan otomatis yang ada",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_automation_rules",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC036",
+    "category": "medium",
+    "input": "Jadwalkan nyalakan lampu ruang tamu besok jam 07:30",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "once",
+            "hour": 7,
+            "minute": 30
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "once",
+          "hour": 7,
+          "minute": 30,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC037",
+    "category": "medium",
+    "input": "Nyalakan lampu ruang tamu nanti jam 20:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "once",
+            "hour": 20,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "once",
+          "hour": 20,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC038",
+    "category": "medium",
+    "input": "Matikan lampu ruang tamu jam 23:00 nanti malam",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off",
+            "category": "once",
+            "hour": 23,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "off",
+          "category": "once",
+          "hour": 23,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC039",
+    "category": "medium",
+    "input": "Jadwalkan mematikan lampu ruang tamu tanggal 25-12-2026 jam 22:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off",
+            "category": "once",
+            "hour": 22,
+            "minute": 0,
+            "date": "25-12-2026"
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "off",
+          "category": "once",
+          "hour": 22,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC040",
+    "category": "medium",
+    "input": "Nyalakan lampu ruang tamu tanggal 01-01-2027 jam 00:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "once",
+            "hour": 0,
+            "minute": 0,
+            "date": "01-01-2027"
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "once",
+          "hour": 0,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC041",
+    "category": "medium",
+    "input": "Set jadwal lampu ruang tamu menyala jam 06:15 besok pagi",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "once",
+            "hour": 6,
+            "minute": 15
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "once",
+          "hour": 6,
+          "minute": 15,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC042",
+    "category": "medium",
+    "input": "Nyalakan lampu ruang tamu setiap hari jam 18:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "repeat",
+            "hour": 18,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "repeat",
+          "hour": 18,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC043",
+    "category": "medium",
+    "input": "Matikan lampu ruang tamu setiap hari jam 06:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off",
+            "category": "repeat",
+            "hour": 6,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "off",
+          "category": "repeat",
+          "hour": 6,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC044",
+    "category": "medium",
+    "input": "Setiap hari jam 19:30 hidupkan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "repeat",
+            "hour": 19,
+            "minute": 30
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "repeat",
+          "hour": 19,
+          "minute": 30,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC045",
+    "category": "medium",
+    "input": "Setiap pagi jam 05:45 matikan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off",
+            "category": "repeat",
+            "hour": 5,
+            "minute": 45
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "off",
+          "category": "repeat",
+          "hour": 5,
+          "minute": 45,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC046",
+    "category": "medium",
+    "input": "Jadwalkan lampu ruang tamu menyala tiap hari jam 17:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "repeat",
+            "hour": 17,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "repeat",
+          "hour": 17,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC047",
+    "category": "medium",
+    "input": "Setiap hari jam 21:00 lampu ruang tamu dimatikan otomatis",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off",
+            "category": "repeat",
+            "hour": 21,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "off",
+          "category": "repeat",
+          "hour": 21,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC048",
+    "category": "medium",
+    "input": "Jadwalkan ambil data suhu ruang tamu jam 09:00 besok",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_sensor_data_at",
+          "parameters": {
+            "deviceName": "Suhu ruangan",
+            "category": "once",
+            "hour": 9,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Suhu ruangan",
+          "category": "once",
+          "hour": 9,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC049",
+    "category": "medium",
+    "input": "Nyalakan kipas setiap hari jam 12:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Kipas",
+            "state": "on",
+            "category": "repeat",
+            "hour": 12,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Kipas",
+          "action": "on",
+          "category": "repeat",
+          "hour": 12,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC050",
+    "category": "medium",
+    "input": "Jadwalkan cek suhu ruang tamu setiap hari jam 07:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_sensor_data_at",
+          "parameters": {
+            "deviceName": "Suhu ruangan",
+            "category": "repeat",
+            "hour": 7,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Suhu ruangan",
+          "category": "repeat",
+          "hour": 7,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC051",
+    "category": "medium",
+    "input": "Ambil data lampu ruang tamu jam 15:00 nanti",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_sensor_data_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "category": "once",
+            "hour": 15,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "category": "once",
+          "hour": 15,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC052",
+    "category": "medium",
+    "input": "Tampilkan 5 jadwal terakhir yang dibuat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_scheduled_jobs",
+          "parameters": {
+            "limit": 5
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC053",
+    "category": "medium",
+    "input": "Lihat semua jadwal yang sedang aktif",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_scheduled_jobs",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC054",
+    "category": "medium",
+    "input": "Tampilkan status jadwal dengan id job-123",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_scheduled_job_result",
+          "parameters": {
+            "jobId": "job-123"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC055",
+    "category": "medium",
+    "input": "Tampilkan daftar perangkat 5 per halaman",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_devices",
+          "parameters": {
+            "size": 5
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC056",
+    "category": "medium",
+    "input": "Lihat perangkat halaman kedua ukuran 10",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_devices",
+          "parameters": {
+            "page": 1,
+            "size": 10
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC057",
+    "category": "medium",
+    "input": "Tampilkan daftar aturan otomatis yang sedang aktif saja",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_automation_rules",
+          "parameters": {
+            "isActive": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC058",
+    "category": "medium",
+    "input": "Nonaktifkan aturan otomatis dengan id 2",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_automation_rule_active",
+          "parameters": {
+            "ruleId": 2,
+            "isActive": false
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC059",
+    "category": "medium",
+    "input": "Aktifkan kembali aturan otomatis id 1",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_automation_rule_active",
+          "parameters": {
+            "ruleId": 1,
+            "isActive": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC060",
+    "category": "medium",
+    "input": "Hapus aturan otomatis dengan id 4",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "delete_automation_rule",
+          "parameters": {
+            "ruleId": 4
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC061",
+    "category": "complex",
+    "input": "Nyalakan lampu ruang tamu jika suhu ruang tamu di atas 30 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Nyalakan lampu ruang tamu jika suhu ruang tamu di atas 30 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">",
+                "threshold": 30
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu ruang tamu",
+                "state": "on"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">",
+              "threshold": 30
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu ruang tamu",
+              "state": "on"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC062",
+    "category": "complex",
+    "input": "Matikan lampu ruang tamu kalau suhu ruang tamu turun di bawah 20 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Matikan lampu ruang tamu kalau suhu ruang tamu turun di bawah 20 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": "<",
+                "threshold": 20
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu ruang tamu",
+                "state": "off"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": "<",
+              "threshold": 20
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu ruang tamu",
+              "state": "off"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC063",
+    "category": "complex",
+    "input": "Nyalakan kipas jika suhu ruangan di atas 30 derajat",
+    "notes": "Skenario canonical brief — trigger Suhu ruangan, action Kipas.",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Nyalakan kipas jika suhu ruangan di atas 30 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">",
+                "threshold": 30
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Kipas",
+                "state": "on"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">",
+              "threshold": 30
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Kipas",
+              "state": "on"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC064",
+    "category": "complex",
+    "input": "Jika suhu ruang tamu lebih dari 32 derajat, matikan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Jika suhu ruang tamu lebih dari 32 derajat, matikan lampu ruang tamu",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">",
+                "threshold": 32
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu ruang tamu",
+                "state": "off"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">",
+              "threshold": 32
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu ruang tamu",
+              "state": "off"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC065",
+    "category": "complex",
+    "input": "Nyalakan lampu ruang tamu otomatis kalau suhu ruang tamu minimal 29 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Nyalakan lampu ruang tamu otomatis kalau suhu ruang tamu minimal 29 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">=",
+                "threshold": 29
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu ruang tamu",
+                "state": "on"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">=",
+              "threshold": 29
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu ruang tamu",
+              "state": "on"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC066",
+    "category": "complex",
+    "input": "Matikan kipas jika suhu ruangan turun di bawah 25 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Matikan kipas jika suhu ruangan turun di bawah 25 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": "<",
+                "threshold": 25
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Kipas",
+                "state": "off"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": "<",
+              "threshold": 25
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Kipas",
+              "state": "off"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC067",
+    "category": "complex",
+    "input": "Buat aturan: matikan lampu ruang tamu jika suhu ruang tamu tepat 25 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Buat aturan: matikan lampu ruang tamu jika suhu ruang tamu tepat 25 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": "==",
+                "threshold": 25
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu ruang tamu",
+                "state": "off"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": "==",
+              "threshold": 25
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu ruang tamu",
+              "state": "off"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC068",
+    "category": "complex",
+    "input": "Nyalakan lampu ruang tamu jika suhu ruang tamu di atas 27 derajat dengan cooldown 10 menit",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Nyalakan lampu ruang tamu jika suhu ruang tamu di atas 27 derajat dengan cooldown 10 menit",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">",
+                "threshold": 27
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu ruang tamu",
+                "state": "on"
+              }
+            ],
+            "cooldownSec": 600
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">",
+              "threshold": 27
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu ruang tamu",
+              "state": "on"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC069",
+    "category": "complex",
+    "input": "Nyalakan kipas sekarang dan buat aturan matikan otomatis jika suhu ruangan di bawah 25 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas",
+            "state": "on"
+          }
+        },
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Nyalakan kipas sekarang dan buat aturan matikan otomatis jika suhu ruangan di bawah 25 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": "<",
+                "threshold": 25
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Kipas",
+                "state": "off"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": "<",
+              "threshold": 25
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Kipas",
+              "state": "off"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC070",
+    "category": "complex",
+    "input": "Nyalakan kipas jika suhu ruangan di atas 30 derajat dengan cooldown 5 menit",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Nyalakan kipas jika suhu ruangan di atas 30 derajat dengan cooldown 5 menit",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">",
+                "threshold": 30
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Kipas",
+                "state": "on"
+              }
+            ],
+            "cooldownSec": 300
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">",
+              "threshold": 30
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Kipas",
+              "state": "on"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC071",
+    "category": "complex",
+    "input": "Nyalakan lampu ruang tamu sekarang dan jadwalkan mati jam 06:00 setiap hari",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        },
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off",
+            "category": "repeat",
+            "hour": 6,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "off",
+          "category": "repeat",
+          "hour": 6,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC072",
+    "category": "complex",
+    "input": "Matikan lampu ruang tamu sekarang dan jadwalkan nyala lagi besok jam 07:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
+          }
+        },
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "once",
+            "hour": 7,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "once",
+          "hour": 7,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC073",
+    "category": "complex",
+    "input": "Berikan suhu ruangan dan status kipas sekarang",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        },
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC074",
+    "category": "complex",
+    "input": "Cek status lampu ruang tamu dan suhu ruang tamu saat ini",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu"
+          }
+        },
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC075",
+    "category": "complex",
+    "input": "Nyalakan lampu ruang tamu setiap hari jam 18:00 dan matikan setiap hari jam 06:00",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "repeat",
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off",
+            "category": "repeat",
+            "hour": 6,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "repeat",
+          "hour": 18,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        },
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "off",
+          "category": "repeat",
+          "hour": 6,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC076",
+    "category": "complex",
+    "input": "Tampilkan daftar perangkat dan daftar aturan otomatis yang aktif",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "list_devices",
+          "parameters": {}
+        },
+        {
+          "tool": "list_automation_rules",
+          "parameters": {
+            "isActive": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC077",
+    "category": "complex",
+    "input": "Nyalakan lampu ruang tamu dan catat suhu ruang tamu sekarang 29 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        },
+        {
+          "tool": "create_device_log",
+          "parameters": {
+            "deviceName": "Suhu ruangan",
+            "deviceLogData": "29"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC078",
+    "category": "complex",
+    "input": "Jadwalkan nyalakan lampu ruang tamu jam 18:00 setiap hari dan buat aturan matikan otomatis jika suhu ruang tamu di atas 31 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "repeat",
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Jadwalkan nyalakan lampu ruang tamu jam 18:00 setiap hari dan buat aturan matikan otomatis jika suhu ruang tamu di atas 31 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">",
+                "threshold": 31
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu ruang tamu",
+                "state": "off"
+              }
+            ]
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "repeat",
+          "hour": 18,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">",
+              "threshold": 31
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu ruang tamu",
+              "state": "off"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC079",
+    "category": "complex",
+    "input": "Tampilkan 10 riwayat suhu ruang tamu terakhir dan status lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_10_logs_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        },
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC080",
+    "category": "complex",
+    "input": "Matikan lampu ruang tamu sekarang, lalu jadwalkan nyala lagi setiap hari jam 06:30",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
+          }
+        },
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "repeat",
+            "hour": 6,
+            "minute": 30
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "repeat",
+          "hour": 6,
+          "minute": 30,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC081",
+    "category": "ambiguous",
+    "input": "Nyalakan lampunya",
+    "notes": "Tidak menyebut nama device yang persis terdaftar (bukan 'Lampu ruang tamu' persis) sehingga berpotensi salah sasaran.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC082",
+    "category": "ambiguous",
+    "input": "Matikan aja ya",
+    "notes": "Tidak menyebut perangkat sama sekali.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC083",
+    "category": "ambiguous",
+    "input": "Aktifkan otomatisasi kalau suhunya panas",
+    "notes": "Tidak ada device, metric, atau ambang batas numerik yang jelas untuk membentuk rule.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC084",
+    "category": "ambiguous",
+    "input": "Jadwalkan nanti sore ya",
+    "notes": "Tidak ada device, aksi, maupun jam yang pasti.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC085",
+    "category": "ambiguous",
+    "input": "Cek suhunya dong",
+    "notes": "Tidak jelas sensor suhu yang dimaksud (ruang tamu atau lainnya).",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC086",
+    "category": "ambiguous",
+    "input": "Nyalakan aja kalau sempat",
+    "notes": "Tidak menyebut perangkat sama sekali.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC087",
+    "category": "ambiguous",
+    "input": "Matikan itu juga",
+    "notes": "Rujukan kata ganti tanpa histori percakapan (sessionId baru/kosong pada setiap repetisi evaluasi).",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC088",
+    "category": "ambiguous",
+    "input": "Set jadwal otomatis untuk malam hari",
+    "notes": "Tidak ada device, aksi, maupun jam pasti — 'malam hari' bukan waktu spesifik.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC089",
+    "category": "ambiguous",
+    "input": "Naikkan sedikit suhunya",
+    "notes": "Tidak ada tool untuk mengatur suhu secara analog/bertahap; tidak jelas perangkat maupun aksi apa yang dimaksud.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC090",
+    "category": "ambiguous",
+    "input": "Aktifkan mode hemat energi",
+    "notes": "Bukan kapabilitas yang dikenal sistem (bukan device, schedule, atau rule spesifik).",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC091",
+    "category": "invalid",
+    "input": "Nyalakan televisi ruang tamu",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC092",
+    "category": "invalid",
+    "input": "Matikan AC kamar mandi",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC093",
+    "category": "invalid",
+    "input": "Nyalakan kulkas dapur",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC094",
+    "category": "invalid",
+    "input": "Hidupkan pemanas air",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC095",
+    "category": "invalid",
+    "input": "Nyalakan AC kamar tidur",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC096",
+    "category": "invalid",
+    "input": "Matikan pemanas ruangan",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC097",
+    "category": "invalid",
+    "input": "Hapus jadwal jam 18:00 untuk lampu ruang tamu",
+    "notes": "Tidak ada tool delete_schedule pada implementasi saat ini (gap Tabel 3.8 — lihat evaluation/README.md).",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC098",
+    "category": "invalid",
+    "input": "Ubah aturan otomatis id 1 supaya threshold jadi 35 derajat",
+    "notes": "Tidak ada tool update_dynamic_rule pada implementasi saat ini (gap Tabel 3.8 — lihat evaluation/README.md); yang tersedia hanya create/list/get/set_active/delete.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC099",
+    "category": "invalid",
+    "input": "Nyalakan speaker ruang keluarga",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC100",
+    "category": "invalid",
+    "input": "Matikan kamera CCTV garasi",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  }
+]

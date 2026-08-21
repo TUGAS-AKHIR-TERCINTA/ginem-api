@@ -261,6 +261,7 @@ export class ChatService {
 
     for (const message of messages) {
       const direct = message.tool_calls
+      let messageHadDirectCall = false
       if (Array.isArray(direct)) {
         for (const tc of direct) {
           const item = tc as {
@@ -275,6 +276,7 @@ export class ChatService {
               args: (item.args ?? {}) as Record<string, unknown>,
               id: item.id
             })
+            messageHadDirectCall = true
             continue
           }
           if (item.function?.name) {
@@ -288,9 +290,15 @@ export class ChatService {
               args = {}
             }
             calls.push({ name: item.function.name, args, id: item.id })
+            messageHadDirectCall = true
           }
         }
       }
+
+      // `additional_kwargs.tool_calls` is the same provider payload LangChain already
+      // normalizes into `message.tool_calls` above — only fall back to it when the
+      // normalized array was empty, otherwise every call gets counted twice.
+      if (messageHadDirectCall) continue
 
       const kwargs = message.additional_kwargs as
         | { tool_calls?: Array<Record<string, unknown>> }

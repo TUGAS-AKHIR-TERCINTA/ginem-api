@@ -1,0 +1,4 @@
+model,parametersChecked,parametersCorrect,parameterAccuracyPct,structureChecked,structureValid,structureValidPct
+GPT-5.6 Terra,16,14,87.5,7,7,100
+Claude Sonnet 5,16,14,87.5,9,9,100
+DeepSeek-V4-Flash,16,15,93.75,10,10,100

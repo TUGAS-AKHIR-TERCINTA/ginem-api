@@ -10,8 +10,8 @@ describe('semanticEqual', () => {
     expect(semanticEqual('Smart Lamp Bedroom', '  Smart   Lamp Bedroom ')).toBe(true)
   })
 
-  it('is case-sensitive for device-name-like strings', () => {
-    expect(semanticEqual('Smart Lamp Bedroom', 'smart lamp bedroom')).toBe(false)
+  it('is case-insensitive for device-name-like strings (matches DB collation behavior)', () => {
+    expect(semanticEqual('Lampu ruang tamu', 'lampu ruang tamu')).toBe(true)
   })
 
   it('compares arrays of objects order-insensitively', () => {

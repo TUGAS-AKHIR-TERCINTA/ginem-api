@@ -7,7 +7,10 @@
  */
 
 function normalizeString(value: string): string {
-  return value.trim().replace(/\s+/g, ' ')
+  // Case-insensitive: MySQL's default collation resolves device names
+  // case-insensitively (DeviceService.findByName), so a capitalization
+  // difference alone does not reflect a real functional mismatch.
+  return value.trim().replace(/\s+/g, ' ').toLowerCase()
 }
 
 function isNumericLike(value: unknown): value is string | number {

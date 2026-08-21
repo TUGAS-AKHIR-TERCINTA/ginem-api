@@ -10,9 +10,16 @@ export const evaluationConfig = {
   /** Functional runner (BAB 4.2): how long to poll for a device ACK/state change. */
   mqttAckTimeoutMs: Number(process.env.EVAL_MQTT_ACK_TIMEOUT_MS ?? 10000),
   mqttAckPollIntervalMs: Number(process.env.EVAL_MQTT_ACK_POLL_INTERVAL_MS ?? 500),
+  /**
+   * How old a device_logs row may be to still count as proof MQTT telemetry is
+   * flowing for a sensor_read case (poin 34). Default 15 min is a conservative
+   * guess — this repo has no ESP32 firmware to read the real push interval from;
+   * tighten it if your device pushes more often.
+   */
+  sensorFreshnessMs: Number(process.env.EVAL_SENSOR_FRESHNESS_MS ?? 900000),
   datasetPath:
     process.env.EVAL_DATASET_PATH ??
-    path.join(__dirname, '..', 'datasets', 'dataset.jsonl'),
+    path.join(__dirname, '..', 'datasets', 'dataset.json'),
   resultsRootDir: process.env.EVAL_RESULTS_DIR ?? path.join(__dirname, '..', 'results'),
   /** Backend base URL for the functional (BAB 4.2) runner — real HTTP pipeline. */
   apiBaseUrl: process.env.EVAL_API_BASE_URL ?? 'http://localhost:8000',

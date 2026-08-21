@@ -22,13 +22,13 @@ describe('parseCliArgs', () => {
   it('parses --dataset --output --resume as plain strings', () => {
     const args = parseCliArgs([
       '--dataset',
-      './evaluation/datasets/dataset.jsonl',
+      './evaluation/datasets/dataset.json',
       '--output',
       './evaluation/results',
       '--resume',
       'run-2026-08-19-1200'
     ])
-    expect(args.dataset).toBe('./evaluation/datasets/dataset.jsonl')
+    expect(args.dataset).toBe('./evaluation/datasets/dataset.json')
     expect(args.output).toBe('./evaluation/results')
     expect(args.resume).toBe('run-2026-08-19-1200')
   })

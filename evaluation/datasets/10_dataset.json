@@ -1,0 +1,194 @@
+[
+  {
+    "id": "TC001",
+    "category": "simple",
+    "input": "Nyalakan lampu ruang tamu",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC013",
+    "category": "simple",
+    "input": "Berapa suhu ruang tamu saat ini?",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC036",
+    "category": "medium",
+    "input": "Jadwalkan nyalakan lampu ruang tamu besok jam 07:30",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu ruang tamu",
+            "state": "on",
+            "category": "once",
+            "hour": 7,
+            "minute": 30
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu ruang tamu",
+          "action": "on",
+          "category": "once",
+          "hour": 7,
+          "minute": 30,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC058",
+    "category": "medium",
+    "input": "Nonaktifkan aturan otomatis dengan id 2",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_automation_rule_active",
+          "parameters": {
+            "ruleId": 2,
+            "isActive": false
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC063",
+    "category": "complex",
+    "input": "Nyalakan kipas jika suhu ruangan di atas 30 derajat",
+    "notes": "Skenario canonical brief — trigger Suhu ruangan, action Kipas.",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Nyalakan kipas jika suhu ruangan di atas 30 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": ">",
+                "threshold": 30
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Kipas",
+                "state": "on"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": ">",
+              "threshold": 30
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Kipas",
+              "state": "on"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC073",
+    "category": "complex",
+    "input": "Berikan suhu ruangan dan status kipas sekarang",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Suhu ruangan"
+          }
+        },
+        {
+          "tool": "get_last_log_by_device_name",
+          "parameters": {
+            "deviceName": "Kipas"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC081",
+    "category": "ambiguous",
+    "input": "Nyalakan lampunya",
+    "notes": "Tidak menyebut nama device yang persis terdaftar (bukan 'Lampu ruang tamu' persis) sehingga berpotensi salah sasaran.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC083",
+    "category": "ambiguous",
+    "input": "Aktifkan otomatisasi kalau suhunya panas",
+    "notes": "Tidak ada device, metric, atau ambang batas numerik yang jelas untuk membentuk rule.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC091",
+    "category": "invalid",
+    "input": "Nyalakan televisi ruang tamu",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC097",
+    "category": "invalid",
+    "input": "Hapus jadwal jam 18:00 untuk lampu ruang tamu",
+    "notes": "Tidak ada tool delete_schedule pada implementasi saat ini (gap Tabel 3.8 — lihat evaluation/README.md).",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  }
+]

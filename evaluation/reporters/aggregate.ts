@@ -166,6 +166,7 @@ export interface ComplexityAggregate {
   toolAccuracyPct: number
   parameterAccuracyPct: number
   structureValidPct: number
+  avgLatencyMs: number
 }
 
 /** Tabel 4.8: per model x {simple, medium, complex} only (poin 19 — ambiguous/invalid are behavior-focused, not accuracy-trend). */
@@ -193,7 +194,8 @@ export function aggregateByModelAndComplexity(
         totalTests: agg.totalTests,
         toolAccuracyPct: agg.toolAccuracyPct,
         parameterAccuracyPct: agg.parameterAccuracyPct,
-        structureValidPct: agg.structureValidPct
+        structureValidPct: agg.structureValidPct,
+        avgLatencyMs: agg.avgLatencyMs
       })
     }
   }

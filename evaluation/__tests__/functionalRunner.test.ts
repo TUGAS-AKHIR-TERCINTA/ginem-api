@@ -34,6 +34,14 @@ const invalidCase: FunctionalTestCase = {
   expectExecution: false
 }
 
+const sensorCase: FunctionalTestCase = {
+  id: 'FT03',
+  kind: 'sensor_read',
+  input: 'Berapa suhu ruangan saat ini?',
+  deviceName: 'Sensor Suhu Ruangan',
+  expectExecution: true
+}
+
 describe('runFunctionalEvaluation', () => {
   let tmpRoot: string
 
@@ -88,7 +96,8 @@ describe('runFunctionalEvaluation', () => {
       password: 'secret',
       testCases: [controlCase],
       ackTimeoutMs: 2000,
-      ackPollIntervalMs: 5
+      ackPollIntervalMs: 5,
+      sensorFreshnessMs: 900000
     })
 
     const [record] = readFunctionalResults(runDir)
@@ -128,7 +137,8 @@ describe('runFunctionalEvaluation', () => {
       password: 'secret',
       testCases: [controlCase],
       ackTimeoutMs: 30,
-      ackPollIntervalMs: 10
+      ackPollIntervalMs: 10,
+      sensorFreshnessMs: 900000
     })
 
     const [record] = readFunctionalResults(runDir)
@@ -157,7 +167,8 @@ describe('runFunctionalEvaluation', () => {
       password: 'secret',
       testCases: [invalidCase],
       ackTimeoutMs: 1000,
-      ackPollIntervalMs: 10
+      ackPollIntervalMs: 10,
+      sensorFreshnessMs: 900000
     })
 
     expect(client.get).not.toHaveBeenCalled()
@@ -184,7 +195,8 @@ describe('runFunctionalEvaluation', () => {
       password: 'secret',
       testCases: [invalidCase],
       ackTimeoutMs: 1000,
-      ackPollIntervalMs: 10
+      ackPollIntervalMs: 10,
+      sensorFreshnessMs: 900000
     })
 
     const [record] = readFunctionalResults(runDir)
@@ -207,8 +219,103 @@ describe('runFunctionalEvaluation', () => {
         password: 'wrong',
         testCases: [invalidCase],
         ackTimeoutMs: 1000,
-        ackPollIntervalMs: 10
+        ackPollIntervalMs: 10,
+        sensorFreshnessMs: 900000
       })
     ).rejects.toThrow(/accessToken/)
+  })
+
+  it('marks sensor_read as successful when device_logs has a fresh row', async () => {
+    const client = makeClient()
+    client.post.mockImplementation(async (url: string) => {
+      if (url === '/api/v1/auth/login')
+        return await Promise.resolve({ data: { data: { accessToken: 't' } } })
+      return await Promise.resolve({ data: { data: { reply: 'Suhu saat ini 28°C.' } } })
+    })
+    client.get.mockImplementation(async (url: string) => {
+      if (url === '/api/v1/devices') {
+        return await Promise.resolve({
+          data: { data: { items: [{ deviceId: 3, deviceName: 'Sensor Suhu Ruangan' }] } }
+        })
+      }
+      if (url === '/api/v1/devices/logs/last/3') {
+        return await Promise.resolve({
+          data: {
+            data: {
+              deviceLogId: 99,
+              deviceLogData: '28',
+              createdAt: new Date().toISOString()
+            }
+          }
+        })
+      }
+      throw new Error(`unexpected GET ${url}`)
+    })
+    mockedAxios.create.mockReturnValue(client as never)
+
+    const { runId, runDir } = resolveRunDirectory(tmpRoot, 'run-sensor-fresh')
+    await runFunctionalEvaluation({
+      runId,
+      runDir,
+      baseUrl: 'http://localhost:8000',
+      email: 'test@example.com',
+      password: 'secret',
+      testCases: [sensorCase],
+      ackTimeoutMs: 1000,
+      ackPollIntervalMs: 10,
+      sensorFreshnessMs: 900000
+    })
+
+    const [record] = readFunctionalResults(runDir)
+    expect(record.integrationSuccess).toBe(true)
+    expect(record.mqttSuccess).toBe(true)
+    expect(record.endToEndLatencyMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('marks sensor_read as failed when the last device_logs row is stale', async () => {
+    const client = makeClient()
+    client.post.mockImplementation(async (url: string) => {
+      if (url === '/api/v1/auth/login')
+        return await Promise.resolve({ data: { data: { accessToken: 't' } } })
+      return await Promise.resolve({ data: { data: { reply: 'Suhu saat ini 28°C.' } } })
+    })
+    client.get.mockImplementation(async (url: string) => {
+      if (url === '/api/v1/devices') {
+        return await Promise.resolve({
+          data: { data: { items: [{ deviceId: 3, deviceName: 'Sensor Suhu Ruangan' }] } }
+        })
+      }
+      if (url === '/api/v1/devices/logs/last/3') {
+        return await Promise.resolve({
+          data: {
+            data: {
+              deviceLogId: 1,
+              deviceLogData: '27',
+              createdAt: new Date(0).toISOString()
+            }
+          }
+        })
+      }
+      throw new Error(`unexpected GET ${url}`)
+    })
+    mockedAxios.create.mockReturnValue(client as never)
+
+    const { runId, runDir } = resolveRunDirectory(tmpRoot, 'run-sensor-stale')
+    await runFunctionalEvaluation({
+      runId,
+      runDir,
+      baseUrl: 'http://localhost:8000',
+      email: 'test@example.com',
+      password: 'secret',
+      testCases: [sensorCase],
+      ackTimeoutMs: 1000,
+      ackPollIntervalMs: 10,
+      sensorFreshnessMs: 900000
+    })
+
+    const [record] = readFunctionalResults(runDir)
+    expect(record.integrationSuccess).toBe(false)
+    expect(record.mqttSuccess).toBe(false)
+    expect(record.endToEndLatencyMs).toBeNull()
   })
 })

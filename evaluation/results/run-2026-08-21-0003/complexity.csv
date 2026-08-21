@@ -1,0 +1,10 @@
+model,category,totalTests,toolAccuracyPct,parameterAccuracyPct,structureValidPct
+GPT-5.6 Terra,simple,2,100,66.66666666666666,100
+GPT-5.6 Terra,medium,2,100,100,100
+GPT-5.6 Terra,complex,2,100,83.33333333333334,100
+Claude Sonnet 5,simple,2,50,66.66666666666666,100
+Claude Sonnet 5,medium,2,100,100,100
+Claude Sonnet 5,complex,2,100,83.33333333333334,100
+DeepSeek-V4-Flash,simple,2,50,100,100
+DeepSeek-V4-Flash,medium,2,0,100,100
+DeepSeek-V4-Flash,complex,2,0,83.33333333333334,100

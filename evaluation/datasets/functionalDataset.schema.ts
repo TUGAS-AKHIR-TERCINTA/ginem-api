@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /**
- * BAB 4.2 dataset — deliberately small and separate from dataset.jsonl (BAB 4.3).
+ * BAB 4.2 dataset — deliberately small and separate from dataset.json (BAB 4.3).
  * This one drives the REAL pipeline (HTTP -> RabbitMQ -> ChatService -> real tools
  * -> real MQTT -> real ESP32) per poin 3/4 of the brief. 'device_control' kinds get
  * ACK-polled against GET /api/v1/mqtt/devices/:deviceId/status; everything else is

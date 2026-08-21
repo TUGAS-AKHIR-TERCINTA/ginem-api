@@ -1,19 +1,15 @@
 import fs from 'fs'
 import path from 'path'
-import { parseDatasetLine, type DatasetCategory } from '../datasets/dataset.schema'
+import { parseDatasetFile, type DatasetCategory } from '../datasets/dataset.schema'
 
-const datasetPath = path.join(__dirname, '..', 'datasets', 'dataset.jsonl')
+const datasetPath = path.join(__dirname, '..', 'datasets', 'dataset.json')
 
 function loadDataset() {
-  const lines = fs
-    .readFileSync(datasetPath, 'utf-8')
-    .split('\n')
-    .filter((l) => l.trim().length > 0)
-  return lines.map((line, i) => parseDatasetLine(line, i + 1))
+  return parseDatasetFile(fs.readFileSync(datasetPath, 'utf-8'))
 }
 
-describe('dataset.jsonl', () => {
-  it('parses every line against the schema without error', () => {
+describe('dataset.json', () => {
+  it('parses the whole array against the schema without error', () => {
     expect(() => loadDataset()).not.toThrow()
   })
 

@@ -6,6 +6,7 @@ import {
   buildTable43,
   buildTable44,
   buildTable45,
+  buildTable46,
   buildTable47,
   buildTable48,
   buildTable49
@@ -136,6 +137,11 @@ export function generateReports(runDir: string): void {
     toCsv(buildTable44(modelAggregates))
   )
   writeFile(runDir, 'tabel-4.5-latensi.csv', toCsv(buildTable45(modelAggregates)))
+  writeFile(
+    runDir,
+    'tabel-4.6-latensi-kompleksitas.csv',
+    toCsv(buildTable46(complexityAggregates))
+  )
   writeFile(runDir, 'tabel-4.7-token-biaya.csv', toCsv(buildTable47(modelAggregates)))
   writeFile(
     runDir,

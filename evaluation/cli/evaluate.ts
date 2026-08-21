@@ -1,12 +1,25 @@
+import fs from 'fs'
 import path from 'path'
+// Side-effect import: runs dotenv.config() before evaluation.config.ts reads
+// process.env.EVAL_* below. Without this, .env only gets loaded once something
+// deeper in the import chain (e.g. models.config -> LLM.service -> appConfig)
+// pulls it in — by then evaluation.config's top-level `export const` has already
+// captured `undefined` for every EVAL_* var and it's too late to fix.
+import '../../src/configs/appConfig'
 import { parseCliArgs } from './args'
 import { evaluationConfig } from '../config/evaluation.config'
 import { evalModels } from '../config/models.config'
 import { loadDataset, loadFunctionalDataset } from '../datasets/loadDataset'
 import { runLlmEvaluation } from '../runner/llmEvalRunner'
 import { runFunctionalEvaluation } from '../runner/functionalRunner'
-import { resolveRunDirectory, writeRunConfig } from '../writers/resultWriter'
+import {
+  resolveRunDirectory,
+  writeRunConfig,
+  rawResultsPath,
+  functionalResultsPath
+} from '../writers/resultWriter'
 import { generateReports } from '../reporters/writeReports'
+import { generateFunctionalReports } from '../reporters/writeFunctionalReports'
 
 async function main(): Promise<void> {
   const args = parseCliArgs(process.argv.slice(2))
@@ -19,8 +32,31 @@ async function main(): Promise<void> {
       )
     }
     const runDir = path.join(outputRoot, args.resume)
-    generateReports(runDir)
-    console.log(`Reports regenerated in ${runDir}`)
+    let regenerated = 0
+
+    if (fs.existsSync(rawResultsPath(runDir))) {
+      generateReports(runDir)
+      console.log(`LLM-eval reports (Tabel 4.3-4.9) regenerated in ${runDir}`)
+      regenerated += 1
+    }
+
+    if (fs.existsSync(functionalResultsPath(runDir))) {
+      const configPath = path.join(runDir, 'config.json')
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf-8')) as {
+        datasetPath?: string
+      }
+      const datasetPath =
+        args.dataset ?? config.datasetPath ?? evaluationConfig.functionalDatasetPath
+      generateFunctionalReports(runDir, datasetPath)
+      console.log(`Functional reports (Tabel 4.1-4.2) regenerated in ${runDir}`)
+      regenerated += 1
+    }
+
+    if (regenerated === 0) {
+      throw new Error(
+        `No raw-results.jsonl or functional-results.jsonl found in ${runDir} — nothing to regenerate.`
+      )
+    }
     return
   }
 
@@ -57,6 +93,7 @@ async function main(): Promise<void> {
       testCases,
       ackTimeoutMs: evaluationConfig.mqttAckTimeoutMs,
       ackPollIntervalMs: evaluationConfig.mqttAckPollIntervalMs,
+      sensorFreshnessMs: evaluationConfig.sensorFreshnessMs,
       onRecord: (record) => {
         done += 1
         console.log(
@@ -65,7 +102,12 @@ async function main(): Promise<void> {
       }
     })
 
-    console.log(`\nDone. Results: ${runDir}/functional-results.jsonl`)
+    generateFunctionalReports(runDir, datasetPath)
+    console.log(`\nDone. Run: ${runId}`)
+    console.log(`Raw results: ${runDir}/functional-results.jsonl`)
+    console.log(
+      `Reports: ${runDir}/tabel-4.1-pengujian-fungsional.csv + tabel-4.2-integrasi-e2e.csv + functional-summary.json`
+    )
     return
   }
 

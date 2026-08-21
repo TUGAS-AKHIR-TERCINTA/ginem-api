@@ -1,0 +1,4 @@
+model,totalInputTokens,totalOutputTokens,totalTokens,avgTokensPerRequest,totalCostUsd,avgCostPerRequestUsd
+GPT-5.6 Terra,46920,612,47532,4753.2,0.101184,0.0101184
+Claude Sonnet 5,131250,2162,133412,13341.2,0.28412,0.028412
+DeepSeek-V4-Flash,143039,4411,147450,14745,0.02126054,0.002126054

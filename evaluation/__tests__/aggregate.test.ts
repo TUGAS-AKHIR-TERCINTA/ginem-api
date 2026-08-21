@@ -158,4 +158,18 @@ describe('aggregateByModelAndComplexity', () => {
     const mediumRow = rows.find((r) => r.category === 'medium')
     expect(mediumRow?.toolAccuracyPct).toBe(0)
   })
+
+  it('computes average latency per category independently (Tabel 4.6)', () => {
+    const records = [
+      record({ category: 'simple', apiLatencyMs: 400 }),
+      record({ category: 'simple', apiLatencyMs: 600 }),
+      record({ category: 'complex', apiLatencyMs: 2000 })
+    ]
+
+    const rows = aggregateByModelAndComplexity(records)
+    const simpleRow = rows.find((r) => r.category === 'simple')
+    const complexRow = rows.find((r) => r.category === 'complex')
+    expect(simpleRow?.avgLatencyMs).toBe(500)
+    expect(complexRow?.avgLatencyMs).toBe(2000)
+  })
 })

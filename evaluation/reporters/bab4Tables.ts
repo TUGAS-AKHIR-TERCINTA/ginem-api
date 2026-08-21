@@ -63,6 +63,36 @@ export function buildTable45(aggregates: ModelAggregate[]): Table45Row[] {
   }))
 }
 
+export interface Table46Row {
+  Model: string
+  'Sederhana (ms)': number
+  'Menengah (ms)': number
+  'Kompleks (ms)': number
+}
+
+/**
+ * Tabel 4.6 — pivots ComplexityAggregate's long format (one row per model x
+ * category) into the thesis's wide format (one row per model, one column per
+ * category). Missing category rows (e.g. zero test cases hit that category for
+ * a model) render as 0 rather than being dropped, so every model still gets a row.
+ */
+export function buildTable46(rows: ComplexityAggregate[]): Table46Row[] {
+  const models = Array.from(new Map(rows.map((r) => [r.modelKey, r.model])).entries())
+
+  return models.map(([modelKey, model]) => {
+    const forModel = rows.filter((r) => r.modelKey === modelKey)
+    const latencyFor = (category: string): number =>
+      round2(forModel.find((r) => r.category === category)?.avgLatencyMs ?? 0)
+
+    return {
+      Model: model,
+      'Sederhana (ms)': latencyFor('simple'),
+      'Menengah (ms)': latencyFor('medium'),
+      'Kompleks (ms)': latencyFor('complex')
+    }
+  })
+}
+
 export interface Table47Row {
   'Model LLM': string
   'Total Input Token': number

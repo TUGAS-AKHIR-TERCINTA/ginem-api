@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node ./build/server.js",
-    "dev": "tsx watch . server.ts --ignore build --clear-screen=false",
+    "dev": "tsx watch server.ts --ignore build --clear-screen=false",
     "migrate:up": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "seed": "npx sequelize-cli db:seed:all",

@@ -11,30 +11,45 @@ Dua jenis pengujian yang **sengaja dipisah** (lihat poin 34 metodologi):
 | Yang diuji | Sistem penuh: AI Agent → tool → backend → MQTT → ESP32 → ACK | Kualitas keputusan LLM: pemilihan tool, parameter, struktur output |
 | Perangkat fisik | Ya, wajib (ESP32 + DHT11 + relay nyata) | Tidak — MQTT publish & DB write di-*dry-run* |
 | Runner | `evaluation/runner/functionalRunner.ts` | `evaluation/runner/llmEvalRunner.ts` |
-| Dataset | `evaluation/datasets/functional-dataset.jsonl` (8 skenario) | `evaluation/datasets/dataset.jsonl` (100 kasus) |
+| Dataset | `evaluation/datasets/functional-dataset.jsonl` (8 skenario) | `evaluation/datasets/dataset.json` (100 kasus) |
 | CLI | `npm run evaluate -- --mode functional` | `npm run evaluate -- --mode llm-eval` (default) |
 
 Kegagalan MQTT/ESP32 **tidak pernah** dihitung sebagai kesalahan model — BAB 4.3 tidak menyentuh MQTT sama sekali (lihat §9 "Dry-run" di bawah).
 
 ## 2. Struktur dataset
 
-### `dataset.jsonl` (BAB 4.3, 100 kasus — 35 sederhana / 25 menengah / 20 kompleks / 10 ambigu / 10 tidak valid)
+### `dataset.json` (BAB 4.3, 100 kasus — 35 sederhana / 25 menengah / 20 kompleks / 10 ambigu / 10 tidak valid)
+
+Satu file JSON array, pretty-printed (2-space indent) supaya gampang dibaca/diedit langsung — **bukan** JSON Lines. Contoh satu entri:
 
 ```json
-{"id":"TC001","category":"simple","input":"Nyalakan lampu kamar","expected":{"behavior":"tool_call","toolCalls":[{"tool":"set_actuator_state_by_device_name","parameters":{"deviceName":"Smart Lamp Bedroom","state":"on"}}]}}
+{
+  "id": "TC001",
+  "category": "simple",
+  "input": "Nyalakan lampu ruang tamu",
+  "expected": {
+    "behavior": "tool_call",
+    "toolCalls": [
+      {
+        "tool": "set_actuator_state_by_device_name",
+        "parameters": { "deviceName": "Lampu ruang tamu", "state": "on" }
+      }
+    ]
+  }
+}
 ```
 
 - `expected.behavior`: `tool_call` | `clarification` | `reject_or_no_tool`.
 - `expected.toolCalls`: array (bisa >1 untuk kasus kompleks, mis. TC075 nyalakan+jadwalkan-mati).
 - `expected.schedule` / `expected.rule`: representasi terstruktur tambahan untuk `scheduleComparator`/`ruleComparator` (Ketepatan Jadwal / Ketepatan Dynamic Rule di Tabel 4.4).
-- Skema penuh + validasi: `evaluation/datasets/dataset.schema.ts` (Zod). Setiap baris divalidasi otomatis oleh `evaluation/__tests__/dataset.test.ts`.
-- **Nama device di dataset mengikuti `resources/seeders/2_deviceSeeder.js`** (`Smart Lamp Bedroom`, `Temperature Sensor Living Room`, `Humidity Sensor Greenhouse`, `Smart Gate Controller`). Kalau database evaluasi Anda punya device dengan nama berbeda, edit `dataset.jsonl` langsung (plain JSONL, satu baris = satu kasus, gampang diedit teks biasa) — ground truth harus cocok persis dengan apa yang ada di DB target.
+- Skema penuh + validasi: `evaluation/datasets/dataset.schema.ts` (Zod, fungsi `parseDatasetFile`). Seluruh array divalidasi otomatis oleh `evaluation/__tests__/dataset.test.ts`.
+- **Nama device di dataset mengikuti persis `resources/seeders/2_deviceSeeder.js`**: `Lampu ruang tamu` (actuator), `Suhu ruangan` (sensor), `Kipas` (actuator) — hanya 3 device, sama persis (termasuk huruf besar/kecil) dengan yang dipakai `functional-dataset.jsonl` di bawah, karena `DeviceService.findByName` exact-match. Kalau Anda ubah lagi nama/isi seeder, `dataset.json` harus disesuaikan ulang juga.
 
 ### `functional-dataset.jsonl` (BAB 4.2, 8 kasus — persis Tabel 4.1)
 
-Kalimat perintah dan urutan skenarionya sudah disamakan persis dengan Tabel 4.1 (`Nyalakan lampu ruang tamu`, `Nyalakan kipas jika suhu di atas 30 °C`, dst). Field tambahan: `deviceName` (untuk polling ACK), `expectedFinalState` (`"1"`/`"0"`), `expectExecution`.
+Tetap format JSON Lines (satu baris = satu kasus) karena hanya 8 baris pendek — sudah cukup mudah dibaca apa adanya, tidak perlu diubah seperti `dataset.json`. Kalimat perintah dan urutan skenarionya sudah disamakan persis dengan Tabel 4.1 (`Nyalakan lampu ruang tamu`, `Nyalakan kipas jika suhu di atas 30 °C`, dst). Field tambahan: `deviceName` (untuk polling ACK), `expectedFinalState` (`"1"`/`"0"`), `expectExecution`.
 
-Device yang dipakai — `Lampu Ruang Tamu`, `Sensor Suhu Ruangan`, `Kipas` — **sengaja beda nama dari seeder** (`resources/seeders/2_deviceSeeder.js` dipakai `dataset.jsonl`/BAB 4.3, dalam bahasa Inggris) supaya kedua dataset tidak saling bentrok. Karena BAB 4.2 menyasar perangkat fisik sungguhan, **pastikan device dengan nama-nama tersebut benar-benar terdaftar di database yang dipakai ESP32 Anda** sebelum menjalankan — kalau nama device asli Anda berbeda, edit `deviceName`/`input` di file ini langsung (plain JSONL, gampang diedit) agar cocok persis. Skenario No.6 (Kipas) butuh device actuator baru — seeder tidak menyediakannya secara default.
+Device yang dipakai — `Lampu ruang tamu`, `Suhu ruangan`, `Kipas` — **sama persis** dengan `dataset.json`/BAB 4.3 dan dengan `resources/seeders/2_deviceSeeder.js` Anda saat ini. Kalau nama device asli Anda berbeda (mis. seeder diedit lagi), perbarui `deviceName`/`input` di kedua file dataset agar tetap cocok persis dengan DB target.
 
 ## 3. Cara menjalankan
 
@@ -80,6 +95,7 @@ evaluation/results/run-YYYY-MM-DD-HHmm/
   tabel-4.3-ketepatan-tool.csv       # siap tempel ke BAB IV (poin 24), kolom sama persis
   tabel-4.4-parameter-struktur.csv
   tabel-4.5-latensi.csv
+  tabel-4.6-latensi-kompleksitas.csv
   tabel-4.7-token-biaya.csv
   tabel-4.8-kompleksitas.csv
   tabel-4.9-distribusi-kesalahan.csv
@@ -138,18 +154,18 @@ Metrik tambahan (poin 11–15 brief):
 ## 11. Pemetaan ke BAB IV
 
 - **4.2 Hasil Pengujian Fungsional dan End-to-End** ← `--mode functional`, `functional-results.jsonl`, definisi ACK di §9 `functionalRunner.ts` (polling `GET /api/v1/mqtt/devices/:id/status`, **bukan** ACK protokol asli — lihat §12 poin 2).
-- **4.3 Evaluasi dan Perbandingan Model LLM** ← `tabel-4.3-*.csv`, `tabel-4.4-*.csv`, `tabel-4.5-*.csv`, `tabel-4.7-*.csv`.
+- **4.3 Evaluasi dan Perbandingan Model LLM** ← `tabel-4.3-*.csv`, `tabel-4.4-*.csv`, `tabel-4.5-*.csv`, `tabel-4.6-*.csv`, `tabel-4.7-*.csv`.
 - **4.4 Analisis Berdasarkan Kompleksitas dan Kesalahan** ← `tabel-4.8-kompleksitas.csv`, `tabel-4.9-distribusi-kesalahan.csv`.
 
 ## 12. Ketidaksesuaian implementasi yang perlu diketahui sebelum menulis BAB IV
 
 1. **"MCP" bukan Model Context Protocol asli.** `src/services/mcp/**` adalah tool/function-calling LangChain biasa (Zod + `bindTools`), bukan JSON-RPC MCP client/server sungguhan. Istilah "MCP Client"/"MCP Server" di BAB II/III sebaiknya dijelaskan eksplisit di BAB IV sebagai penamaan arsitektural internal, bukan implementasi protokol resmi Anthropic.
 2. **Tidak ada ACK MQTT sungguhan.** `MQTTService.sendCommand` fire-and-forget, tidak ada korelasi command-id ↔ state update. `functionalRunner.ts` mengaproksimasi "ACK" sebagai *state device berubah dalam window T detik setelah command* — didokumentasikan sebagai keterbatasan, bukan disembunyikan.
-3. **Tabel 3.8 (Function Schema) vs implementasi nyata**: 15 tools nyata memakai nama berbeda dari 11 *function schema* di Tabel 3.8, dan dua di antaranya (`delete_schedule`, `update_dynamic_rule`) **tidak ada capability-nya sama sekali** di kode (juga tidak ada `get_rule_execution_logs` sebagai tool yang bisa dipanggil LLM, walau endpoint REST-nya ada). Dataset `dataset.jsonl` mengikuti kode nyata (keputusan Anda sebelumnya) — kasus TC097/TC098 sengaja menguji dua gap ini sebagai skenario `invalid`. **Tabel 3.8 di naskah perlu direvisi** agar konsisten dengan Lampiran/BAB IV.
+3. **Tabel 3.8 (Function Schema) vs implementasi nyata**: 15 tools nyata memakai nama berbeda dari 11 *function schema* di Tabel 3.8, dan dua di antaranya (`delete_schedule`, `update_dynamic_rule`) **tidak ada capability-nya sama sekali** di kode (juga tidak ada `get_rule_execution_logs` sebagai tool yang bisa dipanggil LLM, walau endpoint REST-nya ada). Dataset `dataset.json` mengikuti kode nyata (keputusan Anda sebelumnya) — kasus TC097/TC098 sengaja menguji dua gap ini sebagai skenario `invalid`. **Tabel 3.8 di naskah perlu direvisi** agar konsisten dengan Lampiran/BAB IV.
 4. **`set_actuator_state_by_device_name` menolak device `hybrid`**, walau system prompt (`DEVICE_CHAT_SYSTEM_PROMPT`) menyebut hybrid didukung. TC095/TC096 menguji perilaku nyata ini (ditolak).
 5. **Determinisme RAG**: embedding dihitung ulang tiap request (panggilan API, bukan cache), tanpa score threshold, dengan retry-lalu-fallback-kosong kalau Pinecone gagal 3x. Kalau knowledge base Anda berubah antar sesi pengambilan data, konteks RAG bisa berbeda meski input identik — bukan bug harness, melainkan sifat `PineconeService.search` produksi.
 6. **State isolation**: `llmEvalRunner.ts` sengaja tidak mengirim `userId`/`sessionId` supaya `resolveMemoryScope()` mengembalikan `null` (tidak ada memory) — setiap repetisi benar-benar bersih, sesuai poin 21.
 
 ## 13. Testing
 
-`evaluation/__tests__/*.test.ts` (Jest, sama seperti `src/`) — mencakup `toolComparator`, `parameterComparator`, `scheduleComparator`, `ruleComparator`, `structureValidator`, `errorClassifier`, `costCalculator`, `latencyMetrics`, `valueNormalizer`, `dryRunGuard`, `retry`, `concurrency`, `resume`/`resultWriter`, `llmEvalRunner`, `functionalRunner`, `aggregate`, `bab4Tables`, `writeReports`, `args`, dan `dataset.jsonl` itu sendiri (validasi skema + distribusi kategori). Jalankan dengan `npm test` (root `jest.config.ts` sudah mencakup `evaluation/` di `roots`).
+`evaluation/__tests__/*.test.ts` (Jest, sama seperti `src/`) — mencakup `toolComparator`, `parameterComparator`, `scheduleComparator`, `ruleComparator`, `structureValidator`, `errorClassifier`, `costCalculator`, `latencyMetrics`, `valueNormalizer`, `dryRunGuard`, `retry`, `concurrency`, `resume`/`resultWriter`, `llmEvalRunner`, `functionalRunner`, `aggregate`, `bab4Tables`, `writeReports`, `args`, dan `dataset.json` itu sendiri (validasi skema + distribusi kategori). Jalankan dengan `npm test` (root `jest.config.ts` sudah mencakup `evaluation/` di `roots`).

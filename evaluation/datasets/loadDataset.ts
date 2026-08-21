@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { parseDatasetLine, type DatasetCase } from './dataset.schema'
+import { parseDatasetFile, type DatasetCase } from './dataset.schema'
 import {
   parseFunctionalDatasetLine,
   type FunctionalTestCase
@@ -12,8 +12,9 @@ function readLines(filePath: string): string[] {
     .filter((l) => l.trim().length > 0)
 }
 
+/** dataset.json is a single pretty-printed JSON array — see dataset.schema.ts. */
 export function loadDataset(filePath: string): DatasetCase[] {
-  return readLines(filePath).map((line, i) => parseDatasetLine(line, i + 1))
+  return parseDatasetFile(fs.readFileSync(filePath, 'utf-8'))
 }
 
 export function loadFunctionalDataset(filePath: string): FunctionalTestCase[] {

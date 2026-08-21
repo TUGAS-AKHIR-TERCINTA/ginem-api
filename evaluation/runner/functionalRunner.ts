@@ -13,6 +13,14 @@ export interface FunctionalRunOptions {
   testCases: FunctionalTestCase[]
   ackTimeoutMs: number
   ackPollIntervalMs: number
+  /**
+   * How old a device_logs row may be (from "now") to still count as proof that
+   * MQTT telemetry is flowing, for kind='sensor_read'. A chat request never makes
+   * the ESP32 push fresh telemetry on demand — it only reads whatever the device
+   * last pushed on its own schedule — so "success" here means "the pipeline is
+   * demonstrably alive recently," not "this specific request triggered new data."
+   */
+  sensorFreshnessMs: number
   onRecord?: (record: FunctionalEvaluationRecord) => void
 }
 
@@ -44,7 +52,7 @@ async function findDeviceByName(
   deviceName: string
 ): Promise<DeviceLookup | null> {
   const res = await client.get('/api/v1/devices', {
-    params: { page: 0, size: 100, pagination: true }
+    params: { page: 1, size: 100, pagination: true }
   })
   const items: Array<{ deviceId: number; deviceName: string }> =
     res.data?.data?.items ?? []
@@ -84,6 +92,35 @@ async function pollForAck(
   }
 
   return { ackAt: null, status: lastStatus }
+}
+
+interface DeviceLogRow {
+  deviceLogId: number
+  deviceLogData: string
+  createdAt: string
+}
+
+/**
+ * Poin 34 ("Keberhasilan pengujian ditentukan berdasarkan ... data sensor yang
+ * sesuai"): checks that the latest device_logs row for this sensor (populated
+ * by TelemetryService from real MQTT telemetry — see evaluation/README.md) is
+ * newer than `now - freshnessMs`, rather than trusting an HTTP 200 alone as
+ * proof the MQTT pipeline is actually delivering data.
+ */
+async function checkSensorFreshness(
+  client: AxiosInstance,
+  deviceId: number,
+  freshnessMs: number
+): Promise<{ fresh: boolean; log: DeviceLogRow | null }> {
+  try {
+    const res = await client.get(`/api/v1/devices/logs/last/${deviceId}`)
+    const log = res.data?.data as DeviceLogRow | null
+    if (log?.createdAt == null) return { fresh: false, log: null }
+    const ageMs = Date.now() - new Date(log.createdAt).getTime()
+    return { fresh: ageMs >= 0 && ageMs <= freshnessMs, log }
+  } catch {
+    return { fresh: false, log: null }
+  }
 }
 
 export async function runFunctionalEvaluation(
@@ -132,6 +169,8 @@ async function runSingleFunctionalCase(
     let finalDeviceStatus: unknown = null
     let endToEndLatencyMs: number | null = null
 
+    let sensorFresh = false
+
     if (testCase.kind === 'device_control' && device != null) {
       const ack = await pollForAck(
         client,
@@ -146,11 +185,29 @@ async function runSingleFunctionalCase(
       endToEndLatencyMs = ackReceived
         ? new Date(ack.ackAt as string).getTime() - requestStartedAt.getTime()
         : null
+    } else if (testCase.kind === 'sensor_read' && device != null) {
+      const freshness = await checkSensorFreshness(
+        client,
+        device.deviceId,
+        options.sensorFreshnessMs
+      )
+      sensorFresh = freshness.fresh
+      ackReceived = freshness.fresh
+      finalDeviceStatus = freshness.log
+      endToEndLatencyMs = sensorFresh
+        ? responseCompletedAt.getTime() - requestStartedAt.getTime()
+        : null
     }
 
     // axios rejects on non-2xx by default, so reaching this point already means the
-    // HTTP call succeeded; device_control cases additionally require a real ACK.
-    const integrationSuccess = testCase.kind === 'device_control' ? ackReceived : true
+    // HTTP call succeeded. device_control additionally requires a real ACK;
+    // sensor_read additionally requires a recent (fresh) telemetry row.
+    const integrationSuccess =
+      testCase.kind === 'device_control'
+        ? ackReceived
+        : testCase.kind === 'sensor_read'
+          ? sensorFresh
+          : true
 
     return {
       runId: options.runId,
@@ -169,7 +226,10 @@ async function runSingleFunctionalCase(
       finalDeviceStatus,
       endToEndLatencyMs,
       integrationSuccess,
-      mqttSuccess: testCase.kind !== 'device_control' || ackReceived,
+      // Mirrors integrationSuccess today: device_control/sensor_read are exactly the
+      // two kinds where "success" IS defined by MQTT-layer evidence (ACK / fresh
+      // telemetry); the other kinds don't exercise MQTT at all in this test.
+      mqttSuccess: integrationSuccess,
       errorMessage: null,
       timestamp
     }

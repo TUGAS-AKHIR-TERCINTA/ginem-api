@@ -46,7 +46,8 @@ describe('LLMService', () => {
       model: 'gpt-4o',
       temperature: 0,
       maxTokens: 500,
-      apiKey: 'test-openai-key'
+      apiKey: 'test-openai-key',
+      reasoning: { effort: 'none' }
     })
   })
 
@@ -62,7 +63,8 @@ describe('LLMService', () => {
       model: 'gpt-4o-mini',
       temperature: 0.2,
       maxTokens: 200,
-      apiKey: 'test-openai-key'
+      apiKey: 'test-openai-key',
+      reasoning: { effort: 'none' }
     })
   })
 
@@ -82,7 +84,6 @@ describe('LLMService', () => {
 
     expect(ChatAnthropicMock).toHaveBeenCalledWith({
       model: 'claude-sonnet-4-5',
-      temperature: 0,
       maxTokens: 500,
       apiKey: 'test-anthropic-key'
     })
@@ -98,7 +99,6 @@ describe('LLMService', () => {
 
     expect(ChatAnthropicMock).toHaveBeenCalledWith({
       model: 'claude-sonnet-4-5-20250929',
-      temperature: 0.2,
       maxTokens: 1024,
       apiKey: 'test-anthropic-key'
     })

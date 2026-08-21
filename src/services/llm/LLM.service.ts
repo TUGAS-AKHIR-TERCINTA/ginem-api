@@ -60,7 +60,8 @@ export class LLMService {
         }
         return new ChatAnthropic({
           model: options?.model ?? 'claude-sonnet-4-5',
-          temperature,
+          // `temperature` is rejected outright by some Anthropic model ids ("temperature
+          // is deprecated for this model") — omit it and let the API use its default.
           maxTokens,
           apiKey
         })
@@ -78,7 +79,12 @@ export class LLMService {
         model: options?.model ?? 'gpt-4o',
         temperature,
         maxTokens,
-        apiKey
+        apiKey,
+        // LangChain auto-detects any "gpt-5*" model name as a reasoning model and may
+        // send a reasoning_effort the API rejects when function tools are used on
+        // /v1/chat/completions. Forcing 'none' keeps tool calling on that endpoint working;
+        // it's a no-op for non-reasoning models.
+        reasoning: { effort: 'none' }
       })
     } catch (serviceError) {
       if (serviceError instanceof AppError) throw serviceError

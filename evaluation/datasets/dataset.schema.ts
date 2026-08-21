@@ -96,19 +96,30 @@ export const datasetCaseSchema = z.object({
 })
 export type DatasetCase = z.infer<typeof datasetCaseSchema>
 
-export function parseDatasetLine(line: string, lineNumber: number): DatasetCase {
+/**
+ * dataset.json is a single pretty-printed JSON array (not JSON Lines) so it's easy
+ * to read/edit by hand — see evaluation/README.md. Parses the whole file at once;
+ * error messages reference the array index (1-based) of the offending entry.
+ */
+export function parseDatasetFile(content: string): DatasetCase[] {
   let json: unknown
   try {
-    json = JSON.parse(line)
+    json = JSON.parse(content)
   } catch (err) {
-    throw new Error(`dataset.jsonl line ${lineNumber}: invalid JSON — ${String(err)}`)
+    throw new Error(`dataset.json: invalid JSON — ${String(err)}`)
   }
 
-  const result = datasetCaseSchema.safeParse(json)
-  if (!result.success) {
-    throw new Error(
-      `dataset.jsonl line ${lineNumber}: ${result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`
-    )
+  if (!Array.isArray(json)) {
+    throw new Error('dataset.json: expected a top-level JSON array of test cases')
   }
-  return result.data
+
+  return json.map((item, index) => {
+    const result = datasetCaseSchema.safeParse(item)
+    if (!result.success) {
+      throw new Error(
+        `dataset.json item ${index + 1}: ${result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`
+      )
+    }
+    return result.data
+  })
 }
