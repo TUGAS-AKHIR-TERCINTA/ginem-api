@@ -19,23 +19,6 @@
   {
     "id": "TC002",
     "category": "simple",
-    "input": "Hidupkan lampu ruang tamu",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "set_actuator_state_by_device_name",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "on"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC003",
-    "category": "simple",
     "input": "Matikan lampu ruang tamu",
     "expected": {
       "behavior": "tool_call",
@@ -51,75 +34,7 @@
     }
   },
   {
-    "id": "TC004",
-    "category": "simple",
-    "input": "Padamkan lampu ruang tamu",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "set_actuator_state_by_device_name",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "off"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC005",
-    "category": "simple",
-    "input": "Tolong nyalakan lampu ruang tamu",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "set_actuator_state_by_device_name",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "on"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC006",
-    "category": "simple",
-    "input": "Nyalakan lampu ruang tamu sekarang",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "set_actuator_state_by_device_name",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "on"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC007",
-    "category": "simple",
-    "input": "Matikan lampu ruang tamu sekarang juga",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "set_actuator_state_by_device_name",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "off"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC008",
+    "id": "TC003",
     "category": "simple",
     "input": "Bisa hidupkan lampu ruang tamu?",
     "expected": {
@@ -136,7 +51,7 @@
     }
   },
   {
-    "id": "TC009",
+    "id": "TC004",
     "category": "simple",
     "input": "Lampu kamar tolong dimatikan",
     "expected": {
@@ -153,7 +68,7 @@
     }
   },
   {
-    "id": "TC010",
+    "id": "TC005",
     "category": "simple",
     "input": "Nyalain lampu ruang tamu dong",
     "expected": {
@@ -170,7 +85,7 @@
     }
   },
   {
-    "id": "TC011",
+    "id": "TC006",
     "category": "simple",
     "input": "Turn on Lampu ruang tamu",
     "expected": {
@@ -187,7 +102,7 @@
     }
   },
   {
-    "id": "TC012",
+    "id": "TC007",
     "category": "simple",
     "input": "Turn off Lampu ruang tamu",
     "expected": {
@@ -204,7 +119,7 @@
     }
   },
   {
-    "id": "TC013",
+    "id": "TC008",
     "category": "simple",
     "input": "Berapa suhu ruang tamu saat ini?",
     "expected": {
@@ -220,39 +135,7 @@
     }
   },
   {
-    "id": "TC014",
-    "category": "simple",
-    "input": "Cek suhu ruang tamu",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "get_last_log_by_device_name",
-          "parameters": {
-            "deviceName": "Suhu ruangan"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC015",
-    "category": "simple",
-    "input": "Suhu ruang tamu berapa derajat?",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "get_last_log_by_device_name",
-          "parameters": {
-            "deviceName": "Suhu ruangan"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC016",
+    "id": "TC009",
     "category": "simple",
     "input": "Nyalakan kipas",
     "expected": {
@@ -269,7 +152,7 @@
     }
   },
   {
-    "id": "TC017",
+    "id": "TC010",
     "category": "simple",
     "input": "Matikan kipas",
     "expected": {
@@ -286,40 +169,7 @@
     }
   },
   {
-    "id": "TC018",
-    "category": "simple",
-    "input": "Hidupkan kipas ruang tamu",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "set_actuator_state_by_device_name",
-          "parameters": {
-            "deviceName": "Kipas",
-            "state": "on"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC019",
-    "category": "simple",
-    "input": "Berikan data suhu terbaru ruang tamu",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "get_last_log_by_device_name",
-          "parameters": {
-            "deviceName": "Suhu ruangan"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC020",
+    "id": "TC011",
     "category": "simple",
     "input": "Apakah kipas menyala?",
     "expected": {
@@ -335,39 +185,7 @@
     }
   },
   {
-    "id": "TC021",
-    "category": "simple",
-    "input": "Data sensor suhu ruang tamu apa?",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "get_last_log_by_device_name",
-          "parameters": {
-            "deviceName": "Suhu ruangan"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC022",
-    "category": "simple",
-    "input": "Status kipas bagaimana?",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "get_last_log_by_device_name",
-          "parameters": {
-            "deviceName": "Kipas"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC023",
+    "id": "TC012",
     "category": "simple",
     "input": "Apakah lampu ruang tamu menyala?",
     "expected": {
@@ -383,39 +201,7 @@
     }
   },
   {
-    "id": "TC024",
-    "category": "simple",
-    "input": "Status lampu ruang tamu bagaimana?",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "get_last_log_by_device_name",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC025",
-    "category": "simple",
-    "input": "Lampu kamar sedang nyala atau mati?",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "get_last_log_by_device_name",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC026",
+    "id": "TC013",
     "category": "simple",
     "input": "Tampilkan daftar semua perangkat",
     "expected": {
@@ -429,35 +215,7 @@
     }
   },
   {
-    "id": "TC027",
-    "category": "simple",
-    "input": "Lihat semua device yang terdaftar",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "list_devices",
-          "parameters": {}
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC028",
-    "category": "simple",
-    "input": "Ada perangkat apa saja di sistem?",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "list_devices",
-          "parameters": {}
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC029",
+    "id": "TC014",
     "category": "simple",
     "input": "Tampilkan daftar perangkat halaman pertama",
     "expected": {
@@ -473,7 +231,7 @@
     }
   },
   {
-    "id": "TC030",
+    "id": "TC015",
     "category": "simple",
     "input": "Tampilkan 10 riwayat suhu terakhir ruang tamu",
     "expected": {
@@ -489,7 +247,7 @@
     }
   },
   {
-    "id": "TC031",
+    "id": "TC016",
     "category": "simple",
     "input": "Lihat 10 log terakhir lampu ruang tamu",
     "expected": {
@@ -505,7 +263,7 @@
     }
   },
   {
-    "id": "TC032",
+    "id": "TC017",
     "category": "simple",
     "input": "Tampilkan 10 riwayat kipas terakhir",
     "expected": {
@@ -521,7 +279,7 @@
     }
   },
   {
-    "id": "TC033",
+    "id": "TC018",
     "category": "simple",
     "input": "Catat suhu ruang tamu 28 derajat",
     "expected": {
@@ -538,7 +296,7 @@
     }
   },
   {
-    "id": "TC034",
+    "id": "TC019",
     "category": "simple",
     "input": "Catat status kipas sedang menyala",
     "expected": {
@@ -555,7 +313,7 @@
     }
   },
   {
-    "id": "TC035",
+    "id": "TC020",
     "category": "simple",
     "input": "Tampilkan semua aturan otomatis yang ada",
     "expected": {
@@ -569,7 +327,7 @@
     }
   },
   {
-    "id": "TC036",
+    "id": "TC021",
     "category": "medium",
     "input": "Jadwalkan nyalakan lampu ruang tamu besok jam 07:30",
     "expected": {
@@ -599,37 +357,7 @@
     }
   },
   {
-    "id": "TC037",
-    "category": "medium",
-    "input": "Nyalakan lampu ruang tamu nanti jam 20:00",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "schedule_actuator_state_at",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "on",
-            "category": "once",
-            "hour": 20,
-            "minute": 0
-          }
-        }
-      ],
-      "schedule": [
-        {
-          "deviceName": "Lampu ruang tamu",
-          "action": "on",
-          "category": "once",
-          "hour": 20,
-          "minute": 0,
-          "timezone": "Asia/Jakarta"
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC038",
+    "id": "TC022",
     "category": "medium",
     "input": "Matikan lampu ruang tamu jam 23:00 nanti malam",
     "expected": {
@@ -659,69 +387,7 @@
     }
   },
   {
-    "id": "TC039",
-    "category": "medium",
-    "input": "Jadwalkan mematikan lampu ruang tamu tanggal 25-12-2026 jam 22:00",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "schedule_actuator_state_at",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "off",
-            "category": "once",
-            "hour": 22,
-            "minute": 0,
-            "date": "25-12-2026"
-          }
-        }
-      ],
-      "schedule": [
-        {
-          "deviceName": "Lampu ruang tamu",
-          "action": "off",
-          "category": "once",
-          "hour": 22,
-          "minute": 0,
-          "timezone": "Asia/Jakarta"
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC040",
-    "category": "medium",
-    "input": "Nyalakan lampu ruang tamu tanggal 01-01-2027 jam 00:00",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "schedule_actuator_state_at",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "on",
-            "category": "once",
-            "hour": 0,
-            "minute": 0,
-            "date": "01-01-2027"
-          }
-        }
-      ],
-      "schedule": [
-        {
-          "deviceName": "Lampu ruang tamu",
-          "action": "on",
-          "category": "once",
-          "hour": 0,
-          "minute": 0,
-          "timezone": "Asia/Jakarta"
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC041",
+    "id": "TC023",
     "category": "medium",
     "input": "Set jadwal lampu ruang tamu menyala jam 06:15 besok pagi",
     "expected": {
@@ -751,7 +417,7 @@
     }
   },
   {
-    "id": "TC042",
+    "id": "TC024",
     "category": "medium",
     "input": "Nyalakan lampu ruang tamu setiap hari jam 18:00",
     "expected": {
@@ -781,7 +447,7 @@
     }
   },
   {
-    "id": "TC043",
+    "id": "TC025",
     "category": "medium",
     "input": "Matikan lampu ruang tamu setiap hari jam 06:00",
     "expected": {
@@ -811,37 +477,7 @@
     }
   },
   {
-    "id": "TC044",
-    "category": "medium",
-    "input": "Setiap hari jam 19:30 hidupkan lampu ruang tamu",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "schedule_actuator_state_at",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "on",
-            "category": "repeat",
-            "hour": 19,
-            "minute": 30
-          }
-        }
-      ],
-      "schedule": [
-        {
-          "deviceName": "Lampu ruang tamu",
-          "action": "on",
-          "category": "repeat",
-          "hour": 19,
-          "minute": 30,
-          "timezone": "Asia/Jakarta"
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC045",
+    "id": "TC026",
     "category": "medium",
     "input": "Setiap pagi jam 05:45 matikan lampu ruang tamu",
     "expected": {
@@ -871,7 +507,7 @@
     }
   },
   {
-    "id": "TC046",
+    "id": "TC027",
     "category": "medium",
     "input": "Jadwalkan lampu ruang tamu menyala tiap hari jam 17:00",
     "expected": {
@@ -901,37 +537,7 @@
     }
   },
   {
-    "id": "TC047",
-    "category": "medium",
-    "input": "Setiap hari jam 21:00 lampu ruang tamu dimatikan otomatis",
-    "expected": {
-      "behavior": "tool_call",
-      "toolCalls": [
-        {
-          "tool": "schedule_actuator_state_at",
-          "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "off",
-            "category": "repeat",
-            "hour": 21,
-            "minute": 0
-          }
-        }
-      ],
-      "schedule": [
-        {
-          "deviceName": "Lampu ruang tamu",
-          "action": "off",
-          "category": "repeat",
-          "hour": 21,
-          "minute": 0,
-          "timezone": "Asia/Jakarta"
-        }
-      ]
-    }
-  },
-  {
-    "id": "TC048",
+    "id": "TC028",
     "category": "medium",
     "input": "Jadwalkan ambil data suhu ruang tamu jam 09:00 besok",
     "expected": {
@@ -959,7 +565,7 @@
     }
   },
   {
-    "id": "TC049",
+    "id": "TC029",
     "category": "medium",
     "input": "Nyalakan kipas setiap hari jam 12:00",
     "expected": {
@@ -989,7 +595,7 @@
     }
   },
   {
-    "id": "TC050",
+    "id": "TC030",
     "category": "medium",
     "input": "Jadwalkan cek suhu ruang tamu setiap hari jam 07:00",
     "expected": {
@@ -1017,7 +623,7 @@
     }
   },
   {
-    "id": "TC051",
+    "id": "TC031",
     "category": "medium",
     "input": "Ambil data lampu ruang tamu jam 15:00 nanti",
     "expected": {
@@ -1045,7 +651,7 @@
     }
   },
   {
-    "id": "TC052",
+    "id": "TC032",
     "category": "medium",
     "input": "Tampilkan 5 jadwal terakhir yang dibuat",
     "expected": {
@@ -1061,7 +667,7 @@
     }
   },
   {
-    "id": "TC053",
+    "id": "TC033",
     "category": "medium",
     "input": "Lihat semua jadwal yang sedang aktif",
     "expected": {
@@ -1075,7 +681,7 @@
     }
   },
   {
-    "id": "TC054",
+    "id": "TC034",
     "category": "medium",
     "input": "Tampilkan status jadwal dengan id job-123",
     "expected": {
@@ -1091,7 +697,7 @@
     }
   },
   {
-    "id": "TC055",
+    "id": "TC035",
     "category": "medium",
     "input": "Tampilkan daftar perangkat 5 per halaman",
     "expected": {
@@ -1107,7 +713,7 @@
     }
   },
   {
-    "id": "TC056",
+    "id": "TC036",
     "category": "medium",
     "input": "Lihat perangkat halaman kedua ukuran 10",
     "expected": {
@@ -1124,7 +730,7 @@
     }
   },
   {
-    "id": "TC057",
+    "id": "TC037",
     "category": "medium",
     "input": "Tampilkan daftar aturan otomatis yang sedang aktif saja",
     "expected": {
@@ -1140,7 +746,7 @@
     }
   },
   {
-    "id": "TC058",
+    "id": "TC038",
     "category": "medium",
     "input": "Nonaktifkan aturan otomatis dengan id 2",
     "expected": {
@@ -1157,7 +763,7 @@
     }
   },
   {
-    "id": "TC059",
+    "id": "TC039",
     "category": "medium",
     "input": "Aktifkan kembali aturan otomatis id 1",
     "expected": {
@@ -1174,7 +780,7 @@
     }
   },
   {
-    "id": "TC060",
+    "id": "TC040",
     "category": "medium",
     "input": "Hapus aturan otomatis dengan id 4",
     "expected": {
@@ -1190,7 +796,7 @@
     }
   },
   {
-    "id": "TC061",
+    "id": "TC041",
     "category": "complex",
     "input": "Nyalakan lampu ruang tamu jika suhu ruang tamu di atas 30 derajat",
     "expected": {
@@ -1243,7 +849,7 @@
     }
   },
   {
-    "id": "TC062",
+    "id": "TC042",
     "category": "complex",
     "input": "Matikan lampu ruang tamu kalau suhu ruang tamu turun di bawah 20 derajat",
     "expected": {
@@ -1296,7 +902,7 @@
     }
   },
   {
-    "id": "TC063",
+    "id": "TC043",
     "category": "complex",
     "input": "Nyalakan kipas jika suhu ruangan di atas 30 derajat",
     "notes": "Skenario canonical brief — trigger Suhu ruangan, action Kipas.",
@@ -1350,7 +956,7 @@
     }
   },
   {
-    "id": "TC064",
+    "id": "TC044",
     "category": "complex",
     "input": "Jika suhu ruang tamu lebih dari 32 derajat, matikan lampu ruang tamu",
     "expected": {
@@ -1403,7 +1009,7 @@
     }
   },
   {
-    "id": "TC065",
+    "id": "TC045",
     "category": "complex",
     "input": "Nyalakan lampu ruang tamu otomatis kalau suhu ruang tamu minimal 29 derajat",
     "expected": {
@@ -1456,7 +1062,7 @@
     }
   },
   {
-    "id": "TC066",
+    "id": "TC046",
     "category": "complex",
     "input": "Matikan kipas jika suhu ruangan turun di bawah 25 derajat",
     "expected": {
@@ -1509,7 +1115,7 @@
     }
   },
   {
-    "id": "TC067",
+    "id": "TC047",
     "category": "complex",
     "input": "Buat aturan: matikan lampu ruang tamu jika suhu ruang tamu tepat 25 derajat",
     "expected": {
@@ -1562,7 +1168,7 @@
     }
   },
   {
-    "id": "TC068",
+    "id": "TC048",
     "category": "complex",
     "input": "Nyalakan lampu ruang tamu jika suhu ruang tamu di atas 27 derajat dengan cooldown 10 menit",
     "expected": {
@@ -1616,7 +1222,7 @@
     }
   },
   {
-    "id": "TC069",
+    "id": "TC049",
     "category": "complex",
     "input": "Nyalakan kipas sekarang dan buat aturan matikan otomatis jika suhu ruangan di bawah 25 derajat",
     "expected": {
@@ -1676,7 +1282,7 @@
     }
   },
   {
-    "id": "TC070",
+    "id": "TC050",
     "category": "complex",
     "input": "Nyalakan kipas jika suhu ruangan di atas 30 derajat dengan cooldown 5 menit",
     "expected": {
@@ -1730,7 +1336,7 @@
     }
   },
   {
-    "id": "TC071",
+    "id": "TC051",
     "category": "complex",
     "input": "Nyalakan lampu ruang tamu sekarang dan jadwalkan mati jam 06:00 setiap hari",
     "expected": {
@@ -1767,7 +1373,7 @@
     }
   },
   {
-    "id": "TC072",
+    "id": "TC052",
     "category": "complex",
     "input": "Matikan lampu ruang tamu sekarang dan jadwalkan nyala lagi besok jam 07:00",
     "expected": {
@@ -1804,7 +1410,7 @@
     }
   },
   {
-    "id": "TC073",
+    "id": "TC053",
     "category": "complex",
     "input": "Berikan suhu ruangan dan status kipas sekarang",
     "expected": {
@@ -1826,7 +1432,7 @@
     }
   },
   {
-    "id": "TC074",
+    "id": "TC054",
     "category": "complex",
     "input": "Cek status lampu ruang tamu dan suhu ruang tamu saat ini",
     "expected": {
@@ -1848,7 +1454,7 @@
     }
   },
   {
-    "id": "TC075",
+    "id": "TC055",
     "category": "complex",
     "input": "Nyalakan lampu ruang tamu setiap hari jam 18:00 dan matikan setiap hari jam 06:00",
     "expected": {
@@ -1896,7 +1502,7 @@
     }
   },
   {
-    "id": "TC076",
+    "id": "TC056",
     "category": "complex",
     "input": "Tampilkan daftar perangkat dan daftar aturan otomatis yang aktif",
     "expected": {
@@ -1916,7 +1522,7 @@
     }
   },
   {
-    "id": "TC077",
+    "id": "TC057",
     "category": "complex",
     "input": "Nyalakan lampu ruang tamu dan catat suhu ruang tamu sekarang 29 derajat",
     "expected": {
@@ -1940,7 +1546,7 @@
     }
   },
   {
-    "id": "TC078",
+    "id": "TC058",
     "category": "complex",
     "input": "Jadwalkan nyalakan lampu ruang tamu jam 18:00 setiap hari dan buat aturan matikan otomatis jika suhu ruang tamu di atas 31 derajat",
     "expected": {
@@ -2013,7 +1619,7 @@
     }
   },
   {
-    "id": "TC079",
+    "id": "TC059",
     "category": "complex",
     "input": "Tampilkan 10 riwayat suhu ruang tamu terakhir dan status lampu ruang tamu",
     "expected": {
@@ -2035,7 +1641,7 @@
     }
   },
   {
-    "id": "TC080",
+    "id": "TC060",
     "category": "complex",
     "input": "Matikan lampu ruang tamu sekarang, lalu jadwalkan nyala lagi setiap hari jam 06:30",
     "expected": {
@@ -2072,7 +1678,7 @@
     }
   },
   {
-    "id": "TC081",
+    "id": "TC061",
     "category": "ambiguous",
     "input": "Nyalakan lampunya",
     "notes": "Tidak menyebut nama device yang persis terdaftar (bukan 'Lampu ruang tamu' persis) sehingga berpotensi salah sasaran.",
@@ -2081,7 +1687,7 @@
     }
   },
   {
-    "id": "TC082",
+    "id": "TC062",
     "category": "ambiguous",
     "input": "Matikan aja ya",
     "notes": "Tidak menyebut perangkat sama sekali.",
@@ -2090,7 +1696,7 @@
     }
   },
   {
-    "id": "TC083",
+    "id": "TC063",
     "category": "ambiguous",
     "input": "Aktifkan otomatisasi kalau suhunya panas",
     "notes": "Tidak ada device, metric, atau ambang batas numerik yang jelas untuk membentuk rule.",
@@ -2099,7 +1705,7 @@
     }
   },
   {
-    "id": "TC084",
+    "id": "TC064",
     "category": "ambiguous",
     "input": "Jadwalkan nanti sore ya",
     "notes": "Tidak ada device, aksi, maupun jam yang pasti.",
@@ -2108,7 +1714,7 @@
     }
   },
   {
-    "id": "TC085",
+    "id": "TC065",
     "category": "ambiguous",
     "input": "Cek suhunya dong",
     "notes": "Tidak jelas sensor suhu yang dimaksud (ruang tamu atau lainnya).",
@@ -2117,7 +1723,7 @@
     }
   },
   {
-    "id": "TC086",
+    "id": "TC066",
     "category": "ambiguous",
     "input": "Nyalakan aja kalau sempat",
     "notes": "Tidak menyebut perangkat sama sekali.",
@@ -2126,7 +1732,7 @@
     }
   },
   {
-    "id": "TC087",
+    "id": "TC067",
     "category": "ambiguous",
     "input": "Matikan itu juga",
     "notes": "Rujukan kata ganti tanpa histori percakapan (sessionId baru/kosong pada setiap repetisi evaluasi).",
@@ -2135,7 +1741,7 @@
     }
   },
   {
-    "id": "TC088",
+    "id": "TC068",
     "category": "ambiguous",
     "input": "Set jadwal otomatis untuk malam hari",
     "notes": "Tidak ada device, aksi, maupun jam pasti — 'malam hari' bukan waktu spesifik.",
@@ -2144,7 +1750,7 @@
     }
   },
   {
-    "id": "TC089",
+    "id": "TC069",
     "category": "ambiguous",
     "input": "Naikkan sedikit suhunya",
     "notes": "Tidak ada tool untuk mengatur suhu secara analog/bertahap; tidak jelas perangkat maupun aksi apa yang dimaksud.",
@@ -2153,7 +1759,7 @@
     }
   },
   {
-    "id": "TC090",
+    "id": "TC070",
     "category": "ambiguous",
     "input": "Aktifkan mode hemat energi",
     "notes": "Bukan kapabilitas yang dikenal sistem (bukan device, schedule, atau rule spesifik).",
@@ -2162,7 +1768,97 @@
     }
   },
   {
-    "id": "TC091",
+    "id": "TC071",
+    "category": "ambiguous",
+    "input": "Matikan yang tadi nyala",
+    "notes": "Rujukan kata ganti tanpa histori percakapan (sessionId baru/kosong pada setiap repetisi evaluasi).",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC072",
+    "category": "ambiguous",
+    "input": "Tolong nyalakan sekarang",
+    "notes": "Tidak menyebut perangkat sama sekali.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC073",
+    "category": "ambiguous",
+    "input": "Ubah suhu jadi lebih dingin",
+    "notes": "Tidak ada tool untuk mengatur suhu secara analog; tidak jelas perangkat maupun aksi yang dimaksud.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC074",
+    "category": "ambiguous",
+    "input": "Jadwalkan kipas nanti",
+    "notes": "Device disebut tapi tidak ada state (on/off) maupun jam yang pasti.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC075",
+    "category": "ambiguous",
+    "input": "Buat aturan otomatis untuk kipas",
+    "notes": "Device disebut tapi tidak ada trigger, metric, maupun ambang batas untuk membentuk rule.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC076",
+    "category": "ambiguous",
+    "input": "Matikan semuanya",
+    "notes": "Tidak ada tool untuk operasi massal; tidak jelas device mana yang dimaksud.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC077",
+    "category": "ambiguous",
+    "input": "Nyalakan yang di ruang tamu",
+    "notes": "Ambigu sungguhan: Lampu ruang tamu, Kipas (\"Kipas ruang tamu\"), dan Suhu ruangan sama-sama berlokasi ruang tamu.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC078",
+    "category": "ambiguous",
+    "input": "Ganti status perangkat itu",
+    "notes": "Rujukan kata ganti (\"itu\") tanpa histori percakapan maupun nama device eksplisit.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC079",
+    "category": "ambiguous",
+    "input": "Setel waktu otomatis untuk lampu",
+    "notes": "Device disebut tapi tidak ada state maupun jam yang pasti untuk membentuk jadwal.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC080",
+    "category": "ambiguous",
+    "input": "Bantu urus perangkat rumah saya",
+    "notes": "Tidak ada device, aksi, maupun intent yang bisa dipetakan ke tool apa pun.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC081",
     "category": "invalid",
     "input": "Nyalakan televisi ruang tamu",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -2171,7 +1867,7 @@
     }
   },
   {
-    "id": "TC092",
+    "id": "TC082",
     "category": "invalid",
     "input": "Matikan AC kamar mandi",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -2180,7 +1876,7 @@
     }
   },
   {
-    "id": "TC093",
+    "id": "TC083",
     "category": "invalid",
     "input": "Nyalakan kulkas dapur",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -2189,7 +1885,7 @@
     }
   },
   {
-    "id": "TC094",
+    "id": "TC084",
     "category": "invalid",
     "input": "Hidupkan pemanas air",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -2198,7 +1894,7 @@
     }
   },
   {
-    "id": "TC095",
+    "id": "TC085",
     "category": "invalid",
     "input": "Nyalakan AC kamar tidur",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -2207,7 +1903,7 @@
     }
   },
   {
-    "id": "TC096",
+    "id": "TC086",
     "category": "invalid",
     "input": "Matikan pemanas ruangan",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -2216,7 +1912,7 @@
     }
   },
   {
-    "id": "TC097",
+    "id": "TC087",
     "category": "invalid",
     "input": "Hapus jadwal jam 18:00 untuk lampu ruang tamu",
     "notes": "Tidak ada tool delete_schedule pada implementasi saat ini (gap Tabel 3.8 — lihat evaluation/README.md).",
@@ -2225,7 +1921,7 @@
     }
   },
   {
-    "id": "TC098",
+    "id": "TC088",
     "category": "invalid",
     "input": "Ubah aturan otomatis id 1 supaya threshold jadi 35 derajat",
     "notes": "Tidak ada tool update_dynamic_rule pada implementasi saat ini (gap Tabel 3.8 — lihat evaluation/README.md); yang tersedia hanya create/list/get/set_active/delete.",
@@ -2234,7 +1930,7 @@
     }
   },
   {
-    "id": "TC099",
+    "id": "TC089",
     "category": "invalid",
     "input": "Nyalakan speaker ruang keluarga",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -2243,10 +1939,100 @@
     }
   },
   {
-    "id": "TC100",
+    "id": "TC090",
     "category": "invalid",
     "input": "Matikan kamera CCTV garasi",
     "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC091",
+    "category": "invalid",
+    "input": "Nyalakan mesin cuci",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC092",
+    "category": "invalid",
+    "input": "Matikan router wifi",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC093",
+    "category": "invalid",
+    "input": "Aktifkan alarm keamanan rumah",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC094",
+    "category": "invalid",
+    "input": "Nyalakan proyektor ruang rapat",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC095",
+    "category": "invalid",
+    "input": "Kunci pintu depan otomatis",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC096",
+    "category": "invalid",
+    "input": "Nyalakan lampu taman",
+    "notes": "Perangkat tidak terdaftar di database (berbeda dari \"Lampu ruang tamu\").",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC097",
+    "category": "invalid",
+    "input": "Matikan semua perangkat sekaligus",
+    "notes": "Tidak ada tool untuk operasi massal/bulk pada implementasi saat ini.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC098",
+    "category": "invalid",
+    "input": "Hapus semua log kipas",
+    "notes": "Tidak ada tool delete_log pada implementasi saat ini.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC099",
+    "category": "invalid",
+    "input": "Ubah nama device kipas menjadi Kipas Kamar",
+    "notes": "Tidak ada tool untuk rename/update metadata device pada implementasi saat ini.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  },
+  {
+    "id": "TC100",
+    "category": "invalid",
+    "input": "Setel suhu AC ke 22 derajat",
+    "notes": "Perangkat tidak terdaftar (AC) dan tidak ada tool untuk kontrol suhu analog.",
     "expected": {
       "behavior": "reject_or_no_tool"
     }

@@ -18,7 +18,7 @@ Kegagalan MQTT/ESP32 **tidak pernah** dihitung sebagai kesalahan model — BAB 4
 
 ## 2. Struktur dataset
 
-### `dataset.json` (BAB 4.3, 100 kasus — 35 sederhana / 25 menengah / 20 kompleks / 10 ambigu / 10 tidak valid)
+### `dataset.json` (BAB 4.3, 100 kasus — 20 sederhana / 20 menengah / 20 kompleks / 20 ambigu / 20 tidak valid)
 
 Satu file JSON array, pretty-printed (2-space indent) supaya gampang dibaca/diedit langsung — **bukan** JSON Lines. Contoh satu entri:
 

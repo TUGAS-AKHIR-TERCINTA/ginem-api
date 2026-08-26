@@ -19,7 +19,7 @@ describe('dataset.json', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it('matches the agreed category distribution (35/25/20/10/10)', () => {
+  it('matches the agreed category distribution (20/20/20/20/20)', () => {
     const cases = loadDataset()
     const counts = cases.reduce<Record<DatasetCategory, number>>(
       (acc, c) => {
@@ -30,11 +30,11 @@ describe('dataset.json', () => {
     )
 
     expect(counts).toEqual({
-      simple: 35,
-      medium: 25,
+      simple: 20,
+      medium: 20,
       complex: 20,
-      ambiguous: 10,
-      invalid: 10
+      ambiguous: 20,
+      invalid: 20
     })
     expect(cases).toHaveLength(100)
   })
