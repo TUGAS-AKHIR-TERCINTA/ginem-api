@@ -1,26 +1,26 @@
 # Evaluation Module
 
-Alat bantu pengambilan data BAB IV untuk skripsi *"Rancang Bangun dan Implementasi AI Agent Berbasis LLM untuk Kontrol dan Monitoring Perangkat IoT Menggunakan Natural Language"*. Modul ini **tidak menduplikasi** logic produksi — ia memanggil `ChatService`/`LLMService`/tool asli di `src/services/**` secara langsung (in-process untuk BAB 4.3, lewat HTTP untuk BAB 4.2), sehingga yang diuji adalah sistem yang benar-benar dipakai pengguna, bukan tiruannya.
+Data-collection tool for BAB IV of the thesis *"Rancang Bangun dan Implementasi AI Agent Berbasis LLM untuk Kontrol dan Monitoring Perangkat IoT Menggunakan Natural Language"*. This module **does not duplicate** production logic — it calls the real `ChatService`/`LLMService`/tools in `src/services/**` directly (in-process for BAB 4.3, over HTTP for BAB 4.2), so what's being tested is the system users actually use, not a reimplementation of it.
 
-## 1. Tujuan
+## 1. Purpose
 
-Dua jenis pengujian yang **sengaja dipisah** (lihat poin 34 metodologi):
+Two kinds of testing that are **deliberately kept separate** (see methodology point 34):
 
 | | BAB 4.2 — Functional & End-to-End | BAB 4.3/4.4 — LLM Evaluation |
 |---|---|---|
-| Yang diuji | Sistem penuh: AI Agent → tool → backend → MQTT → ESP32 → ACK | Kualitas keputusan LLM: pemilihan tool, parameter, struktur output |
-| Perangkat fisik | Ya, wajib (ESP32 + DHT11 + relay nyata) | Tidak — MQTT publish & DB write di-*dry-run* |
+| What's tested | The full system: AI Agent → tool → backend → MQTT → ESP32 → ACK | Quality of the LLM's decisions: tool selection, parameters, output structure |
+| Physical hardware | Yes, required (real ESP32 + DHT11 + relay) | No — MQTT publish & DB writes are *dry-run* |
 | Runner | `evaluation/runner/functionalRunner.ts` | `evaluation/runner/llmEvalRunner.ts` |
-| Dataset | `evaluation/datasets/functional-dataset.jsonl` (8 skenario) | `evaluation/datasets/dataset.json` (100 kasus) |
+| Dataset | `evaluation/datasets/functional-dataset.jsonl` (8 scenarios) | `evaluation/datasets/dataset.json` (100 cases) |
 | CLI | `npm run evaluate -- --mode functional` | `npm run evaluate -- --mode llm-eval` (default) |
 
-Kegagalan MQTT/ESP32 **tidak pernah** dihitung sebagai kesalahan model — BAB 4.3 tidak menyentuh MQTT sama sekali (lihat §9 "Dry-run" di bawah).
+MQTT/ESP32 failures are **never** counted as a model error — BAB 4.3 never touches MQTT at all (see §9 "Dry-run" below).
 
-## 2. Struktur dataset
+## 2. Dataset structure
 
-### `dataset.json` (BAB 4.3, 100 kasus — 20 sederhana / 20 menengah / 20 kompleks / 20 ambigu / 20 tidak valid)
+### `dataset.json` (BAB 4.3, 100 cases — 20 simple / 20 medium / 20 complex / 20 ambiguous / 20 invalid)
 
-Satu file JSON array, pretty-printed (2-space indent) supaya gampang dibaca/diedit langsung — **bukan** JSON Lines. Contoh satu entri:
+A single pretty-printed JSON array (2-space indent) so it's easy to read/edit directly — **not** JSON Lines. Example entry:
 
 ```json
 {
@@ -40,59 +40,102 @@ Satu file JSON array, pretty-printed (2-space indent) supaya gampang dibaca/died
 ```
 
 - `expected.behavior`: `tool_call` | `clarification` | `reject_or_no_tool`.
-- `expected.toolCalls`: array (bisa >1 untuk kasus kompleks, mis. TC075 nyalakan+jadwalkan-mati).
-- `expected.schedule` / `expected.rule`: representasi terstruktur tambahan untuk `scheduleComparator`/`ruleComparator` (Ketepatan Jadwal / Ketepatan Dynamic Rule di Tabel 4.4).
-- Skema penuh + validasi: `evaluation/datasets/dataset.schema.ts` (Zod, fungsi `parseDatasetFile`). Seluruh array divalidasi otomatis oleh `evaluation/__tests__/dataset.test.ts`.
-- **Nama device di dataset mengikuti persis `resources/seeders/2_deviceSeeder.js`**: `Lampu ruang tamu` (actuator), `Suhu ruangan` (sensor), `Kipas` (actuator) — hanya 3 device, sama persis (termasuk huruf besar/kecil) dengan yang dipakai `functional-dataset.jsonl` di bawah, karena `DeviceService.findByName` exact-match. Kalau Anda ubah lagi nama/isi seeder, `dataset.json` harus disesuaikan ulang juga.
+- `expected.toolCalls`: array (can be >1 for complex cases, e.g. TC075 turn-on + schedule-off).
+- `expected.schedule` / `expected.rule`: additional structured representation for `scheduleComparator`/`ruleComparator` (Schedule Accuracy / Dynamic Rule Accuracy in Table 4.4).
+- Full schema + validation: `evaluation/datasets/dataset.schema.ts` (Zod, `parseDatasetFile` function). The whole array is auto-validated by `evaluation/__tests__/dataset.test.ts`.
+- **Device names in the dataset follow `resources/seeders/2_deviceSeeder.js` exactly**: `Lampu ruang tamu` (actuator), `Suhu ruangan` (sensor), `Kipas` (actuator) — only 3 devices, matching exactly (including capitalization) what `functional-dataset.jsonl` below uses, because `DeviceService.findByName` is an exact match. If you change the seeder's names/contents again, `dataset.json` needs to be updated accordingly.
 
-### `functional-dataset.jsonl` (BAB 4.2, 8 kasus — persis Tabel 4.1)
+### `functional-dataset.jsonl` (BAB 4.2, 8 cases — matches Table 4.1 exactly)
 
-Tetap format JSON Lines (satu baris = satu kasus) karena hanya 8 baris pendek — sudah cukup mudah dibaca apa adanya, tidak perlu diubah seperti `dataset.json`. Kalimat perintah dan urutan skenarionya sudah disamakan persis dengan Tabel 4.1 (`Nyalakan lampu ruang tamu`, `Nyalakan kipas jika suhu di atas 30 °C`, dst). Field tambahan: `deviceName` (untuk polling ACK), `expectedFinalState` (`"1"`/`"0"`), `expectExecution`.
+Kept as JSON Lines (one line = one case) since it's only 8 short lines — already easy enough to read as-is, no need to convert it like `dataset.json`. Command phrasing and scenario order have been matched exactly to Table 4.1 (`Nyalakan lampu ruang tamu`, `Nyalakan kipas jika suhu di atas 30 °C`, etc.). Extra fields: `deviceName` (for ACK polling), `expectedFinalState` (`"1"`/`"0"`), `expectExecution`.
 
-Device yang dipakai — `Lampu ruang tamu`, `Suhu ruangan`, `Kipas` — **sama persis** dengan `dataset.json`/BAB 4.3 dan dengan `resources/seeders/2_deviceSeeder.js` Anda saat ini. Kalau nama device asli Anda berbeda (mis. seeder diedit lagi), perbarui `deviceName`/`input` di kedua file dataset agar tetap cocok persis dengan DB target.
+The devices used — `Lampu ruang tamu`, `Suhu ruangan`, `Kipas` — are **exactly the same** as `dataset.json`/BAB 4.3 and your current `resources/seeders/2_deviceSeeder.js`. If your real device names differ (e.g. the seeder gets edited again), update `deviceName`/`input` in both dataset files so they still match the target DB exactly.
 
-## 3. Cara menjalankan
+## 3. How to run
+
+All commands are run from the repo root via `npm run evaluate --`. The `--` separator is **required**
+— without it, flags like `--model` get swallowed by `npm` itself instead of being passed to the CLI.
+
+### 3.1 Available flags
+
+Source: `evaluation/cli/args.ts`.
+
+| Flag | Value | Default | Notes |
+|---|---|---|---|
+| `--mode` | `llm-eval` \| `functional` \| `report` | `llm-eval` | `llm-eval` = BAB 4.3 (dry-run, no hardware). `functional` = BAB 4.2 (needs a real ESP32 online, see §12 "Test Environment"). `report` = regenerate CSV/summary from an existing run without calling the LLM/API again. |
+| `--model` | `all` or a comma-separated list of keys | `all` | Valid model keys: `openai:gpt-5.6-terra`, `anthropic:claude-sonnet-5`, `deepseek:deepseek-v4-flash` (see `evaluation/config/models.config.ts`). |
+| `--dataset` | file path | `./evaluation/datasets/dataset.json` (from `EVAL_DATASET_PATH`) | Swap the dataset in use, e.g. `evaluation/datasets/10_dataset.json` for a quick check before running the full 100-case dataset. |
+| `--repetitions` | integer ≥ 1 | 3 (from `EVAL_REPETITIONS`) | How many times each case is repeated per model, to compute average metrics (methodology point 27). |
+| `--category` | comma-separated category list | all categories | Valid values: `simple`, `medium`, `complex`, `ambiguous`, `invalid`. Can be combined, e.g. `--category simple,ambiguous`. |
+| `--output` | folder path | `evaluation/results/run-<timestamp>` | Custom output folder for the run's results. |
+| `--resume` | `<runId>` | — | Continue a run that was interrupted (skips cases already completed), or, combined with `--mode report`, regenerate the report from that run without re-running it. |
+| `--concurrency` | integer ≥ 1 | 2 (from `EVAL_CONCURRENCY`) | Number of parallel requests to the model API. |
+| `--max-retries` | integer ≥ 0 | 2 (from `EVAL_MAX_RETRIES`) | Automatic retries on API error/timeout. |
+| `--dry-run` | — | — | Accepted for compatibility, **does nothing** — `llm-eval` is always dry-run and `functional` is always real by design (see §9). |
+
+### 3.2 Ready-to-use commands
 
 ```bash
-npm run evaluate                                    # llm-eval, semua model, 3 repetisi, seluruh dataset
-npm run evaluate -- --model all --repetitions 3
-npm run evaluate -- --model openai:gpt-5.6-terra --category simple,ambiguous
-npm run evaluate -- --mode functional               # BAB 4.2, butuh ESP32 nyata online
-npm run evaluate -- --mode report --resume run-2026-08-19-1200   # regenerate CSV/summary tanpa run ulang
-```
+# Quick check with 10 cases (all categories represented) before running the full 100, 1 repetition
+EVAL_DATASET_PATH=./evaluation/datasets/10_dataset.json npm run evaluate -- --model all --repetitions 1
 
-Opsi CLI (`evaluation/cli/args.ts`): `--mode llm-eval|functional|report`, `--model all|<key1,key2,...>`, `--dataset <path>`, `--repetitions <n>`, `--category <cat1,cat2,...>`, `--output <dir>`, `--resume <runId>`, `--concurrency <n>`, `--max-retries <n>`, `--dry-run` (diterima untuk kompatibilitas, tidak melakukan apa-apa — lihat §9).
+# Full BAB 4.3: 100 cases x 3 models x 3 repetitions (project default, most complete for Tables 4.3-4.9)
+npm run evaluate
+
+# Same as above but explicit
+npm run evaluate -- --model all --repetitions 3
+
+# BAB 4.3 for a single model only
+npm run evaluate -- --model openai:gpt-5.6-terra --repetitions 3
+npm run evaluate -- --model anthropic:claude-sonnet-5 --repetitions 3
+npm run evaluate -- --model deepseek:deepseek-v4-flash --repetitions 3
+
+# BAB 4.3 for specific categories only (e.g. focus on hard cases first)
+npm run evaluate -- --model all --category complex,ambiguous,invalid
+
+# BAB 4.2: functional/E2E testing — REQUIRES an online ESP32, never dry-run
+npm run evaluate -- --mode functional
+
+# Resume a run that was interrupted mid-way (skips cases already recorded)
+npm run evaluate -- --resume run-2026-08-21-0003
+
+# Regenerate CSV/summary from an old run without calling the API again
+npm run evaluate -- --mode report --resume run-2026-08-19-1200
+
+# Custom: different dataset, custom output folder, lower concurrency (to save on rate limits)
+npm run evaluate -- --dataset evaluation/datasets/10_dataset.json --output evaluation/results/uji-coba --concurrency 1
+```
 
 ## 4. Environment variables
 
-Lihat blok `# Evaluation runner` di `.env.example`. Yang **wajib** diisi sebelum run sungguhan:
+See the `# Evaluation runner` block in `.env.example`. **Required** before a real run:
 
-| Var | Untuk | Catatan |
+| Var | For | Notes |
 |---|---|---|
-| `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `DEEPSEEK_API_KEY` | llm-eval | Sudah ada di `.env.example`; `ANTHROPIC_API_KEY` baru ditambahkan modul ini (§8). |
-| `EVAL_OPENAI_MODEL`, `EVAL_ANTHROPIC_MODEL`, `EVAL_DEEPSEEK_MODEL` | llm-eval | **Isi dengan model id resmi dari akun API Anda** — default di `models.config.ts` (`gpt-5.6-terra`, `claude-sonnet-5`, `deepseek-v4-flash`) adalah tebakan terbaik dari nama di Tabel 3.10, BUKAN string API yang sudah diverifikasi. |
-| `EVAL_API_EMAIL`, `EVAL_API_PASSWORD` | functional | Akun login yang sudah terdaftar di sistem (dipakai untuk `POST /api/v1/auth/login`). |
-| `EVAL_API_BASE_URL` | functional | Default `http://localhost:8000`. |
-| `DB_*`, `REDIS_*` | keduanya | **Sangat disarankan pakai database terpisah/disposable untuk evaluasi** — lihat §9, `RuleManagementService` tetap menulis ke DB sungguhan saat llm-eval. |
-| `EVAL_REPETITIONS`, `EVAL_CONCURRENCY`, `EVAL_MAX_RETRIES`, `EVAL_RETRY_BASE_DELAY_MS` | llm-eval | Default 3 / 2 / 2 / 1000ms — konservatif terhadap rate limit provider (poin 27). |
-| `EVAL_MQTT_ACK_TIMEOUT_MS`, `EVAL_MQTT_ACK_POLL_INTERVAL_MS` | functional | Default 10000ms / 500ms. |
-| `EVAL_USD_TO_IDR` | reporting | Opsional, konversi manual saat menulis laporan — semua angka mentah tetap USD. |
+| `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `DEEPSEEK_API_KEY` | llm-eval | Already in `.env.example`; `ANTHROPIC_API_KEY` was newly added by this module (§8). |
+| `EVAL_OPENAI_MODEL`, `EVAL_ANTHROPIC_MODEL`, `EVAL_DEEPSEEK_MODEL` | llm-eval | **Fill in with the official model id from your API account** — the defaults in `models.config.ts` (`gpt-5.6-terra`, `claude-sonnet-5`, `deepseek-v4-flash`) are best-guesses from the names in Table 3.10, NOT verified API strings. |
+| `EVAL_API_EMAIL`, `EVAL_API_PASSWORD` | functional | An account already registered in the system (used for `POST /api/v1/auth/login`). |
+| `EVAL_API_BASE_URL` | functional | Defaults to `http://localhost:8000`. |
+| `DB_*`, `REDIS_*` | both | **Strongly recommended to use a separate/disposable database for evaluation** — see §9, `RuleManagementService` still writes to the real DB during llm-eval. |
+| `EVAL_REPETITIONS`, `EVAL_CONCURRENCY`, `EVAL_MAX_RETRIES`, `EVAL_RETRY_BASE_DELAY_MS` | llm-eval | Defaults 3 / 2 / 2 / 1000ms — conservative against provider rate limits (point 27). |
+| `EVAL_MQTT_ACK_TIMEOUT_MS`, `EVAL_MQTT_ACK_POLL_INTERVAL_MS` | functional | Defaults 10000ms / 500ms. |
+| `EVAL_USD_TO_IDR` | reporting | Optional, manual conversion when writing reports — all raw figures stay in USD. |
 
 ## 5. Model configuration
 
-`evaluation/config/models.config.ts` — persis Tabel 3.10 (`temperature=0.2`, `maxTokens=1024`, tanpa fine-tuning, integrasi API). `evaluation/config/pricing.json` — persis Tabel 3.13 (tanggal acuan 2 Agustus 2026); **update file ini sebelum run final** kalau tarif provider berubah, jangan hardcode di logic perhitungan (poin 18).
+`evaluation/config/models.config.ts` — matches Table 3.10 exactly (`temperature=0.2`, `maxTokens=1024`, no fine-tuning, API integration). `evaluation/config/pricing.json` — matches Table 3.13 exactly (reference date August 2, 2026); **update this file before the final run** if provider rates change, don't hardcode them in the calculation logic (point 18).
 
 ## 6. Output
 
 ```
 evaluation/results/run-YYYY-MM-DD-HHmm/
-  config.json                        # snapshot konfigurasi run ini
-  raw-results.jsonl                  # 1 baris = 1 (dataset x model x repetisi), ditulis incremental
-  errors.jsonl                       # subset raw-results yang gagal transport (retry habis)
-  summary.json                       # aggregate per model + per (model x kompleksitas)
+  config.json                        # snapshot of this run's configuration
+  raw-results.jsonl                  # 1 line = 1 (dataset x model x repetition), written incrementally
+  errors.jsonl                       # subset of raw-results that failed transport (retries exhausted)
+  summary.json                       # aggregates per model + per (model x complexity)
   tool-accuracy.csv, parameter-accuracy.csv, latency.csv,
-  token-cost.csv, complexity.csv, error-distribution.csv   # data mentah utk analisis ulang (poin 23)
-  tabel-4.3-ketepatan-tool.csv       # siap tempel ke BAB IV (poin 24), kolom sama persis
+  token-cost.csv, complexity.csv, error-distribution.csv   # raw data for re-analysis (point 23)
+  tabel-4.3-ketepatan-tool.csv       # ready to paste into BAB IV (point 24), exact same columns
   tabel-4.4-parameter-struktur.csv
   tabel-4.5-latensi.csv
   tabel-4.6-latensi-kompleksitas.csv
@@ -101,71 +144,71 @@ evaluation/results/run-YYYY-MM-DD-HHmm/
   tabel-4.9-distribusi-kesalahan.csv
 ```
 
-BAB 4.2 (`--mode functional`) menulis `functional-results.jsonl` di direktori run yang sama (tidak menghasilkan tabel BAB IV otomatis karena hanya 8 kasus — lihat Tabel 3.11-style ringkasan manual dari file ini).
+BAB 4.2 (`--mode functional`) writes `functional-results.jsonl` in the same run directory (no automatic BAB IV table since there are only 8 cases — see the Table 3.11-style manual summary from this file).
 
-## 7. Cara resume
+## 7. How to resume
 
-`npm run evaluate -- --resume run-2026-08-19-1200 ...` (flag lain harus sama seperti run pertama — model/dataset/repetitions). Runner membaca `raw-results.jsonl` yang sudah ada dan **hanya melewati** record yang `errorType == null` (sukses) — record yang gagal setelah retry habis akan dicoba ulang, sesuai poin 26.
+`npm run evaluate -- --resume run-2026-08-19-1200 ...` (other flags must match the first run — model/dataset/repetitions). The runner reads the existing `raw-results.jsonl` and **only skips** records where `errorType == null` (successful) — records that failed after exhausting retries will be retried, per point 26.
 
-## 8. Perubahan pada kode produksi (additive, tidak mengubah default behavior)
+## 8. Changes to production code (additive, no change to default behavior)
 
-1. **`src/services/llm/LLM.service.ts`** — tambah `provider: 'anthropic'` (dependency `@langchain/anthropic`). Default tetap `'openai'`; jalur produksi (`ChatService.defaultAgent`, yang memanggil `LLMService.create()` tanpa argumen) tidak berubah sama sekali.
-2. **`src/services/chat/Chat.service.ts`** — `ChatQueryTrace` dapat field opsional `tokenUsage` (`inputTokens`/`outputTokens`/`totalTokens`), diekstrak dari `usage_metadata` LangChain. Hanya terisi saat `captureTrace: true` — flag yang sudah ada sebelumnya khusus untuk evaluasi/eksperimen, tidak pernah aktif di jalur HTTP produksi (`ChatMessageBroker` tidak meneruskan `trace` ke reply RPC).
+1. **`src/services/llm/LLM.service.ts`** — added `provider: 'anthropic'` (dependency `@langchain/anthropic`). The default stays `'openai'`; the production path (`ChatService.defaultAgent`, which calls `LLMService.create()` with no arguments) is completely unchanged.
+2. **`src/services/chat/Chat.service.ts`** — `ChatQueryTrace` gained an optional `tokenUsage` field (`inputTokens`/`outputTokens`/`totalTokens`), extracted from LangChain's `usage_metadata`. Only populated when `captureTrace: true` — a flag that already existed specifically for evaluation/experimentation, never active on the production HTTP path (`ChatMessageBroker` doesn't forward `trace` to the RPC reply).
 
-Tidak ada tabel/migration MySQL baru — seluruh output evaluasi adalah file (poin 23).
+No new MySQL tables/migrations — all evaluation output is file-based (point 23).
 
-## 9. Dry-run (BAB 4.3) — apa yang di-*mock*, apa yang tetap nyata
+## 9. Dry-run (BAB 4.3) — what's mocked, what stays real
 
-`evaluation/agent/dryRunGuard.ts` menukar **hanya** fungsi bersisi-efek-samping dengan versi in-memory, tanpa mengubah `src/services/mcp/tools/**`:
+`evaluation/agent/dryRunGuard.ts` swaps out **only** the functions with side effects for in-memory versions, without touching `src/services/mcp/tools/**`:
 
-| Fungsi asli | Diintersep? | Alasan |
+| Original function | Intercepted? | Reason |
 |---|---|---|
-| `MQTTService.publishActuatorState` | Ya | Satu-satunya titik yang benar-benar mengirim command ke device fisik. |
-| `DeviceLogService.create` | Ya | Mencegah polusi `device_logs` DAN mencegah state bocor antar repetisi (baca ulang oleh `get_last_log_by_device_name` di repetisi berikutnya). |
-| `scheduleActuatorState`/`scheduleActuatorStateRepeat`/`scheduleSensorData`/`scheduleSensorDataRepeat` (DeviceSchedule.service) | Ya | Menghindari tulis `scheduler_logs` + enqueue BullMQ/Redis sungguhan; mengembalikan objek job palsu yang bentuknya tetap valid. |
-| `DeviceService.findByName` (resolusi device) | **Tidak** | Ini justru bagian yang dievaluasi — apakah LLM menyebut nama device yang benar. |
-| Validasi Zod tiap tool | **Tidak** | Reused apa adanya dari `src/services/mcp/tools/**`. |
-| `RuleManagementService.create/setActive/remove` | **Tidak** | Baris rule tidak berefek fisik (baru aktif kalau ada telemetry MQTT asli, yang tidak pernah dikirim runner ini) dan meniru transaksi 4-tabelnya akan menduplikasi logic produksi. **Konsekuensi: jalankan evaluasi terhadap database terpisah/disposable**, bukan production DB. |
+| `MQTTService.publishActuatorState` | Yes | The single point that actually sends a command to the physical device. |
+| `DeviceLogService.create` | Yes | Prevents polluting `device_logs` AND prevents state leaking across repetitions (re-read by `get_last_log_by_device_name` in a later repetition). |
+| `scheduleActuatorState`/`scheduleActuatorStateRepeat`/`scheduleSensorData`/`scheduleSensorDataRepeat` (DeviceSchedule.service) | Yes | Avoids writing `scheduler_logs` + enqueueing real BullMQ/Redis jobs; returns a fake job object shaped exactly like the real one. |
+| `DeviceService.findByName` (device resolution) | **No** | This is precisely what's being evaluated — whether the LLM names the correct device. |
+| Each tool's Zod validation | **No** | Reused as-is from `src/services/mcp/tools/**`. |
+| `RuleManagementService.create/setActive/remove` | **No** | A rule row has no physical effect (it only activates once real MQTT telemetry arrives, which this runner never sends), and faking its 4-table transaction would duplicate production logic. **Consequence: run evaluation against a separate/disposable database**, not the production DB. |
 
-**Temuan penting (runtime, wajib dijaga)**: CLI dijalankan dengan **`ts-node --transpile-only`, bukan `tsx`**. `tsx` (esbuild) mengompilasi named export jadi *accessor property* read-only (`configurable:false`, tanpa setter) demi meniru live-binding ESM murni, sehingga `dryRunGuard.ts` gagal total saat runtime dengan error `Cannot set property ... which has only a getter` — walau lolos di bawah `ts-jest` (yang memakai transform `tsc` asli, hasilnya property biasa yang bisa ditimpa; ini sempat lolos semua unit test tapi baru ketahuan gagal saat sample run CLI sungguhan, sehingga verifikasi Tahap 5 ini penting). `--transpile-only` dipakai karena `ts-node` full-type-check bisa >60 detik hanya untuk boot (banyak modul produksi ter-import transitif) — transpile-only tetap menghasilkan bentuk CJS yang sama (property biasa, bisa ditimpa), hanya melewati proses type-check saat start. Jangan ganti `"evaluate"` script di `package.json` kembali ke `tsx` tanpa merombak ulang mekanisme dry-run, dan jangan hapus `--transpile-only` tanpa menerima boot time yang jauh lebih lambat.
+**Important finding (runtime, must be preserved)**: the CLI is run with **`ts-node --transpile-only`, not `tsx`**. `tsx` (esbuild) compiles named exports into read-only *accessor properties* (`configurable:false`, no setter) to mimic pure ESM live-bindings, so `dryRunGuard.ts` fails outright at runtime with `Cannot set property ... which has only a getter` — even though it passes under `ts-jest` (which uses the real `tsc` transform, producing plain overwritable properties; this passed every unit test but only surfaced as a runtime failure during an actual CLI sample run, which is why this Stage 5 verification matters). `--transpile-only` is used because a full-type-check `ts-node` boot can take >60 seconds (many production modules get imported transitively) — transpile-only still produces the same CJS shape (plain, overwritable properties), it just skips type-checking at startup. Don't switch the `"evaluate"` script in `package.json` back to `tsx` without reworking the dry-run mechanism, and don't drop `--transpile-only` without accepting a much slower boot time.
 
-`main()` di `evaluation/cli/evaluate.ts` memanggil `process.exit(0)` eksplisit setelah selesai — mengimpor `MQTTService`/BullMQ membuka koneksi nyata yang membuat Node tidak pernah keluar sendiri walau seluruh pekerjaan sudah selesai.
+`main()` in `evaluation/cli/evaluate.ts` calls `process.exit(0)` explicitly when done — importing `MQTTService`/BullMQ opens real connections that keep Node from exiting on its own even after all work is finished.
 
-**Temuan penting**: mengimpor `MQTTService` (lewat `src/services/mqtt/client.ts`) membuka koneksi MQTT sungguhan ke broker HiveMQ yang dikonfigurasi di `.env` **pada saat import**, bukan lazy. Ini berarti proses `npm run evaluate` (mode `llm-eval`) tetap membuka koneksi nyata ke broker Anda — **tidak pernah mengirim command** (karena `publishActuatorState` sudah diganti), tapi koneksinya sendiri tetap terbentuk. Test unit me-mock `src/services/mqtt/client` secara eksplisit supaya tidak menyentuh jaringan sama sekali.
+**Important finding**: importing `MQTTService` (via `src/services/mqtt/client.ts`) opens a real MQTT connection to the HiveMQ broker configured in `.env` **at import time**, not lazily. This means the `npm run evaluate` process (in `llm-eval` mode) still opens a real connection to your broker — **it never sends a command** (since `publishActuatorState` is already swapped out), but the connection itself is still established. Unit tests explicitly mock `src/services/mqtt/client` so they never touch the network at all.
 
-## 10. Definisi metrik & rumus (persis Bab III 3.11.3)
+## 10. Metric definitions & formulas (matching Bab III 3.11.3 exactly)
 
-| # | Rumus | Implementasi |
+| # | Formula | Implementation |
 |---|---|---|
-| 1 | `A_tool = N_tool_benar / N_pengujian × 100%` | `evaluation/metrics/toolComparator.ts` + `reporters/aggregate.ts` |
-| 2 | `A_parameter = N_parameter_benar / N_parameter_diuji × 100%` | `evaluation/metrics/parameterComparator.ts` — **dihitung per-key parameter**, bukan per-record, sesuai definisi "jumlah seluruh parameter" |
-| 3 | `L_LLM,i = t_respons,i − t_permintaan,i` | `runner/llmEvalRunner.ts`, `process.hrtime.bigint()` di sekitar `ChatService.query` |
+| 1 | `A_tool = N_tool_correct / N_tests × 100%` | `evaluation/metrics/toolComparator.ts` + `reporters/aggregate.ts` |
+| 2 | `A_parameter = N_parameter_correct / N_parameter_tested × 100%` | `evaluation/metrics/parameterComparator.ts` — **computed per parameter key**, not per record, per the "total number of parameters" definition |
+| 3 | `L_LLM,i = t_response,i − t_request,i` | `runner/llmEvalRunner.ts`, `process.hrtime.bigint()` around `ChatService.query` |
 | 4 | `L̄_LLM = Σ L_LLM,i / n` | `evaluation/metrics/latencyMetrics.ts` |
 | 5 | `T_total,i = T_input,i + T_output,i` | `evaluation/metrics/costCalculator.ts` |
-| 6 | `C_i = (T_input,i/1.000.000 × H_input) + (T_output,i/1.000.000 × H_output)` | `evaluation/metrics/costCalculator.ts`, tarif dari `config/pricing.json` |
+| 6 | `C_i = (T_input,i/1,000,000 × H_input) + (T_output,i/1,000,000 × H_output)` | `evaluation/metrics/costCalculator.ts`, rates from `config/pricing.json` |
 
-Metrik tambahan (poin 11–15 brief):
-- **Structure validity** (`structureValidator.ts`): divalidasi terhadap Zod schema **asli** tiap tool (`deviceTools[i].schema`), bukan re-implementasi.
-- **Schedule/Rule accuracy** (`scheduleComparator.ts`/`ruleComparator.ts`): perbandingan semantik (device/action/waktu/recurrence untuk jadwal; trigger/condition/action untuk rule), array `conditions`/`actions` dibandingkan tanpa peduli urutan.
-- **Normalisasi nilai** (`valueNormalizer.ts`): angka vs string-angka dianggap sama (`"30"` == `30`), whitespace dirapikan; nama device tetap *case-sensitive* (mengikuti `DeviceService.findByName` yang exact-match).
-- **Error classification** (`errorClassifier.ts`): `WRONG_TOOL | INVALID_OR_MISSING_PARAMETER | INVALID_STRUCTURE | FAILED_CLARIFICATION | UNNECESSARY_TOOL_CALL | OTHER`. Catatan pemetaan: brief menyebut "tool tidak dipanggil padahal seharusnya dipanggil" sebagai kasus terpisah dari "tool salah" — tidak ada bucket khusus di 5 kategori resmi, sehingga digabung ke `WRONG_TOOL` (tetap kegagalan pemilihan tool, hanya jenis omisi bukan substitusi). Satu record bisa punya >1 error (poin 15).
-- **Clarification/invalid detection**: `clarificationCorrect`/`invalidCommandHandledCorrect` murni dari **ada/tidaknya tool call** (bukti langsung dari trace, akurat 100%). `clarificationRequested` (field terpisah, bukan penentu kebenaran) adalah **heuristik kata kunci** (`?`, "yang mana", "maksud anda", dst. — lihat `llmEvalRunner.ts`) untuk membedakan reply berupa pertanyaan klarifikasi vs pernyataan biasa; jangan dipakai sebagai ukuran akurasi tanpa spot-check manual.
+Additional metrics (brief points 11–15):
+- **Structure validity** (`structureValidator.ts`): validated against each tool's **actual** Zod schema (`deviceTools[i].schema`), not a re-implementation.
+- **Schedule/Rule accuracy** (`scheduleComparator.ts`/`ruleComparator.ts`): semantic comparison (device/action/time/recurrence for schedules; trigger/condition/action for rules), `conditions`/`actions` arrays compared order-independently.
+- **Value normalization** (`valueNormalizer.ts`): numbers vs numeric strings are treated as equal (`"30"` == `30`), whitespace is normalized; device names are compared case-insensitively (matching MySQL's default collation behavior used by `DeviceService.findByName`).
+- **Error classification** (`errorClassifier.ts`): `WRONG_TOOL | INVALID_OR_MISSING_PARAMETER | INVALID_STRUCTURE | FAILED_CLARIFICATION | UNNECESSARY_TOOL_CALL | OTHER`. Mapping note: the brief lists "tool not called when it should have been" as a case separate from "wrong tool" — there's no dedicated bucket for it among the 5 official categories, so it's folded into `WRONG_TOOL` (still fundamentally a tool-selection failure, just an omission rather than a substitution). A single record can carry more than one error (point 15).
+- **Clarification/invalid detection**: `clarificationCorrect`/`invalidCommandHandledCorrect` are derived purely from **whether a tool call happened or not** (direct evidence from the trace, 100% accurate). `clarificationRequested` (a separate field, not the source of truth for correctness) is a **keyword heuristic** (`?`, "yang mana", "maksud anda", etc. — see `llmEvalRunner.ts`) used only to distinguish a reply that reads like a clarifying question from an ordinary statement; don't use it as an accuracy measure without manual spot-checking.
 
-## 11. Pemetaan ke BAB IV
+## 11. Mapping to BAB IV
 
-- **4.2 Hasil Pengujian Fungsional dan End-to-End** ← `--mode functional`, `functional-results.jsonl`, definisi ACK di §9 `functionalRunner.ts` (polling `GET /api/v1/mqtt/devices/:id/status`, **bukan** ACK protokol asli — lihat §12 poin 2).
-- **4.3 Evaluasi dan Perbandingan Model LLM** ← `tabel-4.3-*.csv`, `tabel-4.4-*.csv`, `tabel-4.5-*.csv`, `tabel-4.6-*.csv`, `tabel-4.7-*.csv`.
-- **4.4 Analisis Berdasarkan Kompleksitas dan Kesalahan** ← `tabel-4.8-kompleksitas.csv`, `tabel-4.9-distribusi-kesalahan.csv`.
+- **4.2 Functional and End-to-End Test Results** ← `--mode functional`, `functional-results.jsonl`, ACK definition in §9 `functionalRunner.ts` (polling `GET /api/v1/mqtt/devices/:id/status`, **not** a real protocol-level ACK — see §12 point 2).
+- **4.3 LLM Model Evaluation and Comparison** ← `tabel-4.3-*.csv`, `tabel-4.4-*.csv`, `tabel-4.5-*.csv`, `tabel-4.6-*.csv`, `tabel-4.7-*.csv`.
+- **4.4 Analysis by Complexity and Error Type** ← `tabel-4.8-kompleksitas.csv`, `tabel-4.9-distribusi-kesalahan.csv`.
 
-## 12. Ketidaksesuaian implementasi yang perlu diketahui sebelum menulis BAB IV
+## 12. Implementation gaps you should know before writing BAB IV
 
-1. **"MCP" bukan Model Context Protocol asli.** `src/services/mcp/**` adalah tool/function-calling LangChain biasa (Zod + `bindTools`), bukan JSON-RPC MCP client/server sungguhan. Istilah "MCP Client"/"MCP Server" di BAB II/III sebaiknya dijelaskan eksplisit di BAB IV sebagai penamaan arsitektural internal, bukan implementasi protokol resmi Anthropic.
-2. **Tidak ada ACK MQTT sungguhan.** `MQTTService.sendCommand` fire-and-forget, tidak ada korelasi command-id ↔ state update. `functionalRunner.ts` mengaproksimasi "ACK" sebagai *state device berubah dalam window T detik setelah command* — didokumentasikan sebagai keterbatasan, bukan disembunyikan.
-3. **Tabel 3.8 (Function Schema) vs implementasi nyata**: 15 tools nyata memakai nama berbeda dari 11 *function schema* di Tabel 3.8, dan dua di antaranya (`delete_schedule`, `update_dynamic_rule`) **tidak ada capability-nya sama sekali** di kode (juga tidak ada `get_rule_execution_logs` sebagai tool yang bisa dipanggil LLM, walau endpoint REST-nya ada). Dataset `dataset.json` mengikuti kode nyata (keputusan Anda sebelumnya) — kasus TC097/TC098 sengaja menguji dua gap ini sebagai skenario `invalid`. **Tabel 3.8 di naskah perlu direvisi** agar konsisten dengan Lampiran/BAB IV.
-4. **`set_actuator_state_by_device_name` menolak device `hybrid`**, walau system prompt (`DEVICE_CHAT_SYSTEM_PROMPT`) menyebut hybrid didukung. TC095/TC096 menguji perilaku nyata ini (ditolak).
-5. **Determinisme RAG**: embedding dihitung ulang tiap request (panggilan API, bukan cache), tanpa score threshold, dengan retry-lalu-fallback-kosong kalau Pinecone gagal 3x. Kalau knowledge base Anda berubah antar sesi pengambilan data, konteks RAG bisa berbeda meski input identik — bukan bug harness, melainkan sifat `PineconeService.search` produksi.
-6. **State isolation**: `llmEvalRunner.ts` sengaja tidak mengirim `userId`/`sessionId` supaya `resolveMemoryScope()` mengembalikan `null` (tidak ada memory) — setiap repetisi benar-benar bersih, sesuai poin 21.
+1. **"MCP" is not the real Model Context Protocol.** `src/services/mcp/**` is ordinary LangChain tool/function-calling (Zod + `bindTools`), not an actual JSON-RPC MCP client/server. The terms "MCP Client"/"MCP Server" in BAB II/III should be explicitly explained in BAB IV as internal architectural naming, not an implementation of Anthropic's official protocol.
+2. **No real MQTT ACK.** `MQTTService.sendCommand` is fire-and-forget, with no command-id ↔ state-update correlation. `functionalRunner.ts` approximates "ACK" as *the device's state changing within a T-second window after the command* — documented as a limitation, not hidden.
+3. **Table 3.8 (Function Schema) vs. the real implementation**: the 15 real tools use different names than the 11 *function schemas* in Table 3.8, and two of those 11 (`delete_schedule`, `update_dynamic_rule`) **have no corresponding capability at all** in the code (there's also no `get_rule_execution_logs` tool callable by the LLM, even though its REST endpoint exists). The `dataset.json` dataset follows the real code (your earlier decision) — cases TC097/TC098 deliberately test these two gaps as `invalid` scenarios. **Table 3.8 in the manuscript should be revised** to stay consistent with the Appendix/BAB IV.
+4. **`set_actuator_state_by_device_name` rejects `hybrid` devices**, even though the system prompt (`DEVICE_CHAT_SYSTEM_PROMPT`) claims hybrid is supported. TC095/TC096 test this real behavior (rejected).
+5. **RAG determinism**: embeddings are recomputed on every request (an API call, not cached), with no score threshold, and a retry-then-empty-fallback if Pinecone fails 3 times. If your knowledge base changes between data-collection sessions, RAG context can differ even for identical input — not a harness bug, just a property of production's `PineconeService.search`.
+6. **State isolation**: `llmEvalRunner.ts` deliberately never sends `userId`/`sessionId` so `resolveMemoryScope()` returns `null` (no memory) — every repetition is genuinely clean, per point 21.
 
 ## 13. Testing
 
-`evaluation/__tests__/*.test.ts` (Jest, sama seperti `src/`) — mencakup `toolComparator`, `parameterComparator`, `scheduleComparator`, `ruleComparator`, `structureValidator`, `errorClassifier`, `costCalculator`, `latencyMetrics`, `valueNormalizer`, `dryRunGuard`, `retry`, `concurrency`, `resume`/`resultWriter`, `llmEvalRunner`, `functionalRunner`, `aggregate`, `bab4Tables`, `writeReports`, `args`, dan `dataset.json` itu sendiri (validasi skema + distribusi kategori). Jalankan dengan `npm test` (root `jest.config.ts` sudah mencakup `evaluation/` di `roots`).
+`evaluation/__tests__/*.test.ts` (Jest, same as `src/`) — covers `toolComparator`, `parameterComparator`, `scheduleComparator`, `ruleComparator`, `structureValidator`, `errorClassifier`, `costCalculator`, `latencyMetrics`, `valueNormalizer`, `dryRunGuard`, `retry`, `concurrency`, `resume`/`resultWriter`, `llmEvalRunner`, `functionalRunner`, `aggregate`, `bab4Tables`, `writeReports`, `args`, and `dataset.json` itself (schema validation + category distribution). Run with `npm test` (the root `jest.config.ts` already includes `evaluation/` in `roots`).
