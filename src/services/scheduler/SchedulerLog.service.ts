@@ -96,4 +96,25 @@ export class SchedulerLogService {
       )
     }
   }
+
+  static async remove(schedulerLogId: number) {
+    try {
+      const result = await SchedulerLogModel.findOne({
+        where: { deleted: 0, schedulerLogId }
+      })
+
+      if (result == null) {
+        throw AppError.notFound('Scheduler log not found')
+      }
+
+      await result.destroy()
+    } catch (serviceError) {
+      if (serviceError instanceof AppError) throw serviceError
+      logger.error(`[SchedulerLogService] remove failed: ${String(serviceError)}`)
+      throw new AppError(
+        'Failed to delete scheduler log',
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
+    }
+  }
 }

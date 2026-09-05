@@ -2,6 +2,8 @@ import { DeviceLogService, DeviceService } from '../device'
 import { MQTTService } from './MQTT.service'
 import logger from '../../utilities/logger'
 import { AppError } from '../../utilities/AppError'
+import { RuleEngine } from '../rule'
+import { parseTelemetryMetrics } from '../rule/telemetryMetrics'
 
 function extractValueAsString(payload: unknown): string | null {
   if (payload != null && typeof payload === 'object' && 'value' in payload) {
@@ -43,6 +45,21 @@ export class TelemetryService {
           deviceLogDeviceId: deviceId,
           deviceLogData
         })
+
+        // Fire-and-forget Rule Engine — never fail telemetry ingest on rule errors.
+        const metrics = parseTelemetryMetrics(payload)
+        if (Object.keys(metrics).length > 0) {
+          void RuleEngine.evaluate({
+            deviceId,
+            metrics,
+            receivedAt: new Date(),
+            rawPayload: payload
+          }).catch((ruleError) => {
+            logger.error(
+              `[TelemetryService] RuleEngine.evaluate failed device=${deviceId}: ${String(ruleError)}`
+            )
+          })
+        }
       } catch (serviceError) {
         if (serviceError instanceof AppError) {
           logger.warn(

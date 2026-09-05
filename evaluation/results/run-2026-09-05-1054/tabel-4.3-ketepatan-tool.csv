@@ -1,0 +1,4 @@
+Model LLM,Jumlah Pengujian,Tool Benar,Tool Salah,Ketepatan Tool (%)
+GPT-5.6 Terra,10,8,2,80
+Claude Sonnet 5,10,9,1,90
+DeepSeek-V4-Flash,10,3,7,30

@@ -1,0 +1,36 @@
+{
+  "mode": "llm-eval",
+  "datasetPath": "./evaluation/datasets/10_dataset.json",
+  "totalCases": 10,
+  "categories": "all",
+  "repetitions": 1,
+  "concurrency": 1,
+  "maxRetries": 2,
+  "models": [
+    {
+      "key": "openai:gpt-5.6-terra",
+      "displayName": "GPT-5.6 Terra",
+      "provider": "openai",
+      "apiModel": "gpt-5.6-terra",
+      "temperature": 0.2,
+      "maxTokens": 1024
+    },
+    {
+      "key": "anthropic:claude-sonnet-5",
+      "displayName": "Claude Sonnet 5",
+      "provider": "anthropic",
+      "apiModel": "claude-sonnet-5",
+      "temperature": 0.2,
+      "maxTokens": 1024
+    },
+    {
+      "key": "deepseek:deepseek-v4-flash",
+      "displayName": "DeepSeek-V4-Flash",
+      "provider": "deepseek",
+      "apiModel": "deepseek-v4-flash",
+      "temperature": 0.2,
+      "maxTokens": 1024
+    }
+  ],
+  "generatedAt": "2026-09-05T03:54:39.309Z"
+}

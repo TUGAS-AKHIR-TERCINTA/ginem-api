@@ -1,42 +1,35 @@
-import fs from 'fs'
-import path from 'path'
+import { Op, type WhereOptions } from 'sequelize'
 import { StatusCodes } from 'http-status-codes'
 
 import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
+import { sequelizeInit } from '../../configs/database'
+import { LLMModelModel, type ILLMModelAttributes } from '../../models/LLMModelModel'
 import { type IFindAllLLMModel } from '../../schemas/LLMModelSchema'
 
-interface LLMModel {
-  id: string
-  name: string
-  provider: string
-}
-
 export class LLMModelService {
-  private static readonly modelsPath = path.join(
-    process.cwd(),
-    'settings/llm-models.json'
-  )
-  private static readonly selectedPath = path.join(
-    process.cwd(),
-    'settings/selected-llm-model.json'
-  )
+  private static buildFindAllWhere(payload: IFindAllLLMModel) {
+    let where: WhereOptions<ILLMModelAttributes> = {
+      deleted: 0
+    }
+
+    if (payload.search != null && payload.search.trim() !== '') {
+      const term = `%${payload.search.trim()}%`
+      where = {
+        ...where,
+        [Op.or]: [{ name: { [Op.like]: term } }, { provider: { [Op.like]: term } }]
+      }
+    }
+
+    return where
+  }
 
   static async findAll(options: IFindAllLLMModel) {
     try {
-      const { search } = options
-
-      const raw = fs.readFileSync(this.modelsPath, 'utf-8')
-      let data: LLMModel[] = JSON.parse(raw)
-
-      if (search != null && search.trim() !== '') {
-        const term = search.toLowerCase()
-        data = data.filter(
-          (item) =>
-            item.name.toLowerCase().includes(term) ||
-            item.provider.toLowerCase().includes(term)
-        )
-      }
+      const data = await LLMModelModel.findAll({
+        where: this.buildFindAllWhere(options),
+        order: [['name', 'asc']]
+      })
 
       return {
         totalItems: data.length,
@@ -51,10 +44,9 @@ export class LLMModelService {
 
   static async findById(id: string) {
     try {
-      const raw = fs.readFileSync(this.modelsPath, 'utf-8')
-      const data: LLMModel[] = JSON.parse(raw)
-
-      const model = data.find((item) => item.id === id)
+      const model = await LLMModelModel.findOne({
+        where: { deleted: 0, id }
+      })
 
       if (model == null) {
         throw AppError.notFound('LLM model not found')
@@ -70,16 +62,25 @@ export class LLMModelService {
 
   static async selectModel(modelId: string): Promise<void> {
     try {
-      const raw = fs.readFileSync(this.modelsPath, 'utf-8')
-      const models: LLMModel[] = JSON.parse(raw)
+      const model = await LLMModelModel.findOne({
+        where: { deleted: 0, id: modelId }
+      })
 
-      const exists = models.find((m) => m.id === modelId)
-
-      if (exists == null) {
+      if (model == null) {
         throw AppError.notFound('LLM model not found')
       }
 
-      fs.writeFileSync(this.selectedPath, JSON.stringify({ modelId }, null, 2), 'utf-8')
+      await sequelizeInit.transaction(async (transaction) => {
+        await LLMModelModel.update(
+          { isSelected: false },
+          { where: { deleted: 0, isSelected: true }, transaction }
+        )
+
+        await LLMModelModel.update(
+          { isSelected: true },
+          { where: { deleted: 0, id: modelId }, transaction }
+        )
+      })
     } catch (error) {
       if (error instanceof AppError) throw error
       logger.error(`[LLMModelService] selectModel failed: ${String(error)}`)
@@ -87,15 +88,11 @@ export class LLMModelService {
     }
   }
 
-  static async getSelectedModel(): Promise<LLMModel> {
+  static async getSelectedModel() {
     try {
-      const rawSelected = fs.readFileSync(this.selectedPath, 'utf-8')
-      const { modelId } = JSON.parse(rawSelected)
-
-      const rawModels = fs.readFileSync(this.modelsPath, 'utf-8')
-      const models: LLMModel[] = JSON.parse(rawModels)
-
-      const model = models.find((m) => m.id === modelId)
+      const model = await LLMModelModel.findOne({
+        where: { deleted: 0, isSelected: true }
+      })
 
       if (model == null) {
         throw AppError.notFound('Selected model not found')
