@@ -25,11 +25,18 @@ You have tools to:
 - get_last_log_by_device_name: Get the latest single log for a device by its name (deviceName).
 - get_last_10_logs_by_device_name: Get the last 10 logs (most recent first) for a device by its name (deviceName).
 - create_device_log: Create a new device log for a device; use deviceName and deviceLogData. Do NOT use for turn on/off — use set_actuator_state_by_device_name.
-- set_actuator_state_by_device_name: Turn ON or OFF an actuator by device name. Use when the user says "hidupkan (nama device)", "matikan (nama device)", turn on, turn off, nyalakan, padamkan. Only works for devices with deviceType "actuator". On → value 1, off → value 0.
+- set_actuator_state_by_device_name: Turn ON or OFF an actuator by device name IMMEDIATELY. Use when the user says "hidupkan (nama device)", "matikan (nama device)", turn on, turn off, nyalakan, padamkan RIGHT NOW. Only works for devices with deviceType "actuator" or "hybrid". On → value 1, off → value 0.
 - schedule_actuator_state_at: Schedule actuator ON/OFF once or daily repeat (WIB). Use category once for one-time, repeat for every day at hour:minute.
 - schedule_sensor_data_at: Schedule sensor data fetch once or daily repeat (WIB).
 - get_scheduled_job_result: Get the status and result of a scheduled job by jobId.
 - list_scheduled_jobs: List recent scheduled jobs (pending, active, completed, failed).
+- create_automation_rule: Create an Event-Condition-Action automation so devices cooperate automatically (e.g. "hidupkan kipas jika suhu di atas 25"). Trigger device must be sensor/hybrid; action device(s) must be actuator/hybrid. Stores the rule; Rule Engine executes later on MQTT telemetry without calling the LLM again. Always set originalPrompt to the user message.
+- list_automation_rules / get_automation_rule / set_automation_rule_active / delete_automation_rule: Manage stored automation rules.
+
+Important distinctions:
+- Immediate control → set_actuator_state_by_device_name
+- Time-based schedule → schedule_*
+- Condition-based automation between devices (jika/jika suhu/jika kelembaban/otomatis) → create_automation_rule
 
 Answer in a clear, concise way based on the tool results. If no data is found or device is not an actuator, say so.
 
@@ -41,10 +48,18 @@ export interface ChatToolCallTrace {
   id?: string
 }
 
+export interface ChatTokenUsage {
+  inputTokens: number
+  outputTokens: number
+  totalTokens: number
+}
+
 export interface ChatQueryTrace {
   toolCalls: ChatToolCallTrace[]
   /** Wall time for agent.invoke only (ms). */
   agentLatencyMs: number
+  /** Summed across every LLM call made during this agent run, when providers report it. */
+  tokenUsage?: ChatTokenUsage
 }
 
 export interface ChatQueryResponse {
@@ -76,6 +91,7 @@ type AgentInvokeResult = {
     content?: unknown
     tool_calls?: unknown
     additional_kwargs?: unknown
+    usage_metadata?: unknown
   }>
 }
 
@@ -203,11 +219,14 @@ export class ChatService {
       return { reply }
     }
 
+    const tokenUsage = ChatService.extractTokenUsage(result.messages ?? [])
+
     return {
       reply,
       trace: {
         toolCalls: ChatService.extractToolCalls(result.messages ?? []),
-        agentLatencyMs
+        agentLatencyMs,
+        ...(tokenUsage != null && { tokenUsage })
       }
     }
   }
@@ -242,6 +261,7 @@ export class ChatService {
 
     for (const message of messages) {
       const direct = message.tool_calls
+      let messageHadDirectCall = false
       if (Array.isArray(direct)) {
         for (const tc of direct) {
           const item = tc as {
@@ -256,6 +276,7 @@ export class ChatService {
               args: (item.args ?? {}) as Record<string, unknown>,
               id: item.id
             })
+            messageHadDirectCall = true
             continue
           }
           if (item.function?.name) {
@@ -269,9 +290,15 @@ export class ChatService {
               args = {}
             }
             calls.push({ name: item.function.name, args, id: item.id })
+            messageHadDirectCall = true
           }
         }
       }
+
+      // `additional_kwargs.tool_calls` is the same provider payload LangChain already
+      // normalizes into `message.tool_calls` above — only fall back to it when the
+      // normalized array was empty, otherwise every call gets counted twice.
+      if (messageHadDirectCall) continue
 
       const kwargs = message.additional_kwargs as
         | { tool_calls?: Array<Record<string, unknown>> }
@@ -296,5 +323,33 @@ export class ChatService {
     }
 
     return calls
+  }
+
+  /**
+   * Sums provider-reported usage_metadata across every AI message in the run
+   * (an agent turn may call the model more than once before the final reply).
+   * Returns undefined when no message carries usage data (provider didn't report it).
+   */
+  static extractTokenUsage(
+    messages: Array<{ usage_metadata?: unknown }>
+  ): ChatTokenUsage | undefined {
+    let inputTokens = 0
+    let outputTokens = 0
+    let totalTokens = 0
+    let found = false
+
+    for (const message of messages) {
+      const usage = message.usage_metadata as
+        | { input_tokens?: number; output_tokens?: number; total_tokens?: number }
+        | undefined
+      if (usage == null) continue
+      found = true
+      inputTokens += usage.input_tokens ?? 0
+      outputTokens += usage.output_tokens ?? 0
+      totalTokens +=
+        usage.total_tokens ?? (usage.input_tokens ?? 0) + (usage.output_tokens ?? 0)
+    }
+
+    return found ? { inputTokens, outputTokens, totalTokens } : undefined
   }
 }

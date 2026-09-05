@@ -11,6 +11,14 @@ import {
   getScheduledJobResultTool,
   listScheduledJobsTool
 } from './device/deviceActuatorScheduler.tools'
+import {
+  createAutomationRuleTool,
+  listAutomationRulesTool,
+  getAutomationRuleTool,
+  setAutomationRuleActiveTool,
+  deleteAutomationRuleTool,
+  ruleTools
+} from './device/deviceRule.tools'
 
 /** All device MCP tools (for agent binding). */
 export const deviceTools = [
@@ -23,7 +31,8 @@ export const deviceTools = [
   scheduleActuatorStateAtDatetimeTool,
   scheduleSensorDataAtDatetimeTool,
   getScheduledJobResultTool,
-  listScheduledJobsTool
+  listScheduledJobsTool,
+  ...ruleTools
 ]
 
 export {
@@ -36,5 +45,11 @@ export {
   scheduleActuatorStateAtDatetimeTool,
   scheduleSensorDataAtDatetimeTool,
   getScheduledJobResultTool,
-  listScheduledJobsTool
+  listScheduledJobsTool,
+  createAutomationRuleTool,
+  listAutomationRulesTool,
+  getAutomationRuleTool,
+  setAutomationRuleActiveTool,
+  deleteAutomationRuleTool,
+  ruleTools
 }

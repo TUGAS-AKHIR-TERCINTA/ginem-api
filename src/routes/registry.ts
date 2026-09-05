@@ -12,6 +12,7 @@ import IndexingRoute from './IndexingRouter'
 import MqttRoute from './MqttRouter'
 import AdminRoute from './AdminRouter'
 import SettingRoute from './SettingRouter'
+import RuleRoute from './RuleRouter'
 
 const RoutesRegistry = {
   AppLogRoute,
@@ -27,7 +28,8 @@ const RoutesRegistry = {
   IndexingRoute,
   MqttRoute,
   AdminRoute,
-  SettingRoute
+  SettingRoute,
+  RuleRoute
 }
 
 export default RoutesRegistry

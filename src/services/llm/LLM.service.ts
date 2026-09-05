@@ -2,11 +2,12 @@ import { StatusCodes } from 'http-status-codes'
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { ChatOpenAI } from '@langchain/openai'
 import { ChatDeepSeek } from '@langchain/deepseek'
+import { ChatAnthropic } from '@langchain/anthropic'
 import { appConfigs } from '../../configs/appConfig'
 import { AppError } from '../../utilities/AppError'
 import logger from '../../utilities/logger'
 
-export type LLMProvider = 'openai' | 'deepseek'
+export type LLMProvider = 'openai' | 'deepseek' | 'anthropic'
 
 export interface LLMCreateOptions {
   /** Defaults to openai (production path). */
@@ -49,6 +50,23 @@ export class LLMService {
         })
       }
 
+      if (provider === 'anthropic') {
+        const apiKey = options?.apiKey ?? appConfigs.llm?.anthropicApiKey
+        if (apiKey == null || apiKey === '') {
+          throw new AppError(
+            'Anthropic API key is not configured',
+            StatusCodes.INTERNAL_SERVER_ERROR
+          )
+        }
+        return new ChatAnthropic({
+          model: options?.model ?? 'claude-sonnet-4-5',
+          // `temperature` is rejected outright by some Anthropic model ids ("temperature
+          // is deprecated for this model") — omit it and let the API use its default.
+          maxTokens,
+          apiKey
+        })
+      }
+
       if (provider !== 'openai') {
         throw new AppError(
           `Unsupported LLM provider: ${String(provider)}`,
@@ -61,7 +79,12 @@ export class LLMService {
         model: options?.model ?? 'gpt-4o',
         temperature,
         maxTokens,
-        apiKey
+        apiKey,
+        // LangChain auto-detects any "gpt-5*" model name as a reasoning model and may
+        // send a reasoning_effort the API rejects when function tools are used on
+        // /v1/chat/completions. Forcing 'none' keeps tool calling on that endpoint working;
+        // it's a no-op for non-reasoning models.
+        reasoning: { effort: 'none' }
       })
     } catch (serviceError) {
       if (serviceError instanceof AppError) throw serviceError

@@ -1,12 +1,14 @@
 import { ChatOpenAI } from '@langchain/openai'
 import { ChatDeepSeek } from '@langchain/deepseek'
+import { ChatAnthropic } from '@langchain/anthropic'
 import { LLMService } from '../LLM.service'
 
 jest.mock('../../../configs/appConfig', () => ({
   appConfigs: {
     llm: {
       openAIApiKey: 'test-openai-key',
-      deepSeekApiKey: 'test-deepseek-key'
+      deepSeekApiKey: 'test-deepseek-key',
+      anthropicApiKey: 'test-anthropic-key'
     }
   }
 }))
@@ -24,8 +26,13 @@ jest.mock('@langchain/deepseek', () => ({
   ChatDeepSeek: jest.fn()
 }))
 
+jest.mock('@langchain/anthropic', () => ({
+  ChatAnthropic: jest.fn()
+}))
+
 const ChatOpenAIMock = jest.mocked(ChatOpenAI)
 const ChatDeepSeekMock = jest.mocked(ChatDeepSeek)
+const ChatAnthropicMock = jest.mocked(ChatAnthropic)
 
 describe('LLMService', () => {
   beforeEach(() => {
@@ -39,7 +46,8 @@ describe('LLMService', () => {
       model: 'gpt-4o',
       temperature: 0,
       maxTokens: 500,
-      apiKey: 'test-openai-key'
+      apiKey: 'test-openai-key',
+      reasoning: { effort: 'none' }
     })
   })
 
@@ -55,7 +63,8 @@ describe('LLMService', () => {
       model: 'gpt-4o-mini',
       temperature: 0.2,
       maxTokens: 200,
-      apiKey: 'test-openai-key'
+      apiKey: 'test-openai-key',
+      reasoning: { effort: 'none' }
     })
   })
 
@@ -67,6 +76,31 @@ describe('LLMService', () => {
       temperature: 0,
       maxTokens: 500,
       apiKey: 'test-deepseek-key'
+    })
+  })
+
+  it('creates ChatAnthropic with expected default config', () => {
+    LLMService.create({ provider: 'anthropic' })
+
+    expect(ChatAnthropicMock).toHaveBeenCalledWith({
+      model: 'claude-sonnet-4-5',
+      maxTokens: 500,
+      apiKey: 'test-anthropic-key'
+    })
+  })
+
+  it('creates ChatAnthropic with overrides', () => {
+    LLMService.create({
+      provider: 'anthropic',
+      model: 'claude-sonnet-4-5-20250929',
+      temperature: 0.2,
+      maxTokens: 1024
+    })
+
+    expect(ChatAnthropicMock).toHaveBeenCalledWith({
+      model: 'claude-sonnet-4-5-20250929',
+      maxTokens: 1024,
+      apiKey: 'test-anthropic-key'
     })
   })
 })

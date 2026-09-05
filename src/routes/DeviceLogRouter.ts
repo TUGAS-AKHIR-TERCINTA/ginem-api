@@ -1,7 +1,14 @@
 import { Router } from 'express'
 import { DeviceLogController } from '../controllers/deviceLog/index'
 import { MiddleWares } from '../middlewares/index'
-import { findAllDeviceLogSchema, findDetailDeviceLogSchema, findLastLatestDeviceLogByDeviceIdSchema, createDeviceLogSchema, updateDeviceLogSchema, removeDeviceLogSchema } from '../schemas/DeviceLogSchema'
+import {
+  findAllDeviceLogSchema,
+  findDetailDeviceLogSchema,
+  findLastLatestDeviceLogByDeviceIdSchema,
+  createDeviceLogSchema,
+  updateDeviceLogSchema,
+  removeDeviceLogSchema
+} from '../schemas/DeviceLogSchema'
 
 const DeviceLogRoute = Router()
 
