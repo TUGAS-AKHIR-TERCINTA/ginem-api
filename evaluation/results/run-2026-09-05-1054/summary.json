@@ -1,39 +1,39 @@
 {
-  "generatedAt": "2026-08-20T17:07:47.615Z",
+  "generatedAt": "2026-09-05T03:57:26.068Z",
   "modelAggregates": [
     {
       "model": "GPT-5.6 Terra",
       "modelKey": "openai:gpt-5.6-terra",
       "totalTests": 10,
-      "toolCorrectCount": 9,
-      "toolAccuracyPct": 90,
-      "parametersChecked": 16,
-      "parametersCorrect": 14,
-      "parameterAccuracyPct": 87.5,
-      "structureCheckedCount": 7,
-      "structureValidCount": 7,
+      "toolCorrectCount": 8,
+      "toolAccuracyPct": 80,
+      "parametersChecked": 17,
+      "parametersCorrect": 17,
+      "parameterAccuracyPct": 100,
+      "structureCheckedCount": 8,
+      "structureValidCount": 8,
       "structureValidPct": 100,
       "scheduleCheckedCount": 1,
       "scheduleCorrectCount": 1,
       "scheduleAccuracyPct": 100,
       "ruleCheckedCount": 1,
-      "ruleCorrectCount": 0,
-      "ruleAccuracyPct": 0,
-      "minLatencyMs": 3537.605483,
-      "maxLatencyMs": 8625.242642,
-      "avgLatencyMs": 6423.7969581,
-      "totalInputTokens": 46920,
-      "totalOutputTokens": 612,
-      "totalTokens": 47532,
-      "avgTokensPerRequest": 4753.2,
-      "totalCostUsd": 0.101184,
-      "avgCostPerRequestUsd": 0.0101184,
+      "ruleCorrectCount": 1,
+      "ruleAccuracyPct": 100,
+      "minLatencyMs": 2810.842005,
+      "maxLatencyMs": 8264.513234,
+      "avgLatencyMs": 5729.4843833,
+      "totalInputTokens": 53126,
+      "totalOutputTokens": 616,
+      "totalTokens": 53742,
+      "avgTokensPerRequest": 5374.2,
+      "totalCostUsd": 0.11364400000000001,
+      "avgCostPerRequestUsd": 0.0113644,
       "errorCounts": {
         "WRONG_TOOL": 0,
-        "INVALID_OR_MISSING_PARAMETER": 2,
+        "INVALID_OR_MISSING_PARAMETER": 0,
         "INVALID_STRUCTURE": 0,
-        "FAILED_CLARIFICATION": 0,
-        "UNNECESSARY_TOOL_CALL": 1,
+        "FAILED_CLARIFICATION": 1,
+        "UNNECESSARY_TOOL_CALL": 2,
         "OTHER": 0
       },
       "totalErrors": 3
@@ -42,48 +42,48 @@
       "model": "Claude Sonnet 5",
       "modelKey": "anthropic:claude-sonnet-5",
       "totalTests": 10,
-      "toolCorrectCount": 6,
-      "toolAccuracyPct": 60,
-      "parametersChecked": 16,
-      "parametersCorrect": 14,
-      "parameterAccuracyPct": 87.5,
-      "structureCheckedCount": 9,
-      "structureValidCount": 9,
+      "toolCorrectCount": 9,
+      "toolAccuracyPct": 90,
+      "parametersChecked": 17,
+      "parametersCorrect": 17,
+      "parameterAccuracyPct": 100,
+      "structureCheckedCount": 7,
+      "structureValidCount": 7,
       "structureValidPct": 100,
       "scheduleCheckedCount": 1,
       "scheduleCorrectCount": 1,
       "scheduleAccuracyPct": 100,
       "ruleCheckedCount": 1,
-      "ruleCorrectCount": 0,
-      "ruleAccuracyPct": 0,
-      "minLatencyMs": 6619.130114,
-      "maxLatencyMs": 12516.47351,
-      "avgLatencyMs": 8790.0545249,
-      "totalInputTokens": 131250,
-      "totalOutputTokens": 2162,
-      "totalTokens": 133412,
-      "avgTokensPerRequest": 13341.2,
-      "totalCostUsd": 0.28412,
-      "avgCostPerRequestUsd": 0.028412,
+      "ruleCorrectCount": 1,
+      "ruleAccuracyPct": 100,
+      "minLatencyMs": 3699.155756,
+      "maxLatencyMs": 9169.219453,
+      "avgLatencyMs": 5723.9356999,
+      "totalInputTokens": 109919,
+      "totalOutputTokens": 1622,
+      "totalTokens": 111541,
+      "avgTokensPerRequest": 11154.1,
+      "totalCostUsd": 0.23605799999999996,
+      "avgCostPerRequestUsd": 0.023605799999999996,
       "errorCounts": {
         "WRONG_TOOL": 0,
-        "INVALID_OR_MISSING_PARAMETER": 1,
+        "INVALID_OR_MISSING_PARAMETER": 0,
         "INVALID_STRUCTURE": 0,
-        "FAILED_CLARIFICATION": 1,
-        "UNNECESSARY_TOOL_CALL": 4,
+        "FAILED_CLARIFICATION": 0,
+        "UNNECESSARY_TOOL_CALL": 1,
         "OTHER": 0
       },
-      "totalErrors": 6
+      "totalErrors": 1
     },
     {
       "model": "DeepSeek-V4-Flash",
       "modelKey": "deepseek:deepseek-v4-flash",
       "totalTests": 10,
-      "toolCorrectCount": 1,
-      "toolAccuracyPct": 10,
-      "parametersChecked": 16,
-      "parametersCorrect": 15,
-      "parameterAccuracyPct": 93.75,
+      "toolCorrectCount": 3,
+      "toolAccuracyPct": 30,
+      "parametersChecked": 17,
+      "parametersCorrect": 16,
+      "parameterAccuracyPct": 94.11764705882352,
       "structureCheckedCount": 10,
       "structureValidCount": 10,
       "structureValidPct": 100,
@@ -91,26 +91,26 @@
       "scheduleCorrectCount": 1,
       "scheduleAccuracyPct": 100,
       "ruleCheckedCount": 1,
-      "ruleCorrectCount": 0,
-      "ruleAccuracyPct": 0,
-      "minLatencyMs": 5510.538739,
-      "maxLatencyMs": 10561.402886,
-      "avgLatencyMs": 8296.717020799999,
-      "totalInputTokens": 143039,
-      "totalOutputTokens": 4411,
-      "totalTokens": 147450,
-      "avgTokensPerRequest": 14745,
-      "totalCostUsd": 0.02126054,
-      "avgCostPerRequestUsd": 0.002126054,
+      "ruleCorrectCount": 1,
+      "ruleAccuracyPct": 100,
+      "minLatencyMs": 3349.965681,
+      "maxLatencyMs": 8393.214411,
+      "avgLatencyMs": 5217.1924755,
+      "totalInputTokens": 128922,
+      "totalOutputTokens": 3621,
+      "totalTokens": 132543,
+      "avgTokensPerRequest": 13254.3,
+      "totalCostUsd": 0.019062959999999997,
+      "avgCostPerRequestUsd": 0.0019062959999999996,
       "errorCounts": {
         "WRONG_TOOL": 0,
         "INVALID_OR_MISSING_PARAMETER": 0,
         "INVALID_STRUCTURE": 0,
         "FAILED_CLARIFICATION": 2,
-        "UNNECESSARY_TOOL_CALL": 9,
+        "UNNECESSARY_TOOL_CALL": 7,
         "OTHER": 0
       },
-      "totalErrors": 11
+      "totalErrors": 9
     }
   ],
   "complexityAggregates": [
@@ -120,9 +120,9 @@
       "category": "simple",
       "totalTests": 2,
       "toolAccuracyPct": 100,
-      "parameterAccuracyPct": 66.66666666666666,
+      "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 7329.8397135
+      "avgLatencyMs": 7178.8218495
     },
     {
       "model": "GPT-5.6 Terra",
@@ -132,7 +132,7 @@
       "toolAccuracyPct": 100,
       "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 7691.050426
+      "avgLatencyMs": 5966.5538715
     },
     {
       "model": "GPT-5.6 Terra",
@@ -140,19 +140,19 @@
       "category": "complex",
       "totalTests": 2,
       "toolAccuracyPct": 100,
-      "parameterAccuracyPct": 83.33333333333334,
+      "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 7338.740843
+      "avgLatencyMs": 6243.2410065
     },
     {
       "model": "Claude Sonnet 5",
       "modelKey": "anthropic:claude-sonnet-5",
       "category": "simple",
       "totalTests": 2,
-      "toolAccuracyPct": 50,
-      "parameterAccuracyPct": 66.66666666666666,
+      "toolAccuracyPct": 100,
+      "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 10981.2538785
+      "avgLatencyMs": 4121.009303
     },
     {
       "model": "Claude Sonnet 5",
@@ -162,7 +162,7 @@
       "toolAccuracyPct": 100,
       "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 7964.6342970000005
+      "avgLatencyMs": 6703.728077
     },
     {
       "model": "Claude Sonnet 5",
@@ -170,29 +170,29 @@
       "category": "complex",
       "totalTests": 2,
       "toolAccuracyPct": 100,
-      "parameterAccuracyPct": 83.33333333333334,
+      "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 8209.0602085
+      "avgLatencyMs": 7665.148510499999
     },
     {
       "model": "DeepSeek-V4-Flash",
       "modelKey": "deepseek:deepseek-v4-flash",
       "category": "simple",
       "totalTests": 2,
-      "toolAccuracyPct": 50,
+      "toolAccuracyPct": 100,
       "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 5998.6591025
+      "avgLatencyMs": 4662.292348
     },
     {
       "model": "DeepSeek-V4-Flash",
       "modelKey": "deepseek:deepseek-v4-flash",
       "category": "medium",
       "totalTests": 2,
-      "toolAccuracyPct": 0,
+      "toolAccuracyPct": 50,
       "parameterAccuracyPct": 100,
       "structureValidPct": 100,
-      "avgLatencyMs": 9507.3054305
+      "avgLatencyMs": 4164.9324915
     },
     {
       "model": "DeepSeek-V4-Flash",
@@ -202,7 +202,7 @@
       "toolAccuracyPct": 0,
       "parameterAccuracyPct": 83.33333333333334,
       "structureValidPct": 100,
-      "avgLatencyMs": 8918.077589
+      "avgLatencyMs": 6826.1844905
     }
   ]
 }

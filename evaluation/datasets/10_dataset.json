@@ -2,14 +2,14 @@
   {
     "id": "TC001",
     "category": "simple",
-    "input": "Nyalakan lampu ruang tamu",
+    "input": "Nyalakan lampu kamar",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "set_actuator_state_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "on"
           }
         }
@@ -17,53 +17,54 @@
     }
   },
   {
-    "id": "TC013",
+    "id": "TC002",
     "category": "simple",
-    "input": "Berapa suhu ruang tamu saat ini?",
+    "input": "Matikan lampu ruang tamu",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
-          "tool": "get_last_log_by_device_name",
+          "tool": "set_actuator_state_by_device_name",
           "parameters": {
-            "deviceName": "Suhu ruangan"
+            "deviceName": "Lampu ruang tamu",
+            "state": "off"
           }
         }
       ]
     }
   },
   {
-    "id": "TC036",
+    "id": "TC022",
     "category": "medium",
-    "input": "Jadwalkan nyalakan lampu ruang tamu besok jam 07:30",
+    "input": "Matikan lampu kamar jam 23:00 nanti malam",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "schedule_actuator_state_at",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
-            "state": "on",
+            "deviceName": "Lampu kamar",
+            "state": "off",
             "category": "once",
-            "hour": 7,
-            "minute": 30
+            "hour": 23,
+            "minute": 0
           }
         }
       ],
       "schedule": [
         {
-          "deviceName": "Lampu ruang tamu",
-          "action": "on",
+          "deviceName": "Lampu kamar",
+          "action": "off",
           "category": "once",
-          "hour": 7,
-          "minute": 30,
+          "hour": 23,
+          "minute": 0,
           "timezone": "Asia/Jakarta"
         }
       ]
     }
   },
   {
-    "id": "TC058",
+    "id": "TC038",
     "category": "medium",
     "input": "Nonaktifkan aturan otomatis dengan id 2",
     "expected": {
@@ -80,17 +81,16 @@
     }
   },
   {
-    "id": "TC063",
+    "id": "TC047",
     "category": "complex",
-    "input": "Nyalakan kipas jika suhu ruangan di atas 30 derajat",
-    "notes": "Skenario canonical brief — trigger Suhu ruangan, action Kipas.",
+    "input": "Buat aturan: matikan lampu kamar jika suhu ruang tamu tepat 25 derajat",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "create_automation_rule",
           "parameters": {
-            "originalPrompt": "Nyalakan kipas jika suhu ruangan di atas 30 derajat",
+            "originalPrompt": "Buat aturan: matikan lampu kamar jika suhu ruang tamu tepat 25 derajat",
             "trigger": {
               "deviceName": "Suhu ruangan",
               "metric": "temperature"
@@ -98,14 +98,14 @@
             "conditions": [
               {
                 "metric": "temperature",
-                "operator": ">",
-                "threshold": 30
+                "operator": "==",
+                "threshold": 25
               }
             ],
             "actions": [
               {
-                "deviceName": "Kipas",
-                "state": "on"
+                "deviceName": "Lampu kamar",
+                "state": "off"
               }
             ]
           }
@@ -118,14 +118,14 @@
           "conditions": [
             {
               "metric": "temperature",
-              "operator": ">",
-              "threshold": 30
+              "operator": "==",
+              "threshold": 25
             }
           ],
           "actions": [
             {
-              "deviceName": "Kipas",
-              "state": "on"
+              "deviceName": "Lampu kamar",
+              "state": "off"
             }
           ],
           "conditionLogic": "AND"
@@ -134,7 +134,7 @@
     }
   },
   {
-    "id": "TC073",
+    "id": "TC053",
     "category": "complex",
     "input": "Berikan suhu ruangan dan status kipas sekarang",
     "expected": {
@@ -156,16 +156,16 @@
     }
   },
   {
-    "id": "TC081",
+    "id": "TC061",
     "category": "ambiguous",
     "input": "Nyalakan lampunya",
-    "notes": "Tidak menyebut nama device yang persis terdaftar (bukan 'Lampu ruang tamu' persis) sehingga berpotensi salah sasaran.",
+    "notes": "Ambigu sungguhan: ada dua device lampu terdaftar (\"Lampu ruang tamu\" dan \"Lampu kamar\"), \"lampunya\" tidak menunjuk salah satunya secara pasti.",
     "expected": {
       "behavior": "clarification"
     }
   },
   {
-    "id": "TC083",
+    "id": "TC063",
     "category": "ambiguous",
     "input": "Aktifkan otomatisasi kalau suhunya panas",
     "notes": "Tidak ada device, metric, atau ambang batas numerik yang jelas untuk membentuk rule.",
@@ -174,7 +174,7 @@
     }
   },
   {
-    "id": "TC091",
+    "id": "TC081",
     "category": "invalid",
     "input": "Nyalakan televisi ruang tamu",
     "notes": "Perangkat tidak terdaftar di database.",
@@ -183,7 +183,7 @@
     }
   },
   {
-    "id": "TC097",
+    "id": "TC087",
     "category": "invalid",
     "input": "Hapus jadwal jam 18:00 untuk lampu ruang tamu",
     "notes": "Tidak ada tool delete_schedule pada implementasi saat ini (gap Tabel 3.8 — lihat evaluation/README.md).",

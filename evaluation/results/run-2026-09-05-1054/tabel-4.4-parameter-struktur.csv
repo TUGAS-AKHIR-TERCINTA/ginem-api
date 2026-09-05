@@ -1,4 +1,4 @@
 Model LLM,Ketepatan Parameter (%),Struktur Valid (%),Ketepatan Jadwal (%),Ketepatan Dynamic Rule (%)
-GPT-5.6 Terra,87.5,100,100,0
-Claude Sonnet 5,87.5,100,100,0
-DeepSeek-V4-Flash,93.75,100,100,0
+GPT-5.6 Terra,100,100,100,100
+Claude Sonnet 5,100,100,100,100
+DeepSeek-V4-Flash,94.12,100,100,100

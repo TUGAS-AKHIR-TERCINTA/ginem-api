@@ -52,8 +52,12 @@ export function semanticEqual(expected: unknown, actual: unknown): boolean {
   if (typeof expected === 'object' && typeof actual === 'object') {
     const expectedObj = expected as Record<string, unknown>
     const actualObj = actual as Record<string, unknown>
-    const keys = new Set([...Object.keys(expectedObj), ...Object.keys(actualObj)])
-    for (const key of keys) {
+    // Only check keys the ground truth actually declares — an extra key the model
+    // fills in (e.g. an optional schema field like `unit`/`deviceName` on a rule
+    // condition) is not a mistake, it's just more than the dataset bothered to
+    // specify. Penalizing it would contradict A_parameter's own definition
+    // ("jumlah seluruh parameter yang seharusnya dihasilkan").
+    for (const key of Object.keys(expectedObj)) {
       if (!semanticEqual(expectedObj[key], actualObj[key])) return false
     }
     return true

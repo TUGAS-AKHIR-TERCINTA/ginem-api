@@ -42,6 +42,18 @@ module.exports = {
             room: 'ruang tamu',
             voltage: '220V'
           })
+        },
+        {
+          device_token: 'fck_d4a1e6c2-9b3f-4e5a-8c7d-1f2a3b4c5d6e',
+          device_name: 'Lampu kamar',
+          device_description: 'Bedroom lamp controlled via MQTT',
+          device_type: 'actuator',
+          device_status: 'online',
+          device_firmware_version: 'v2.1.0',
+          device_metadata: JSON.stringify({
+            room: 'kamar',
+            voltage: '220V'
+          })
         }
       ],
       {}
@@ -53,10 +65,10 @@ module.exports = {
       'devices',
       {
         device_token: [
-          'fck_seed-temp-sensor-001',
-          'fck_seed-smart-lamp-001',
-          'fck_seed-humidity-001',
-          'fck_seed-hybrid-gate-001'
+          'fck_f202115f-2a2b-4cb0-aef2-ab5eec893220',
+          'fck_e3d8bdd8-1cd9-47d2-b7ea-a8fe37efcff3',
+          'fck_bfcda7a1-caf5-4727-a77e-a3c3367b90ee',
+          'fck_d4a1e6c2-9b3f-4e5a-8c7d-1f2a3b4c5d6e'
         ]
       },
       {}

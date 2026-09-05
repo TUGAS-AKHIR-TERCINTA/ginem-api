@@ -42,6 +42,28 @@ describe('semanticEqual', () => {
     expect(semanticEqual(expected, actual)).toBe(true)
   })
 
+  it('ignores extra valid fields the model adds beyond what the ground truth specifies', () => {
+    // e.g. a rule condition where the model also fills in the optional
+    // `unit`/`deviceName` schema fields (RuleSchema.ts) that the dataset didn't bother to assert
+    const expected = { metric: 'temperature', operator: '==', threshold: 25 }
+    const actual = {
+      metric: 'temperature',
+      operator: '==',
+      threshold: 25,
+      unit: 'celsius',
+      deviceName: 'Suhu ruangan'
+    }
+    expect(semanticEqual(expected, actual)).toBe(true)
+  })
+
+  it('still detects a missing or wrong value for a key the ground truth does specify', () => {
+    const expected = { metric: 'temperature', operator: '==', threshold: 25 }
+    expect(semanticEqual(expected, { metric: 'temperature', operator: '==' })).toBe(false)
+    expect(
+      semanticEqual(expected, { metric: 'temperature', operator: '==', threshold: 30 })
+    ).toBe(false)
+  })
+
   it('treats undefined and null as equal to each other but not to 0 or empty string', () => {
     expect(semanticEqual(undefined, null)).toBe(true)
     expect(semanticEqual(undefined, 0)).toBe(false)

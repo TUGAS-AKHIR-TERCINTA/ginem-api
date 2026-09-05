@@ -2,14 +2,14 @@
   {
     "id": "TC001",
     "category": "simple",
-    "input": "Nyalakan lampu ruang tamu",
+    "input": "Nyalakan lampu kamar",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "set_actuator_state_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "on"
           }
         }
@@ -60,7 +60,7 @@
         {
           "tool": "set_actuator_state_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "off"
           }
         }
@@ -70,14 +70,14 @@
   {
     "id": "TC005",
     "category": "simple",
-    "input": "Nyalain lampu ruang tamu dong",
+    "input": "Nyalain lampu kamar dong",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "set_actuator_state_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "on"
           }
         }
@@ -187,14 +187,14 @@
   {
     "id": "TC012",
     "category": "simple",
-    "input": "Apakah lampu ruang tamu menyala?",
+    "input": "Apakah lampu kamar menyala?",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "get_last_log_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu"
+            "deviceName": "Lampu kamar"
           }
         }
       ]
@@ -249,14 +249,14 @@
   {
     "id": "TC016",
     "category": "simple",
-    "input": "Lihat 10 log terakhir lampu ruang tamu",
+    "input": "Lihat 10 log terakhir lampu kamar",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "get_last_10_logs_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu"
+            "deviceName": "Lampu kamar"
           }
         }
       ]
@@ -359,14 +359,14 @@
   {
     "id": "TC022",
     "category": "medium",
-    "input": "Matikan lampu ruang tamu jam 23:00 nanti malam",
+    "input": "Matikan lampu kamar jam 23:00 nanti malam",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "schedule_actuator_state_at",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "off",
             "category": "once",
             "hour": 23,
@@ -376,7 +376,7 @@
       ],
       "schedule": [
         {
-          "deviceName": "Lampu ruang tamu",
+          "deviceName": "Lampu kamar",
           "action": "off",
           "category": "once",
           "hour": 23,
@@ -509,14 +509,14 @@
   {
     "id": "TC027",
     "category": "medium",
-    "input": "Jadwalkan lampu ruang tamu menyala tiap hari jam 17:00",
+    "input": "Jadwalkan lampu kamar menyala tiap hari jam 17:00",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "schedule_actuator_state_at",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "on",
             "category": "repeat",
             "hour": 17,
@@ -526,7 +526,7 @@
       ],
       "schedule": [
         {
-          "deviceName": "Lampu ruang tamu",
+          "deviceName": "Lampu kamar",
           "action": "on",
           "category": "repeat",
           "hour": 17,
@@ -625,14 +625,14 @@
   {
     "id": "TC031",
     "category": "medium",
-    "input": "Ambil data lampu ruang tamu jam 15:00 nanti",
+    "input": "Ambil data lampu kamar jam 15:00 nanti",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "schedule_sensor_data_at",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "category": "once",
             "hour": 15,
             "minute": 0
@@ -641,7 +641,7 @@
       ],
       "schedule": [
         {
-          "deviceName": "Lampu ruang tamu",
+          "deviceName": "Lampu kamar",
           "category": "once",
           "hour": 15,
           "minute": 0,
@@ -1117,14 +1117,14 @@
   {
     "id": "TC047",
     "category": "complex",
-    "input": "Buat aturan: matikan lampu ruang tamu jika suhu ruang tamu tepat 25 derajat",
+    "input": "Buat aturan: matikan lampu kamar jika suhu ruang tamu tepat 25 derajat",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "create_automation_rule",
           "parameters": {
-            "originalPrompt": "Buat aturan: matikan lampu ruang tamu jika suhu ruang tamu tepat 25 derajat",
+            "originalPrompt": "Buat aturan: matikan lampu kamar jika suhu ruang tamu tepat 25 derajat",
             "trigger": {
               "deviceName": "Suhu ruangan",
               "metric": "temperature"
@@ -1138,7 +1138,7 @@
             ],
             "actions": [
               {
-                "deviceName": "Lampu ruang tamu",
+                "deviceName": "Lampu kamar",
                 "state": "off"
               }
             ]
@@ -1158,7 +1158,7 @@
           ],
           "actions": [
             {
-              "deviceName": "Lampu ruang tamu",
+              "deviceName": "Lampu kamar",
               "state": "off"
             }
           ],
@@ -1375,21 +1375,21 @@
   {
     "id": "TC052",
     "category": "complex",
-    "input": "Matikan lampu ruang tamu sekarang dan jadwalkan nyala lagi besok jam 07:00",
+    "input": "Matikan lampu kamar sekarang dan jadwalkan nyala lagi besok jam 07:00",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
         {
           "tool": "set_actuator_state_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "off"
           }
         },
         {
           "tool": "schedule_actuator_state_at",
           "parameters": {
-            "deviceName": "Lampu ruang tamu",
+            "deviceName": "Lampu kamar",
             "state": "on",
             "category": "once",
             "hour": 7,
@@ -1399,7 +1399,7 @@
       ],
       "schedule": [
         {
-          "deviceName": "Lampu ruang tamu",
+          "deviceName": "Lampu kamar",
           "action": "on",
           "category": "once",
           "hour": 7,
@@ -1621,7 +1621,7 @@
   {
     "id": "TC059",
     "category": "complex",
-    "input": "Tampilkan 10 riwayat suhu ruang tamu terakhir dan status lampu ruang tamu",
+    "input": "Tampilkan 10 riwayat suhu ruang tamu terakhir dan status lampu kamar",
     "expected": {
       "behavior": "tool_call",
       "toolCalls": [
@@ -1634,7 +1634,7 @@
         {
           "tool": "get_last_log_by_device_name",
           "parameters": {
-            "deviceName": "Lampu ruang tamu"
+            "deviceName": "Lampu kamar"
           }
         }
       ]
@@ -1681,7 +1681,7 @@
     "id": "TC061",
     "category": "ambiguous",
     "input": "Nyalakan lampunya",
-    "notes": "Tidak menyebut nama device yang persis terdaftar (bukan 'Lampu ruang tamu' persis) sehingga berpotensi salah sasaran.",
+    "notes": "Ambigu sungguhan: ada dua device lampu terdaftar (\"Lampu ruang tamu\" dan \"Lampu kamar\"), \"lampunya\" tidak menunjuk salah satunya secara pasti.",
     "expected": {
       "behavior": "clarification"
     }
@@ -1843,7 +1843,7 @@
     "id": "TC079",
     "category": "ambiguous",
     "input": "Setel waktu otomatis untuk lampu",
-    "notes": "Device disebut tapi tidak ada state maupun jam yang pasti untuk membentuk jadwal.",
+    "notes": "Device disebut tapi tidak spesifik (ada dua lampu terdaftar: \"Lampu ruang tamu\" dan \"Lampu kamar\") dan tidak ada state maupun jam yang pasti untuk membentuk jadwal.",
     "expected": {
       "behavior": "clarification"
     }
@@ -1996,7 +1996,7 @@
     "id": "TC096",
     "category": "invalid",
     "input": "Nyalakan lampu taman",
-    "notes": "Perangkat tidak terdaftar di database (berbeda dari \"Lampu ruang tamu\").",
+    "notes": "Perangkat tidak terdaftar di database (berbeda dari \"Lampu ruang tamu\" maupun \"Lampu kamar\").",
     "expected": {
       "behavior": "reject_or_no_tool"
     }
