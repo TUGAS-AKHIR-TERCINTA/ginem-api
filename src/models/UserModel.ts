@@ -12,13 +12,13 @@ export interface IUserAttributes extends IBaseModelFields {
 }
 
 export type IUserCreationAttributes = Omit<
-IUserAttributes,
-'userId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  IUserAttributes,
+  'userId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >
 
 export interface UserInstance
   extends Model<IUserAttributes, IUserCreationAttributes>,
-  IUserAttributes {}
+    IUserAttributes {}
 
 export const UserModel = sequelizeInit.define<UserInstance>(
   'Users',

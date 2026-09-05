@@ -12,13 +12,13 @@ export interface IIndexingAttributes extends IBaseModelFields {
 }
 
 export type IIndexingCreationAttributes = Omit<
-IIndexingAttributes,
-'indexingId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  IIndexingAttributes,
+  'indexingId' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >
 
 export interface IndexingInstance
   extends Model<IIndexingAttributes, IIndexingCreationAttributes>,
-  IIndexingAttributes {}
+    IIndexingAttributes {}
 
 export const IndexingModel = sequelizeInit.define<IndexingInstance>(
   'Indexings',
