@@ -58,6 +58,9 @@ export interface RunLlmEvalOptions {
   maxRetries: number
   retryBaseDelayMs: number
   onRecord?: (record: RawEvaluationRecord) => void
+  /** Checked between tasks so a pause request (e.g. Ctrl+C) stops picking up new
+   * work while letting whatever's already in-flight finish and get written. */
+  shouldStop?: () => boolean
 }
 
 interface Task {
@@ -81,11 +84,16 @@ export async function runLlmEvaluation(options: RunLlmEvalOptions): Promise<void
       }
     }
 
-    await runWithConcurrency(tasks, options.concurrency, async (task) => {
-      const record = await runSingleCase(task, options)
-      appendRawResult(options.runDir, record)
-      options.onRecord?.(record)
-    })
+    await runWithConcurrency(
+      tasks,
+      options.concurrency,
+      async (task) => {
+        const record = await runSingleCase(task, options)
+        appendRawResult(options.runDir, record)
+        options.onRecord?.(record)
+      },
+      options.shouldStop
+    )
   } finally {
     disableDryRun()
   }

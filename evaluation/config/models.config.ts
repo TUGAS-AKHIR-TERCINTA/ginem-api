@@ -12,19 +12,19 @@ export interface EvalModelConfig {
    * must not be trusted blindly. Override via env without touching code.
    */
   apiModel: string
-  /** Tabel 3.10: temperature = 0.2 for all three models under test. */
-  temperature: number
+  /** No temperature override for any model under test — each provider's own
+   * default applies uniformly, since not every provider accepts (or supports the
+   * same range of) a custom value. See evaluation/README.md §10 for rationale. */
   /** Tabel 3.10: maksimum output token = 1024 for all three models under test. */
   maxTokens: number
 }
 
 export const evalModels: EvalModelConfig[] = [
   {
-    key: 'openai:gpt-5.6-terra',
-    displayName: 'GPT-5.6 Terra',
+    key: 'openai:gpt-5.6-luna',
+    displayName: 'GPT-5.6 Luna',
     provider: 'openai',
-    apiModel: process.env.EVAL_OPENAI_MODEL ?? 'gpt-5.6-terra',
-    temperature: 0.2,
+    apiModel: process.env.EVAL_OPENAI_MODEL ?? 'gpt-5.6-luna',
     maxTokens: 1024
   },
   {
@@ -32,7 +32,6 @@ export const evalModels: EvalModelConfig[] = [
     displayName: 'Claude Sonnet 5',
     provider: 'anthropic',
     apiModel: process.env.EVAL_ANTHROPIC_MODEL ?? 'claude-sonnet-5',
-    temperature: 0.2,
     maxTokens: 1024
   },
   {
@@ -40,7 +39,6 @@ export const evalModels: EvalModelConfig[] = [
     displayName: 'DeepSeek-V4-Flash',
     provider: 'deepseek',
     apiModel: process.env.EVAL_DEEPSEEK_MODEL ?? 'deepseek-v4-flash',
-    temperature: 0.2,
     maxTokens: 1024
   }
 ]

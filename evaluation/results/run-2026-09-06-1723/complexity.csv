@@ -1,0 +1,10 @@
+model,category,totalTests,toolAccuracyPct,parameterAccuracyPct,structureValidPct
+GPT-5.6 Luna,simple,1,100,100,100
+GPT-5.6 Luna,medium,1,100,100,100
+GPT-5.6 Luna,complex,1,100,100,100
+Claude Sonnet 5,simple,1,100,100,100
+Claude Sonnet 5,medium,1,100,100,100
+Claude Sonnet 5,complex,1,100,100,100
+DeepSeek-V4-Flash,simple,1,0,100,100
+DeepSeek-V4-Flash,medium,1,100,100,100
+DeepSeek-V4-Flash,complex,1,100,75,100

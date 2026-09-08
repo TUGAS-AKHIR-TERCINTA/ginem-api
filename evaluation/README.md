@@ -63,7 +63,7 @@ Source: `evaluation/cli/args.ts`.
 | Flag | Value | Default | Notes |
 |---|---|---|---|
 | `--mode` | `llm-eval` \| `functional` \| `report` | `llm-eval` | `llm-eval` = BAB 4.3 (dry-run, no hardware). `functional` = BAB 4.2 (needs a real ESP32 online, see §12 "Test Environment"). `report` = regenerate CSV/summary from an existing run without calling the LLM/API again. |
-| `--model` | `all` or a comma-separated list of keys | `all` | Valid model keys: `openai:gpt-5.6-terra`, `anthropic:claude-sonnet-5`, `deepseek:deepseek-v4-flash` (see `evaluation/config/models.config.ts`). |
+| `--model` | `all` or a comma-separated list of keys | `all` | Valid model keys: `openai:gpt-5.6-luna`, `anthropic:claude-sonnet-5`, `deepseek:deepseek-v4-flash` (see `evaluation/config/models.config.ts`). |
 | `--dataset` | file path | `./evaluation/datasets/dataset.json` (from `EVAL_DATASET_PATH`) | Swap the dataset in use, e.g. `evaluation/datasets/10_dataset.json` for a quick check before running the full 100-case dataset. |
 | `--repetitions` | integer ≥ 1 | 3 (from `EVAL_REPETITIONS`) | How many times each case is repeated per model, to compute average metrics (methodology point 27). |
 | `--category` | comma-separated category list | all categories | Valid values: `simple`, `medium`, `complex`, `ambiguous`, `invalid`. Can be combined, e.g. `--category simple,ambiguous`. |
@@ -86,7 +86,7 @@ npm run evaluate
 npm run evaluate -- --model all --repetitions 3
 
 # BAB 4.3 for a single model only
-npm run evaluate -- --model openai:gpt-5.6-terra --repetitions 3
+npm run evaluate -- --model openai:gpt-5.6-luna --repetitions 3
 npm run evaluate -- --model anthropic:claude-sonnet-5 --repetitions 3
 npm run evaluate -- --model deepseek:deepseek-v4-flash --repetitions 3
 
@@ -113,7 +113,7 @@ See the `# Evaluation runner` block in `.env.example`. **Required** before a rea
 | Var | For | Notes |
 |---|---|---|
 | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `DEEPSEEK_API_KEY` | llm-eval | Already in `.env.example`; `ANTHROPIC_API_KEY` was newly added by this module (§8). |
-| `EVAL_OPENAI_MODEL`, `EVAL_ANTHROPIC_MODEL`, `EVAL_DEEPSEEK_MODEL` | llm-eval | **Fill in with the official model id from your API account** — the defaults in `models.config.ts` (`gpt-5.6-terra`, `claude-sonnet-5`, `deepseek-v4-flash`) are best-guesses from the names in Table 3.10, NOT verified API strings. |
+| `EVAL_OPENAI_MODEL`, `EVAL_ANTHROPIC_MODEL`, `EVAL_DEEPSEEK_MODEL` | llm-eval | **Fill in with the official model id from your API account** — the defaults in `models.config.ts` (`gpt-5.6-luna`, `claude-sonnet-5`, `deepseek-v4-flash`) are best-guesses from the names in Table 3.10, NOT verified API strings. |
 | `EVAL_API_EMAIL`, `EVAL_API_PASSWORD` | functional | An account already registered in the system (used for `POST /api/v1/auth/login`). |
 | `EVAL_API_BASE_URL` | functional | Defaults to `http://localhost:8000`. |
 | `DB_*`, `REDIS_*` | both | **Strongly recommended to use a separate/disposable database for evaluation** — see §9, `RuleManagementService` still writes to the real DB during llm-eval. |
@@ -123,7 +123,7 @@ See the `# Evaluation runner` block in `.env.example`. **Required** before a rea
 
 ## 5. Model configuration
 
-`evaluation/config/models.config.ts` — matches Table 3.10 exactly (`temperature=0.2`, `maxTokens=1024`, no fine-tuning, API integration). `evaluation/config/pricing.json` — matches Table 3.13 exactly (reference date August 2, 2026); **update this file before the final run** if provider rates change, don't hardcode them in the calculation logic (point 18).
+`evaluation/config/models.config.ts` — matches Table 3.10 (`maxTokens=1024`, no fine-tuning, API integration). No model gets a `temperature` override — every provider's own default applies uniformly across all three, since not every provider accepts (or supports the same range of) a custom value; see §10 for the full rationale. `evaluation/config/pricing.json` — matches Table 3.13 exactly (reference date August 2, 2026, except the `openai:gpt-5.6-luna` row — see its own updated date in the file); **update this file before the final run** if provider rates change, don't hardcode them in the calculation logic (point 18).
 
 ## 6. Output
 

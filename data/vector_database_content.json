@@ -1,0 +1,31 @@
+{
+  "_note": "Salinan isi Vector Database (Pinecone) yang digunakan sistem untuk Retrieval-Augmented Generation (RAG). Vektor embedding mentah (1024 dimensi per record) tidak disertakan karena tidak terbaca manusia dan tidak relevan untuk lampiran bukti — yang ditampilkan adalah teks konten asli (metadata.content) dan sumbernya (metadata.source), persis seperti yang diambil sistem saat retrieval.",
+  "retrievedAt": "2026-09-08",
+  "indexName": "tatercinta",
+  "namespace": "tatercinta-namespace",
+  "embeddingModel": "text-embedding-3-small",
+  "embeddingDimension": 1024,
+  "totalRecords": 4,
+  "records": [
+    {
+      "id": "b9bf0faf21c3718255d462b4150fbe21c5457177ae4f8cae7b2d14d72462d8fd",
+      "content": "Lampu kamar adalah perangkat aktuator (lampu kamar tidur) yang terpasang di kamar. Dapat dinyalakan atau dimatikan melalui perintah seperti 'nyalakan lampu kamar' atau 'matikan lampu kamar'.",
+      "source": "text"
+    },
+    {
+      "id": "c3147a3553d26044ced496f573a55ff9a7c430d7bd2b5f4544653aa4439a183b",
+      "content": "Suhu ruangan adalah perangkat sensor DHT11 yang mengukur suhu di ruang tamu dalam satuan celsius. Data terbaru dapat diakses melalui perintah seperti 'berapa suhu ruangan sekarang' atau 'cek suhu ruang tamu'.",
+      "source": "text"
+    },
+    {
+      "id": "cdc212d8a2f177c5d324c919e48957880b4a3ec9830d1fc209a5ada8c5fbe35a",
+      "content": "Kipas adalah perangkat aktuator yang terpasang di ruang tamu. Dapat dinyalakan atau dimatikan secara langsung, dijadwalkan, atau dikendalikan otomatis berdasarkan kondisi suhu (dynamic rule).",
+      "source": "text"
+    },
+    {
+      "id": "d3636b691f43060cbaf65232f6c638996f3f9b26dd5922b4c0295be60498a16e",
+      "content": "Lampu ruang tamu adalah perangkat aktuator (lampu langit-langit) yang terpasang di ruang tamu. Dapat dinyalakan atau dimatikan melalui perintah seperti 'nyalakan lampu ruang tamu' atau 'matikan lampu ruang tamu'.",
+      "source": "text"
+    }
+  ]
+}

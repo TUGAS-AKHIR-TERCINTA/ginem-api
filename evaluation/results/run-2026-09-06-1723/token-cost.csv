@@ -1,0 +1,4 @@
+model,totalInputTokens,totalOutputTokens,totalTokens,avgTokensPerRequest,totalCostUsd,avgCostPerRequestUsd
+GPT-5.6 Luna,38859,363,39222,7844.4,0.0082074,0.00164148
+Claude Sonnet 5,52126,849,52975,10595,0.11274200000000001,0.022548400000000003
+DeepSeek-V4-Flash,59094,1629,60723,12144.6,0.00872928,0.001745856

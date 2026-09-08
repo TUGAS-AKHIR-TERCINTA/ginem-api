@@ -14,6 +14,9 @@ export interface LLMCreateOptions {
   provider?: LLMProvider
   /** Defaults to gpt-4o for openai, deepseek-chat for deepseek. */
   model?: string
+  /** Omit entirely to let the provider use its own default — not every model
+   * accepts every value (or the parameter at all), so there is no forced default
+   * here; callers that want a specific value (e.g. production's `0`) must say so. */
   temperature?: number
   maxTokens?: number
   /** Override API key; otherwise uses appConfigs / env. */
@@ -22,13 +25,14 @@ export interface LLMCreateOptions {
 
 /**
  * Factory for LangChain chat models.
- * `create()` with no args preserves the production default (OpenAI gpt-4o).
+ * `create()` with no args preserves the production default (OpenAI gpt-4o, temperature 0 —
+ * set explicitly by `ChatService`, not defaulted here).
  */
 export class LLMService {
   static create(options?: LLMCreateOptions): BaseChatModel {
     try {
       const provider = options?.provider ?? 'openai'
-      const temperature = options?.temperature ?? 0
+      const temperature = options?.temperature
       const maxTokens = options?.maxTokens ?? 500
 
       if (provider === 'deepseek') {

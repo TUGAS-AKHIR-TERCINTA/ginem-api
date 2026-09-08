@@ -11,7 +11,8 @@ export function buildEvalModel(config: EvalModelConfig): BaseChatModel {
   return LLMService.create({
     provider: config.provider,
     model: config.apiModel,
-    temperature: config.temperature,
+    // No temperature override — each provider's own default applies uniformly
+    // across all three models under test (see models.config.ts / README §10).
     maxTokens: config.maxTokens
   })
 }

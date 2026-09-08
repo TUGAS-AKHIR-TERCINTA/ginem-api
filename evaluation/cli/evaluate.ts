@@ -147,7 +147,7 @@ async function main(): Promise<void> {
       displayName: m.displayName,
       provider: m.provider,
       apiModel: m.apiModel,
-      temperature: m.temperature,
+      temperature: 'provider default (not overridden)',
       maxTokens: m.maxTokens
     })),
     generatedAt: new Date().toISOString()
@@ -160,6 +160,30 @@ async function main(): Promise<void> {
   if (args.resume != null)
     console.log('(resuming — already-succeeded records will be skipped)')
 
+  // Ctrl+C (or a SIGTERM, e.g. from a process manager) sets this flag instead of
+  // killing the process outright — runWithConcurrency stops handing out new tasks
+  // once it's true but lets whatever's already in-flight finish and get written to
+  // raw-results.jsonl, so nothing completed is ever lost or silently corrupted.
+  // Pressing Ctrl+C a second time falls through to Node's default (immediate exit)
+  // for anyone who genuinely needs to kill it right now.
+  let stopRequested = false
+  const resumeHint = buildResumeCommand(args, runId)
+  const onInterrupt = (signal: NodeJS.Signals): void => {
+    if (stopRequested) return
+    stopRequested = true
+    console.log(
+      `\n\n${signal} received — finishing in-flight request(s), then pausing (not cancelling mid-request; the current API call already in flight will complete normally).`
+    )
+    console.log(
+      `Press ${signal === 'SIGINT' ? 'Ctrl+C' : signal} again to force-quit immediately.`
+    )
+    console.log(`\nTo resume the remaining cases later, run:\n  ${resumeHint}\n`)
+    process.off('SIGINT', onInterrupt)
+    process.off('SIGTERM', onInterrupt)
+  }
+  process.on('SIGINT', onInterrupt)
+  process.on('SIGTERM', onInterrupt)
+
   let done = 0
   await runLlmEvaluation({
     runId,
@@ -170,6 +194,7 @@ async function main(): Promise<void> {
     concurrency,
     maxRetries,
     retryBaseDelayMs: evaluationConfig.retryBaseDelayMs,
+    shouldStop: () => stopRequested,
     onRecord: (record) => {
       done += 1
       const status =
@@ -183,11 +208,39 @@ async function main(): Promise<void> {
       )
     }
   })
+  process.off('SIGINT', onInterrupt)
+  process.off('SIGTERM', onInterrupt)
 
   generateReports(runDir)
-  console.log(`\nDone. Run: ${runId}`)
-  console.log(`Raw results: ${runDir}/raw-results.jsonl`)
-  console.log(`Reports: ${runDir}/summary.json + tabel-4.x CSVs`)
+
+  if (stopRequested && done < totalPlanned) {
+    console.log(
+      `\nPaused. Run: ${runId} (${done}/${totalPlanned} record(s) completed so far)`
+    )
+    console.log(`Raw results so far: ${runDir}/raw-results.jsonl`)
+    console.log(`Partial reports: ${runDir}/summary.json + tabel-4.x CSVs`)
+    console.log(`\nResume the remaining cases with:\n  ${resumeHint}`)
+  } else {
+    console.log(`\nDone. Run: ${runId}`)
+    console.log(`Raw results: ${runDir}/raw-results.jsonl`)
+    console.log(`Reports: ${runDir}/summary.json + tabel-4.x CSVs`)
+  }
+}
+
+/** Reconstructs a ready-to-paste `npm run evaluate -- ...` command that resumes
+ * this exact run — same flags the user already passed, plus `--resume <runId>`. */
+function buildResumeCommand(
+  args: ReturnType<typeof parseCliArgs>,
+  runId: string
+): string {
+  const parts = ['npm run evaluate --', `--resume ${runId}`]
+  if (args.models !== 'all') parts.push(`--model ${args.models.join(',')}`)
+  if (args.dataset != null) parts.push(`--dataset ${args.dataset}`)
+  if (args.repetitions != null) parts.push(`--repetitions ${args.repetitions}`)
+  if (args.categories != null) parts.push(`--category ${args.categories.join(',')}`)
+  if (args.concurrency != null) parts.push(`--concurrency ${args.concurrency}`)
+  if (args.maxRetries != null) parts.push(`--max-retries ${args.maxRetries}`)
+  return parts.join(' ')
 }
 
 main()
