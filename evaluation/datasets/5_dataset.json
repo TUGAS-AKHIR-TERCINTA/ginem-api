@@ -1,0 +1,120 @@
+[
+  {
+    "id": "TC001",
+    "category": "simple",
+    "input": "Nyalakan lampu kamar",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "set_actuator_state_by_device_name",
+          "parameters": {
+            "deviceName": "Lampu kamar",
+            "state": "on"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC022",
+    "category": "medium",
+    "input": "Matikan lampu kamar jam 23:00 nanti malam",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "schedule_actuator_state_at",
+          "parameters": {
+            "deviceName": "Lampu kamar",
+            "state": "off",
+            "category": "once",
+            "hour": 23,
+            "minute": 0
+          }
+        }
+      ],
+      "schedule": [
+        {
+          "deviceName": "Lampu kamar",
+          "action": "off",
+          "category": "once",
+          "hour": 23,
+          "minute": 0,
+          "timezone": "Asia/Jakarta"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC047",
+    "category": "complex",
+    "input": "Buat aturan: matikan lampu kamar jika suhu ruang tamu tepat 25 derajat",
+    "expected": {
+      "behavior": "tool_call",
+      "toolCalls": [
+        {
+          "tool": "create_automation_rule",
+          "parameters": {
+            "originalPrompt": "Buat aturan: matikan lampu kamar jika suhu ruang tamu tepat 25 derajat",
+            "trigger": {
+              "deviceName": "Suhu ruangan",
+              "metric": "temperature"
+            },
+            "conditions": [
+              {
+                "metric": "temperature",
+                "operator": "==",
+                "threshold": 25
+              }
+            ],
+            "actions": [
+              {
+                "deviceName": "Lampu kamar",
+                "state": "off"
+              }
+            ]
+          }
+        }
+      ],
+      "rule": [
+        {
+          "triggerDeviceName": "Suhu ruangan",
+          "triggerMetric": "temperature",
+          "conditions": [
+            {
+              "metric": "temperature",
+              "operator": "==",
+              "threshold": 25
+            }
+          ],
+          "actions": [
+            {
+              "deviceName": "Lampu kamar",
+              "state": "off"
+            }
+          ],
+          "conditionLogic": "AND"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TC061",
+    "category": "ambiguous",
+    "input": "Nyalakan lampunya",
+    "notes": "Ambigu sungguhan: ada dua device lampu terdaftar (\"Lampu ruang tamu\" dan \"Lampu kamar\"), \"lampunya\" tidak menunjuk salah satunya secara pasti.",
+    "expected": {
+      "behavior": "clarification"
+    }
+  },
+  {
+    "id": "TC081",
+    "category": "invalid",
+    "input": "Nyalakan televisi ruang tamu",
+    "notes": "Perangkat tidak terdaftar di database.",
+    "expected": {
+      "behavior": "reject_or_no_tool"
+    }
+  }
+]

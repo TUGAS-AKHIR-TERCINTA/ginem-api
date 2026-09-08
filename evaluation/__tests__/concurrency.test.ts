@@ -34,4 +34,25 @@ describe('runWithConcurrency', () => {
       })
     ).rejects.toThrow('boom')
   })
+
+  it('lets an already-started item finish but starts no new ones once shouldStop is true (pause/resume support)', async () => {
+    const started: number[] = []
+    const items = [1, 2, 3, 4, 5]
+    let stop = false
+
+    const results = await runWithConcurrency(
+      items,
+      1, // concurrency 1 so "already started" vs "not yet started" is unambiguous
+      async (n) => {
+        started.push(n)
+        if (n === 2) stop = true // simulate Ctrl+C firing mid-run, after item 2 begins
+        await new Promise((resolve) => setTimeout(resolve, 5))
+        return n * 10
+      },
+      () => stop
+    )
+
+    expect(started).toEqual([1, 2])
+    expect(results).toEqual([10, 20, undefined, undefined, undefined])
+  })
 })

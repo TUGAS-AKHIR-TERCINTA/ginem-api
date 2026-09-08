@@ -1,0 +1,4 @@
+Model LLM,Latensi Minimum (ms),Latensi Maksimum (ms),Rata-Rata Latensi (ms)
+GPT-5.6 Luna,5562.04,10697.39,7803.7
+Claude Sonnet 5,3059.91,6954.73,5263.49
+DeepSeek-V4-Flash,5028.99,6309.93,5547.3

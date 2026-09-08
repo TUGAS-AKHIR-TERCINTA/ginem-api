@@ -31,11 +31,10 @@ jest.mock('../../src/utilities/logger', () => ({
 const mockedQuery = ChatService.query as jest.Mock
 
 const model: EvalModelConfig = {
-  key: 'openai:gpt-5.6-terra',
-  displayName: 'GPT-5.6 Terra',
+  key: 'openai:gpt-5.6-luna',
+  displayName: 'GPT-5.6 Luna',
   provider: 'openai',
-  apiModel: 'gpt-5.6-terra',
-  temperature: 0.2,
+  apiModel: 'gpt-5.6-luna',
   maxTokens: 1024
 }
 

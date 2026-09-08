@@ -106,7 +106,7 @@ type AgentLike = {
  */
 export class ChatService {
   private static readonly defaultAgent = createAgent({
-    model: LLMService.create(),
+    model: LLMService.create({ temperature: 0 }),
     tools: deviceTools,
     systemPrompt: DEVICE_CHAT_SYSTEM_PROMPT
   }) as AgentLike

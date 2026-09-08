@@ -39,12 +39,12 @@ describe('LLMService', () => {
     jest.clearAllMocks()
   })
 
-  it('creates ChatOpenAI with expected default config', () => {
+  it('creates ChatOpenAI with expected default config (no temperature override)', () => {
     LLMService.create()
 
     expect(ChatOpenAIMock).toHaveBeenCalledWith({
       model: 'gpt-4o',
-      temperature: 0,
+      temperature: undefined,
       maxTokens: 500,
       apiKey: 'test-openai-key',
       reasoning: { effort: 'none' }
@@ -68,14 +68,26 @@ describe('LLMService', () => {
     })
   })
 
-  it('creates ChatDeepSeek when provider is deepseek', () => {
+  it('creates ChatDeepSeek when provider is deepseek (no temperature override)', () => {
     LLMService.create({ provider: 'deepseek', model: 'deepseek-chat' })
 
     expect(ChatDeepSeekMock).toHaveBeenCalledWith({
       model: 'deepseek-chat',
-      temperature: 0,
+      temperature: undefined,
       maxTokens: 500,
       apiKey: 'test-deepseek-key'
+    })
+  })
+
+  it('creates ChatOpenAI with an explicit temperature when the caller asks for one (production default agent)', () => {
+    LLMService.create({ temperature: 0 })
+
+    expect(ChatOpenAIMock).toHaveBeenCalledWith({
+      model: 'gpt-4o',
+      temperature: 0,
+      maxTokens: 500,
+      apiKey: 'test-openai-key',
+      reasoning: { effort: 'none' }
     })
   })
 
