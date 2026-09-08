@@ -1,3 +1,17 @@
+# Log Evaluasi Model LLM — 100 Dataset x 3 Model x 3 Repetisi
+
+Log mentah hasil menjalankan `npm run evaluate -- --model all --repetitions 3` di server produksi (AWS EC2, `/var/www/ginem-api`). Disimpan sebagai bukti/lampiran — isi log di bawah adalah salinan persis (verbatim) dari output terminal, tidak diedit.
+
+| Keterangan | Nilai |
+|---|---|
+| Run ID | `run-2026-09-06-1036` |
+| Dataset | `dataset.json` (100 kasus) |
+| Model diuji | GPT-5.6 Luna, Claude Sonnet 5, DeepSeek-V4-Flash |
+| Repetisi | 3x per kasus per model |
+| Total record | 900 (100 x 3 x 3) |
+| Status akhir | **Selesai** (`Done.`) — 900/900 record tercatat |
+
+```log
 ubuntu@ip-172-31-11-174:/var/www/ginem-api$ npm run evaluate -- --model all --repetitions 3
 
 > taproject@1.0.0 evaluate
@@ -920,3 +934,4 @@ error: [ChatService] query failed: Error: 400 The `reasoning_content` in the thi
 Done. Run: run-2026-09-06-1036
 Raw results: evaluation/results/run-2026-09-06-1036/raw-results.jsonl
 Reports: evaluation/results/run-2026-09-06-1036/summary.json + tabel-4.x CSVs
+```
